@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
@@ -15,8 +16,8 @@ class UsersTableSeeder extends Seeder
     {
         for ($i = 1; $i <= 3; $i++) {
             User::create([
-                'nom_compte' => 'Nom' . $i,
-                'mot_de_passe' => 'password' . $i
+                'username' => 'Nom' . $i,
+                'password' => 'password' . $i,
             ]);
         }
     }

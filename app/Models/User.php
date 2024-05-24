@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Endroit; 
+use App\Models\Endroit;
 use App\Models\Sentier;
 
 class User extends Authenticatable
@@ -19,8 +19,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'nom_compte',
-        'mot_de_passe',
+        'username',
+        'password',
     ];
 
     /**
@@ -46,11 +46,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function endroits() { 
-        return $this->hasMany(Endroit::class);   
-    }  
 
-    public function sentiers() { 
-        return $this->hasMany(Sentier::class);   
+    public function endroits()
+    {
+        return $this->hasMany(Endroit::class);
+    }
+
+    public function sentiers()
+    {
+        return $this->hasMany(Sentier::class);
     }
 }
