@@ -9,17 +9,28 @@ class Sentier extends Model
 {
     use HasFactory;
 
-    protected $fillable=['nom','image_url','description', 'longueur', 'duree'];
+    protected $fillable = [
+        'nom',
+        'image_url',
+        'description',
+        'longueur',
+        'duree',
+        'user_id',
+        'theme_id',
+    ];
 
-    public function theme() {
-        return $this->belongsTo(Theme::class); 
-    } 
-
-    public function user() { 
-        return $this->belongsTo(User::class);   
+    public function theme()
+    {
+        return $this->belongsTo(Theme::class);
     }
 
-    public function endroits() {
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function endroits()
+    {
         return $this->belongsToMany(Endroit::class);
     }
 }
