@@ -18,7 +18,10 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@vueuse/core": "^10.9.0",
         "leaflet": "^1.9.4",
-        "react-leaflet": "^4.2.1"
+        "react-leaflet": "^4.2.1",
+        "vue-leaflet": "^0.1.0",
+        "vue3-leaflet": "^1.0.48"
     }
 }
