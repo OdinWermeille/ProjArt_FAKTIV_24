@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\SentierController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CarteController;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -51,4 +53,6 @@ Route::get('/api/user', function () {
 });
 
 
+Route::get('/carte/{id}', [CarteController::class, 'carte']);
+Route::get('/carte', [CarteController::class, 'carte']);
 require __DIR__ . '/auth.php';
