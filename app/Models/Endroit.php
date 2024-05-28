@@ -9,13 +9,15 @@ class Endroit extends Model
 {
     use HasFactory;
 
-    protected $fillable=['nom','image_url','description', 'localite', 'coordonneesX', 'coordonneesY']; 
-    
-    public function user() {
-        return $this->belongsTo(User::class); 
-    } 
+    protected $fillable = ['nom', 'image_url', 'description', 'localite', 'coordonneesX', 'coordonneesY', 'user_id'];
 
-    public function sentiers() {
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function sentiers()
+    {
         return $this->belongsToMany(Sentier::class);
     }
 }

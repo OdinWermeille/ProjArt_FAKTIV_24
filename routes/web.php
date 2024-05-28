@@ -8,6 +8,7 @@ use App\Http\Controllers\SentierController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CarteController;
 use App\Models\Sentier;
+use App\Http\Controllers\EndroitController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/sentiers/create', [SentierController::class, 'create'])->name('sentiers.create');
     Route::post('/sentiers', [SentierController::class, 'store']);
 
+    Route::get('/endroits/create', [EndroitController::class, 'create'])->name('endroits.create');
+    Route::post('/endroits', [EndroitController::class, 'store']);
+
     Route::get('/user', function () {
         return response()->json([
             'authenticated' => Auth::check(),
@@ -49,8 +53,14 @@ Route::get('/sentiers/create', [SentierController::class, 'create']);
 Route::post('/sentiers', [SentierController::class, 'store']);
 Route::get('/sentiers/{id}', [SentierController::class, 'show']);
 
+Route::post('/api/endroits', [EndroitController::class, 'store']);
+
 Route::get('/api/themes', function () {
     return response()->json(App\Models\Theme::all());
+});
+
+Route::get('/api/endroits', function () {
+    return response()->json(App\Models\Endroit::all());
 });
 
 Route::get('/api/user', function () {
@@ -76,5 +86,3 @@ Route::get('/sentiers', function () {
 Route::get('/carte/{id}', [CarteController::class, 'carte']);
 Route::get('/carte', [CarteController::class, 'carte']);
 require __DIR__ . '/auth.php';
-
-

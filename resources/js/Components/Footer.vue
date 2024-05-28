@@ -6,7 +6,7 @@
     <footer class="footer">
         <div class="container mx-auto rectangle-parent">
             <div class="group-child"></div>
-            <img class="group-icon" alt="" src="/images/Group.svg" />
+            <img class="group-icon" alt="" src="Group.svg" />
  
             <div class="scvd-sentiers-culturels-container">
                 <span class="scvd-sentiers-culturels-container1">
@@ -35,17 +35,6 @@
     color: #333; /* Texte de couleur sombre */
     padding: 20px 0;
     text-align: center;
-    width: 100%;
-}
- 
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: #bfd2a6; /* Adapté au thème clair */
-    color: #333; /* Texte de couleur sombre */
-    padding: 20px 0;
-    text-align: center;
 }
  
 .dark .footer {
@@ -62,6 +51,7 @@
 .rectangle-parent {
     position: relative;
 }
+ 
  
 .group-icon {
     width: 50px;

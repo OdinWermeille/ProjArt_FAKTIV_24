@@ -31,6 +31,6 @@ class Sentier extends Model
 
     public function endroits()
     {
-        return $this->belongsToMany(Endroit::class);
+        return $this->belongsToMany(Endroit::class, 'endroit_sentier')->withTimestamps();
     }
 }
