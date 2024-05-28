@@ -1,4 +1,7 @@
 <?php
+// SentierController.php
+
+// SentierController.php
 
 namespace App\Http\Controllers;
 
@@ -47,7 +50,16 @@ class SentierController extends Controller
 
     public function index()
     {
-        $sentiers = Sentier::all();
-        return response()->json($sentiers);
+        $sentiers = Sentier::with('theme')->get();
+        return Inertia::render('PageListeSentiers', [
+            'sentiers' => $sentiers,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $sentier = Sentier::with('theme')->findOrFail($id);
+        return response()->json($sentier);
     }
 }
+
