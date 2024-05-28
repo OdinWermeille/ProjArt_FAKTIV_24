@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Models\Theme;
+use App\Models\Endroit;
 
 class SentierController extends Controller
 {

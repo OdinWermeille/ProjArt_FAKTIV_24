@@ -8,7 +8,7 @@
           <li class="nav-item"><a href="/sentiers">Liste</a></li>
           <li class="nav-item"><a href="/carte">Carte</a></li>
           <li class="nav-item"><a href="/sentiers/create">Ajouter un sentier</a></li>
-          <li class="nav-item"><a href="/add-place">Ajouter un lieu</a></li>
+          <li class="nav-item"><a href="/endroits/create">Ajouter un lieu</a></li>
           <li class="nav-item"><a href="/login">Login</a></li>
         </ul>
         <button class="burger-menu" @click="toggleMobileMenu">
