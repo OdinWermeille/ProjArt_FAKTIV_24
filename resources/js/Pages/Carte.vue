@@ -4,6 +4,8 @@
     import leaflet from 'leaflet'
     import { useGeolocation } from '@vueuse/core'
     import { userMarker, nearbyMarkers } from '@/stores/mapStore'
+    import icon from 'leaflet/dist/images/marker-icon.png';
+    import iconShadow from 'leaflet/dist/images/marker-shadow.png';
     const here = window.location.href
     const urlArr = here.split(`/`)
     const { coords } = useGeolocation();
@@ -20,7 +22,13 @@
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         })
-        .addTo(map);
+        .addTo(map)
+
+        map.addEventListener("click", (e)=> {
+            const NewGeoMarker = leaflet.marker([e.latlng.lat, e.latlng.lng])
+            .addTo(map)
+            .bindPopup(`Nouveau lieu de l'utilisateur à ${e.latlng.lat}, ${e.latlng.lng}`);
+        })
     })
     
     watchEffect(() => {
@@ -33,7 +41,9 @@
                 map.removeLayer(userGeoMarker);
             }
 
-            userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude]).addTo(map);
+            userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude])
+            .addTo(map)
+            .bindPopup("Les informations sur le lieu vont ici");
             map.setView([userMarker.value.latitude, userMarker.value.longitude])
         }
 
