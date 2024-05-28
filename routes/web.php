@@ -36,6 +36,9 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::get('/carte/{id}', [CarteController::class, 'carte']);
+Route::get('/carte', [CarteController::class, 'carte']);
+
 Route::get('/sentiers', [SentierController::class, 'index']);
 Route::post('/api/sentiers', [SentierController::class, 'store']);
 
