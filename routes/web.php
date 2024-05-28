@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\SentierController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CarteController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
