@@ -50,4 +50,12 @@ class EndroitController extends Controller
             return response()->json(['error' => 'Erreur lors de la création de l\'endroit'], 500);
         }
     }
+
+    public function show($id)
+{
+    $endroit = Endroit::findOrFail($id);
+    return Inertia::render('DetailEndroit', [
+        'endroit' => $endroit,
+    ]);
+}
 }

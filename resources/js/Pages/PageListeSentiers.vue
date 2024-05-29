@@ -1,42 +1,109 @@
 <template>
-  <div :class="$style.groupParent">
-    <div v-for="sentier in sentiers" :key="sentier.id" :class="$style.rectangleParent" @click="onGroupContainerClick(sentier.id)">
-      <div :class="$style.groupChild"></div>
-      <img :class="$style.groupItem" :alt="sentier.nom" :src="sentier.image_url" />
-      <b :class="$style.btimentsDeLausanne">{{ sentier.nom }}</b>
-      <div :class="$style.sentierHistoriqueAutour">{{ sentier.description }}</div>
-      <div :class="$style.kmParent">
-        <div :class="$style.km">{{ sentier.longueur }} km</div>
-        <div :class="$style.histoire">{{ sentier.theme.name }}</div>
-        <div :class="$style.div">.</div>
+  <div>
+    <!-- Barre de recherche et boutons -->
+    <div :class="$style.searchContainer">
+      <div :class="$style.searchWrapper">
+        <input type="text" :class="$style.searchInput" placeholder="Rechercher" />
+        <img :class="$style.searchIcon" alt="Search Icon" src="/images/icon.svg" />
+      </div>
+      <div :class="$style.buttonsWrapper">
+        <button :class="$style.button" @click="showSortModal = true">Trier par</button>
+        <button :class="$style.button" @click="showFilterModal = true">Filtrer</button>
+        <img :class="$style.mapIcon" alt="Map Icon" src="/images/map.svg" @click="redirectToMap" />
       </div>
     </div>
-    <!-- Boutons pour Trier et Filtrer -->
-    <div :class="$style.rectangleContainer" @click="onGroupContainer2Click">
-      <div :class="$style.rectangleDiv"></div>
-      <div :class="$style.trierPar">Trier par</div>
-      <div :class="$style.div2">&lt;</div>
-    </div>
-    <div :class="$style.groupDiv" @click="onGroupContainer3Click">
-      <div :class="$style.rectangleDiv"></div>
-      <div :class="$style.filtrer">Filtrer</div>
-      <div :class="$style.div3">&lt;</div>
-    </div>
-    <!-- Boutons Carte et Liste -->
-    <div :class="$style.groupContainer">
-      <div :class="$style.selectorselected3Wrapper">
-        <div :class="$style.selectorselected3">
-          <a :class="$style.filtreBtn" href="/carte">
-            <div :class="$style.carte">Carte</div>
-          </a>
-          <a :class="$style.filtreBtn1" href="/sentiers">
-            <div :class="$style.carte">Liste</div>
-          </a>
+
+    <!-- Liste des sentiers -->
+    <div :class="$style.groupParent">
+      <div
+        v-for="sentier in sentiers"
+        :key="sentier.id"
+        :class="$style.card"
+        @click="onGroupContainerClick(sentier.id)"
+      >
+        <img
+          :class="$style.image"
+          :alt="sentier.nom"
+          :src="`/${sentier.image_url}`"
+        />
+        <div :class="$style.content">
+          <b :class="$style.title">{{ sentier.nom }}</b>
+          <div :class="$style.description">{{ sentier.description }}</div>
+          <div :class="$style.info">
+            <div :class="$style.length">{{ sentier.longueur }} km</div>
+            <div :class="$style.separator">•</div>
+            <div :class="$style.theme">{{ sentier.theme.nom }}</div>
+          </div>
         </div>
       </div>
-      <div :class="$style.filtreBtn2">
-        <div :class="$style.listeWrapper">
-          <div :class="$style.liste1">Liste</div>
+    </div>
+
+    <!-- Sort Modal -->
+    <div v-if="showSortModal" :class="$style.modalBackdrop" @click="closeModal">
+      <div :class="$style.modal" @click.stop>
+        <div :class="$style.modalHeader">
+          <button @click="closeModal" :class="$style.closeButton">&times;</button>
+          <h3>Trier par</h3>
+        </div>
+        <div :class="$style.modalContent">
+          <label>
+            <input type="radio" name="sort" value="newest" />
+            Derniers ajouts
+          </label>
+          <label>
+            <input type="radio" name="sort" value="oldest" checked />
+            Les plus anciens
+          </label>
+        </div>
+        <div :class="$style.modalFooter">
+          <button :class="$style.resetButton">RÉINITIALISER</button>
+          <button :class="$style.validateButton" @click="closeModal">VALIDER</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div v-if="showFilterModal" :class="$style.modalBackdrop" @click="closeModal">
+      <div :class="$style.modal" @click.stop>
+        <div :class="$style.modalHeader">
+          <button @click="closeModal" :class="$style.closeButton">&times;</button>
+          <h3>Filtrer par</h3>
+        </div>
+        <div :class="$style.modalContent">
+          <div>
+            <h4>Activité</h4>
+            <label>
+              <input type="radio" name="activity" value="history" />
+              Histoire
+            </label>
+            <label>
+              <input type="radio" name="activity" value="art" checked />
+              Art
+            </label>
+            <label>
+              <input type="radio" name="activity" value="nature" />
+              Nature
+            </label>
+          </div>
+          <div>
+            <h4>Distance</h4>
+            <label>
+              <input type="radio" name="distance" value="0-5" />
+              0-5 km
+            </label>
+            <label>
+              <input type="radio" name="distance" value="6-10" checked />
+              6-10 km
+            </label>
+            <label>
+              <input type="radio" name="distance" value="11+" />
+              11+ km
+            </label>
+          </div>
+        </div>
+        <div :class="$style.modalFooter">
+          <button :class="$style.resetButton">RÉINITIALISER</button>
+          <button :class="$style.validateButton" @click="closeModal">VALIDER</button>
         </div>
       </div>
     </div>
@@ -44,226 +111,232 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue'
-  import { Inertia } from '@inertiajs/inertia'
+import { defineComponent } from 'vue'
+import { Inertia } from '@inertiajs/inertia'
 
-  export default defineComponent({
-    name: "PageListeSentiers",
-    props: {
-      sentiers: Array
-    },
-    methods: {
-      onGroupContainerClick(id) {
-        Inertia.get(`/sentiers/${id}`)
-      },
-      onGroupContainer2Click() {
-        // Add your code here
-      },
-      onGroupContainer3Click() {
-        // Add your code here
-      },
-      onFiltreBtnContainerClick() {
-        // Add your code here
-      },
-      onFiltreBtnContainer1Click() {
-        // Add your code here
-      }
+export default defineComponent({
+  name: "PageListeSentiers",
+  props: {
+    sentiers: Array
+  },
+  data() {
+    return {
+      showSortModal: false,
+      showFilterModal: false
     }
-  })
+  },
+  methods: {
+    onGroupContainerClick(id) {
+      window.location.href = `/sentiers/${id}`;
+    },
+    redirectToMap() {
+      window.location.href = '/carte'
+    },
+    closeModal() {
+      this.showSortModal = false;
+      this.showFilterModal = false;
+    }
+  }
+})
 </script>
 
 <style module>
-/* CSS Styles */
-.groupParent {
-  width: 100%;
-  position: relative;
-  height: auto;
-  text-align: left;
-  font-size: 18px;
-  color: #212121;
-  font-family: Inter;
-  padding: 20px;
+.searchContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 16px;
 }
 
-.rectangleParent {
+.searchWrapper {
+  display: flex;
+  align-items: center;
   width: 100%;
-  max-width: 288px;
-  margin: 20px auto;
+  max-width: 600px;
+  margin-bottom: 16px;
   position: relative;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  padding-right: 40px;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
 }
 
-.groupChild {
-  width: 100%;
-  height: 305px;
-  border-radius: 11px;
-  background-color: #f0f0f0;
-}
-
-.groupItem {
-  width: 100%;
-  height: auto;
-  max-height: 175px;
-  border-radius: 5px;
-  object-fit: cover;
-  margin-top: 13px;
-}
-
-.btimentsDeLausanne,
-.musesDart {
-  display: block;
-  margin-top: 20px;
-  margin-left: 17px;
-  letter-spacing: 0.5px;
-  line-height: 24px;
-}
-
-.sentierHistoriqueAutour,
-.sentierArtistiqueAutour {
-  display: block;
-  margin-top: 10px;
-  margin-left: 17px;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  line-height: 17px;
-  font-weight: 500;
-}
-
-.kmParent,
-.kmGroup {
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-  margin-left: 17px;
-}
-
-.km,
-.km1,
-.histoire,
-.art,
-.div,
-.div1 {
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  line-height: 24px;
-  font-weight: 300;
-}
-
-.rectangleContainer,
-.groupDiv {
-  width: 45%;
-  margin: 10px 2.5%;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.rectangleDiv {
-  width: 100%;
-  height: 25px;
-  border-radius: 5px;
-  border: 0.5px solid #7d7d7d;
-  box-sizing: border-box;
-}
-
-.trierPar,
-.filtrer {
-  display: flex;
-  align-items: center;
-  letter-spacing: 0.5px;
-  line-height: 24px;
-  font-weight: 300;
-  padding-left: 4.44%;
-}
-
-.div2,
-.div3 {
+.buttonsWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: rotate(-90deg);
-  transform-origin: 0 0;
-  font-size: 21px;
-  letter-spacing: 0.5px;
-  line-height: 24px;
-  font-family: Roboto;
+  gap: 8px;
 }
 
-.groupContainer {
-  width: 100%;
-  text-align: center;
-  font-size: 17px;
-  margin-top: 20px;
-}
-
-.selectorselected3Wrapper {
-  width: 100%;
-  height: 45px;
-  margin-bottom: 20px;
-}
-
-.selectorselected3 {
+.button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  background-color: #fff;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-radius: 40px;
-  border: 0.5px solid #7d7d7d;
-  box-sizing: border-box;
+}
+
+.mapIcon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.groupParent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 16px;
+  padding: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+  width: 300px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.content {
+  padding: 16px;
+}
+
+.title {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #777;
+}
+
+.length {
+  margin-right: 8px;
+}
+
+.separator {
+  margin: 0 8px;
+}
+
+.duration {
+  margin-left: 8px;
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  padding: 5px;
-}
-
-.filtreBtn,
-.filtreBtn1 {
-  flex: 1;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 15px 25px;
-  border-radius: 25px;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
+  align-items: flex-end;
+  z-index: 1000;
 }
 
-.filtreBtn1 {
-  border-radius: 0 40px 40px 0;
-}
-
-.filtreBtn2 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1) inset, 0 3px 2px rgba(255, 255, 255, 0.25) inset, 0 0 5px rgba(0, 0, 0, 0.1);
-  border-radius: 25px;
-  background-color: #bfd2a6;
-  border: 0.5px solid #bfd2a6;
+.modal {
+  background: white;
   width: 100%;
-  height: 35px;
+  max-width: 400px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.listeWrapper {
-  width: 40px;
-  height: 13px;
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
 }
 
-.liste1 {
-  font-size: 13px;
-  font-weight: 500;
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #555;
 }
 
-@media (max-width: 768px) {
-  .rectangleParent,
-  .rectangleGroup,
-  .rectangleParent1 {
-    width: 90%;
-    margin: 20px auto;
-  }
-  
-  .rectangleContainer,
-  .groupDiv {
-    width: 100%;
-    margin: 10px 0;
-  }
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalContent h4 {
+  margin: 0;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+  margin-top: 16px;
+}
+
+.resetButton {
+  background: none;
+  border: 1px solid green;
+  border-radius: 24px;
+  padding: 8px 16px;
+  color: green;
+  cursor: pointer;
+}
+
+.validateButton {
+  background: green;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 16px;
+  color: white;
+  cursor: pointer;
 }
 </style>

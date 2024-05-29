@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CarteController;
 use App\Models\Sentier;
 use App\Http\Controllers\EndroitController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -86,3 +87,7 @@ Route::get('/sentiers', function () {
 Route::get('/carte/{id}', [CarteController::class, 'carte']);
 Route::get('/carte', [CarteController::class, 'carte']);
 require __DIR__ . '/auth.php';
+
+Route::get('/endroits/{id}', [EndroitController::class, 'show']);
+
+Route::get('/logout', [AuthenticatedSessionController::class, 'destroy']);

@@ -1,8 +1,4 @@
 <?php
-// SentierController.php
-
-// SentierController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Sentier;
@@ -79,7 +75,9 @@ class SentierController extends Controller
 
     public function show($id)
     {
-        $sentier = Sentier::with('theme')->findOrFail($id);
-        return response()->json($sentier);
+        $sentier = Sentier::with(['theme', 'endroits'])->findOrFail($id);
+        return Inertia::render('DetailsSentier', [
+            'sentier' => $sentier
+        ]);
     }
 }
