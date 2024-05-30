@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
+  <div class="min-h-screen flex flex-col justify-start items-center pt-20 sm:pt-32"> <!-- Adjusted pt-6 to pt-20 or pt-32 -->
     <div class="group-parent inter-text">
       <div class="group-container">
         <div class="group-child"></div>
@@ -181,6 +181,7 @@ const submit = () => {
   font-family: "Inter", sans-serif;
   padding: 20px;
   box-sizing: border-box;
+  max-width: 700px;
 }
 body {
   margin: 0;
