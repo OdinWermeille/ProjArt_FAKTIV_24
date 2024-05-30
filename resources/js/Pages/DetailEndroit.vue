@@ -1,4 +1,4 @@
-<template>
+c<template>
     <div class="container">
         <div class="content">
             <h1 class="titre">{{ endroit.nom }}</h1>
@@ -12,7 +12,7 @@
             </div>
             <hr class="separator" />
             <div class="description-wrapper">
-                <div class="description">DESCRIPTION</div>
+                <h2>Description</h2>
                 <div class="la-cathdrale-de">
                     {{ endroit.description }}
                 </div>
@@ -78,6 +78,14 @@ export default {
 
 
 <style scoped>
+
+h2{
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    height: 48px;
+  }
+
 .container {
     max-width: 600px;
     margin: 0 auto;
