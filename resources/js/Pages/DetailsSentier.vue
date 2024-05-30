@@ -15,20 +15,24 @@
         </div>
         <div class="info">
           <span>Durée</span>
-          <p>{{ sentier.duree }}</p>
+          <p>{{ sentier.duree }} min</p>
         </div>
       </section>
       <div class="button-container">
         <button class="map-button">VOIR SUR LA CARTE</button>
       </div>
+      <hr class="separator" />
       <section class="description">
+        <h2>Description</h2>
         <p>{{ sentier.description }}</p>
       </section>
       <section class="map-section">
         <!-- Placeholder for map image -->
         <!-- <img src="map-placeholder.png" alt="Map of the trail" /> -->
       </section>
+      <hr class="separator" />
       <section class="points-section">
+        <h2>Endroits du sentier</h2>
         <ul>
             <li v-for="endroit in sentier.endroits" :key="endroit.id" @click="onGroupContainerClick(endroit.id)">
                 {{ endroit.nom }}
@@ -56,6 +60,13 @@
   h1{
     font-family: "Inter", sans-serif;
     font-size: 18px;
+    font-weight: bold;
+    height: 48px;
+  }
+
+  h2{
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
     font-weight: bold;
     height: 48px;
   }
@@ -131,4 +142,10 @@
   .points-section i {
     margin-right: 10px;
   }
+
+  .separator {
+    border: none;
+    border-top: 2px solid #ddd;
+    margin: 20px 0;
+}
   </style>

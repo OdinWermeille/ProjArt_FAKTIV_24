@@ -1,4 +1,4 @@
-<template>
+c<template>
     <div class="container">
         <div class="content">
             <h1 class="titre">{{ endroit.nom }}</h1>
@@ -8,24 +8,23 @@
                 <b class="lausanne">{{ endroit.localite }}</b>
             </div>
             <div class="voir-sur-la-carte-wrapper">
-                <button class="voir-sur-la">Voir sur la carte</button>
+                <button class="voir-sur-la" @click="scrollToMap">Voir sur la carte</button>
             </div>
+            <hr class="separator" />
             <div class="description-wrapper">
-                <div class="description">DESCRIPTION</div>
+                <h2>Description</h2>
                 <div class="la-cathdrale-de">
                     {{ endroit.description }}
                 </div>
             </div>
-            <div class="input-group map-container">
+            <hr class="separator" />
+            <div class="input-group map-container" ref="mapContainer">
                 <div id="map" class="rectangle-parent2"></div>
             </div>
         </div>
     </div>
 </template>
 
-const map = ref(null);
-const latitude = 8.7272;
-const longitude = 5.3627;
 
 <script>
 import { onMounted, ref } from 'vue';
@@ -39,12 +38,19 @@ export default {
     },
     setup(props) {
         const map = ref(null);
+        const mapContainer = ref(null);
+
+        const scrollToMap = () => {
+            if (mapContainer.value) {
+                mapContainer.value.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
 
         onMounted(() => {
             const latitude = props.endroit.coordonneesY;
             const longitude = props.endroit.coordonneesX;
 
-            console.log(props.endroit);  
+            console.log(props.endroit);
 
             map.value = leaflet
                 .map("map")
@@ -61,19 +67,30 @@ export default {
         });
 
         return {
-            map
+            map,
+            mapContainer,
+            scrollToMap
         };
     }
 };
 </script>
 
 
+
 <style scoped>
+
+h2{
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    height: 48px;
+  }
+
 .container {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', sans-serif;
     color: #212121;
 }
 
@@ -112,7 +129,7 @@ export default {
 .voir-sur-la-carte-wrapper {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
 }
 
 .voir-sur-la {
@@ -124,6 +141,13 @@ export default {
     border-radius: 20px;
     border: none;
     cursor: pointer;
+    margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
+}
+
+.separator {
+    border: none;
+    border-top: 2px solid #ddd;
+    margin: 20px 0;
 }
 
 .description-wrapper {
