@@ -52,9 +52,10 @@
 
     watchEffect(() => {
         if (coords.value.latitude !== Number.POSITIVE_INFINITY && coords.value.longitude !== Number.POSITIVE_INFINITY) {
-            userMarker.value.latitude = coords.value.latitude + 0.014;
-            userMarker.value.longitude = coords.value.longitude + 0.014;
-
+/*             userMarker.value.latitude = coords.value.latitude + 0.014;
+            userMarker.value.longitude = coords.value.longitude + 0.014; */
+            userMarker.value.latitude = coords.value.latitude;
+            userMarker.value.longitude = coords.value.longitude;
             if (userGeoMarker) {
             map.removeLayer(userGeoMarker);
             }

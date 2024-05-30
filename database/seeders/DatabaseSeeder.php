@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ThemesTableSeeder::class); 
         $this->call(UsersTableSeeder::class); 
-/*         $this->call(EndroitsTableSeeder::class); 
+        $this->call(EndroitsTableSeeder::class); 
         $this->call(SentiersTableSeeder::class); 
-        $this->call(EndroitsSentiersTableSeeder::class);  */
+        $this->call(EndroitsSentiersTableSeeder::class); 
     }
 }
