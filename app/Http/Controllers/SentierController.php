@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Sentier;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Models\Theme;
 use App\Models\Endroit;
@@ -14,7 +14,6 @@ class SentierController extends Controller
     {
         $themes = Theme::all();
         $endroits = Endroit::all();
-        Log::info('Thématiques et endroits récupérés:', ['themes' => $themes->toArray(), 'endroits' => $endroits->toArray()]);
         return Inertia::render('CreateSentier', [
             'themes' => $themes,
             'endroits' => $endroits,
@@ -23,55 +22,68 @@ class SentierController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Données reçues pour créer un sentier', $request->all());
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'description' => 'required|string',
+            'longueur' => 'required|integer',
+            'duree' => 'required|integer',
+            'user_id' => 'required|exists:users,id',
+            'theme_id' => 'required|exists:themes,id',
+            'endroits' => 'required|array',
+            'endroits.*' => 'exists:endroits,id'
+        ]);
 
-        try {
-            $validated = $request->validate([
-                'nom' => 'required|string|max:255',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'description' => 'required|string',
-                'longueur' => 'required|integer',
-                'duree' => 'required|integer',
-                'user_id' => 'required|exists:users,id',
-                'theme_id' => 'required|exists:themes,id',
-                'endroits' => 'required|array', // Validate that endroits is an array
-                'endroits.*' => 'exists:endroits,id' // Validate each endroit ID exists
-            ]);
-
-            // Handle file upload
-            if ($request->hasFile('image')) {
-                $imageName = time() . '.' . $request->image->extension();
-                $request->image->move(public_path('images'), $imageName);
-                $validated['image_url'] = 'images/' . $imageName;
-            }
-
-            Log::info('Données validées pour créer un sentier', $validated);
-
-            $sentier = Sentier::create($validated);
-
-            // Attach selected endroits to the sentier
-            if (isset($validated['endroits'])) {
-                $sentier->endroits()->sync($validated['endroits']);
-            }
-
-            return response()->json($sentier, 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Erreur de validation: ' . $e->getMessage());
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (\Exception $e) {
-            Log::error('Erreur lors de la création du sentier: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-            return response()->json(['error' => 'Erreur lors de la création du sentier'], 500);
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $validated['image_url'] = 'images/' . $imageName;
         }
+
+        $sentier = Sentier::create($validated);
+        $sentier->endroits()->sync($validated['endroits']);
+
+        return response()->json($sentier, 201);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $sentiers = Sentier::with('theme')->get();
+        $query = Sentier::with('theme');
+    
+        if ($request->filterActivity && $request->filterActivity != 'tout') {
+            $query->whereHas('theme', function($q) use ($request) {
+                $q->where('nom', $request->filterActivity);
+            });
+        }
+    
+        if ($request->filterDistance) {
+            if ($request->filterDistance == '0-5') {
+                $query->where('longueur', '<=', 5);
+            } elseif ($request->filterDistance == '6-10') {
+                $query->where('longueur', '>', 5)->where('longueur', '<=', 10);
+            } elseif ($request->filterDistance == '11+') {
+                $query->where('longueur', '>', 10);
+            }
+        }
+    
+        if ($request->sortOption) {
+            if ($request->sortOption === 'newest') {
+                $query->orderBy('created_at', 'desc');
+            } elseif ($request->sortOption === 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            }
+        }
+    
+        $sentiers = $query->get();
+    
         return Inertia::render('PageListeSentiers', [
             'sentiers' => $sentiers,
+            'sortOption' => $request->sortOption,
+            'filterActivity' => $request->filterActivity,
+            'filterDistance' => $request->filterDistance
         ]);
     }
+    
 
     public function show($id)
     {

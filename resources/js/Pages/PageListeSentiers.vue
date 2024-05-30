@@ -16,7 +16,7 @@
     <!-- Liste des sentiers -->
     <div :class="$style.groupParent">
       <div
-        v-for="sentier in sentiers"
+        v-for="sentier in filteredSentiers"
         :key="sentier.id"
         :class="$style.card"
         @click="onGroupContainerClick(sentier.id)"
@@ -28,7 +28,7 @@
         />
         <div :class="$style.content">
           <b :class="$style.title">{{ sentier.nom }}</b>
-          <div :class="$style.description">{{ sentier.description }}</div>
+          <div :class="$style.description">{{ truncateDescription(sentier.description) }}</div>
           <div :class="$style.info">
             <div :class="$style.length">{{ sentier.longueur }} km</div>
             <div :class="$style.separator">•</div>
@@ -47,17 +47,17 @@
         </div>
         <div :class="$style.modalContent">
           <label>
-            <input type="radio" name="sort" value="newest" />
+            <input type="radio" name="sort" value="newest" v-model="sortOption" />
             Derniers ajouts
           </label>
           <label>
-            <input type="radio" name="sort" value="oldest" checked />
+            <input type="radio" name="sort" value="oldest" v-model="sortOption" />
             Les plus anciens
           </label>
         </div>
         <div :class="$style.modalFooter">
-          <button :class="$style.resetButton">RÉINITIALISER</button>
-          <button :class="$style.validateButton" @click="closeModal">VALIDER</button>
+          <button :class="$style.resetButton" @click="resetSort">RÉINITIALISER</button>
+          <button :class="$style.validateButton" @click="applySort">VALIDER</button>
         </div>
       </div>
     </div>
@@ -71,58 +71,97 @@
         </div>
         <div :class="$style.modalContent">
           <div>
-            <h4>Activité</h4>
-            <label>
-              <input type="radio" name="activity" value="history" />
-              Histoire
-            </label>
-            <label>
-              <input type="radio" name="activity" value="art" checked />
-              Art
-            </label>
-            <label>
-              <input type="radio" name="activity" value="nature" />
-              Nature
-            </label>
+            <h4><strong>Activité</strong></h4>
+            <div :class="$style.radioGroup">
+              <label>
+                <input type="radio" name="activity" value="tout" v-model="filterActivity" />
+                Tout
+              </label>
+              <label>
+                <input type="radio" name="activity" value="history" v-model="filterActivity" />
+                Historique
+              </label>
+              <label>
+                <input type="radio" name="activity" value="art" v-model="filterActivity" />
+                Arts & Culture
+              </label>
+              <label>
+                <input type="radio" name="activity" value="nature" v-model="filterActivity" />
+                Nature
+              </label>
+              <label>
+                <input type="radio" name="activity" value="architecture" v-model="filterActivity" />
+                Architecture
+              </label>
+              <label>
+                <input type="radio" name="activity" value="street-art" v-model="filterActivity" />
+                Street Art
+              </label>
+              <label>
+                <input type="radio" name="activity" value="sportif" v-model="filterActivity" />
+                Sportif
+              </label>
+              <label>
+                <input type="radio" name="activity" value="gastronomie" v-model="filterActivity" />
+                Gastronomie
+              </label>
+              <label>
+                <input type="radio" name="activity" value="ephemere" v-model="filterActivity" />
+                Éphémère
+              </label>
+            </div>
           </div>
           <div>
-            <h4>Distance</h4>
-            <label>
-              <input type="radio" name="distance" value="0-5" />
-              0-5 km
-            </label>
-            <label>
-              <input type="radio" name="distance" value="6-10" checked />
-              6-10 km
-            </label>
-            <label>
-              <input type="radio" name="distance" value="11+" />
-              11+ km
-            </label>
+            <h4><strong>Distance</strong></h4>
+            <div :class="$style.radioGroupHorizontal">
+              <label>
+                <input type="radio" name="distance" value="tout" v-model="filterDistance" />
+                Tout
+              </label>
+              <label>
+                <input type="radio" name="distance" value="0-5" v-model="filterDistance" />
+                0-5 km
+              </label>
+              <label>
+                <input type="radio" name="distance" value="6-10" v-model="filterDistance" />
+                6-10 km
+              </label>
+              <label>
+                <input type="radio" name="distance" value="11+" v-model="filterDistance" />
+                11+ km
+              </label>
+            </div>
           </div>
         </div>
         <div :class="$style.modalFooter">
-          <button :class="$style.resetButton">RÉINITIALISER</button>
-          <button :class="$style.validateButton" @click="closeModal">VALIDER</button>
+          <button :class="$style.resetButton" @click="resetFilters">RÉINITIALISER</button>
+          <button :class="$style.validateButton" @click="applyFilters">VALIDER</button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { Inertia } from '@inertiajs/inertia'
+import { defineComponent, watch } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
 
 export default defineComponent({
   name: "PageListeSentiers",
   props: {
-    sentiers: Array
+    sentiers: {
+      type: Array,
+      required: true
+    }
   },
   data() {
     return {
       showSortModal: false,
-      showFilterModal: false
+      showFilterModal: false,
+      sortOption: '',
+      filterActivity: 'tout', // Default to "tout"
+      filterDistance: 'tout', // Default to "tout"
+      allSentiers: this.sentiers, // Use a different name for the local copy
+      filteredSentiers: this.sentiers // Initializing with all sentiers
     }
   },
   methods: {
@@ -130,17 +169,63 @@ export default defineComponent({
       window.location.href = `/sentiers/${id}`;
     },
     redirectToMap() {
-      window.location.href = '/carte'
+      window.location.href = '/carte';
     },
     closeModal() {
       this.showSortModal = false;
       this.showFilterModal = false;
+    },
+    truncateDescription(description) {
+      const words = description.split(' ');
+      return words.length > 30 ? words.slice(0, 30).join(' ') + '...' : description;
+    },
+    resetSort() {
+      this.sortOption = '';
+      this.applySort();
+    },
+    applySort() {
+      if (this.sortOption === 'newest') {
+        this.filteredSentiers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      } else if (this.sortOption === 'oldest') {
+        this.filteredSentiers.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      }
+    },
+    resetFilters() {
+      this.filterActivity = 'tout';
+      this.filterDistance = 'tout';
+      this.filteredSentiers = this.allSentiers; // Reset to all sentiers
+      this.applySort(); // Apply sort after reset
+    },
+    applyFilters() {
+      this.filteredSentiers = this.allSentiers.filter(sentier => {
+        const matchActivity = this.filterActivity === 'tout' || sentier.theme.nom.trim().toLowerCase() === this.filterActivity.trim().toLowerCase();
+        const matchDistance = this.filterDistance === 'tout' || (
+          this.filterDistance === '0-5' && sentier.longueur <= 5 ||
+          this.filterDistance === '6-10' && sentier.longueur > 5 && sentier.longueur <= 10 ||
+          this.filterDistance === '11+' && sentier.longueur > 10
+        );
+        return matchActivity && matchDistance;
+      });
+      this.applySort(); // Apply sort after filtering
+      this.closeModal();
     }
+  },
+  watch: {
+    sentiers(newSentiers) {
+      this.allSentiers = newSentiers;
+      this.filteredSentiers = newSentiers; // Ensure the filtered list is updated
+      this.applySort(); // Apply sort when new sentiers are received
+    }
+  },
+  created() {
+    // Initialize with all sentiers on component creation
+    this.allSentiers = this.sentiers;
+    this.filteredSentiers = this.sentiers;
   }
 })
 </script>
-
 <style module>
+/* existing styles */
 .searchContainer {
   display: flex;
   flex-direction: column;
@@ -311,6 +396,24 @@ export default defineComponent({
   margin: 0;
   margin-bottom: 8px;
   font-size: 1rem;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radioGroupHorizontal {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.radioGroup label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .modalFooter {

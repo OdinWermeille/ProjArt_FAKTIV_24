@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/inertia-vue3": "^0.6.0",
         "@vue-leaflet/vue-leaflet": "^0.10.1",
         "@vueuse/core": "^10.9.0",
         "leaflet": "^1.9.4",
