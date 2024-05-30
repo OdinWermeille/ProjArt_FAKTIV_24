@@ -12,9 +12,10 @@ class ThemesTableSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void {
-        for ($i = 1; $i <= 5; $i++) {
-            Theme::create(['nom' => 'Theme ' . $i
-                        ]);
+        $themes = ['Histoire', 'Art', 'Nature', 'Architecture'];
+
+        foreach ($themes as $theme) {
+            Theme::create(['nom' => $theme]);
         }
     }
 }
