@@ -59,6 +59,11 @@ export default {
 </script>
  
 <style scoped>
+.header-container {
+  position: relative;
+  z-index: 20; /* Assurez-vous que le conteneur a un z-index élevé */
+}
+ 
 .header {
   display: flex;
   align-items: center;
@@ -68,6 +73,7 @@ export default {
   color: #333;
   position: relative;
   height: 70px;
+  width: 100%;
 }
  
 .logo img {
@@ -127,6 +133,7 @@ export default {
     right: 0;
     background-color: white;
     flex-direction: column;
+    z-index: 30; /* Assurez-vous que le menu a un z-index élevé */
   }
  
   .nav-list.nav-list-mobile {

@@ -26,11 +26,11 @@
             <input class="group-item" type="number" v-model="form.duree" id="duree" placeholder="Durée (en minutes)" required>
           </div>
           <div class="input-group">
-            <div class="group-item dropdown-multi" @click="toggleThemeDropdown">
-              <div class="dropdown-header">
+            <div class="group-item dropdown-multi">
+              <div class="dropdown-header" @click="toggleThemeDropdown">
                 {{ selectedThemeText }}
               </div>
-              <span class="arrow-down"></span>
+              <span class="arrow-down" @click="toggleThemeDropdown"></span>
               <div v-if="themeDropdownOpen" class="dropdown-list">
                 <label v-for="theme in themes" :key="theme.id" class="dropdown-list-item">
                   <input type="radio" :value="theme.id" v-model="form.theme_id" />
@@ -40,11 +40,11 @@
             </div>
           </div>
           <div class="input-group">
-            <div class="group-item dropdown-multi" @click="toggleDropdown">
-              <div class="dropdown-header">
+            <div class="group-item dropdown-multi">
+              <div class="dropdown-header" @click="toggleDropdown">
                 {{ selectedEndroitsText }}
               </div>
-              <span class="arrow-down"></span>
+              <span class="arrow-down" @click="toggleDropdown"></span>
               <div v-if="dropdownOpen" class="dropdown-list">
                 <input type="text" v-model="search" class="dropdown-search" placeholder="Rechercher..." @click.stop />
                 <label v-for="endroit in filteredEndroits" :key="endroit.id" class="dropdown-list-item">
@@ -150,12 +150,14 @@ export default {
       }
     };
 
-    const toggleDropdown = () => {
+    const toggleDropdown = (event) => {
       dropdownOpen.value = !dropdownOpen.value;
+      event.stopPropagation(); // Empêcher la propagation pour éviter les clics non désirés
     };
 
-    const toggleThemeDropdown = () => {
+    const toggleThemeDropdown = (event) => {
       themeDropdownOpen.value = !themeDropdownOpen.value;
+      event.stopPropagation(); // Empêcher la propagation pour éviter les clics non désirés
     };
 
     const selectedThemeText = computed(() => {
@@ -177,6 +179,18 @@ export default {
         return endroits.value;
       }
       return endroits.value.filter(endroit => endroit.nom.toLowerCase().includes(search.value.toLowerCase()));
+    });
+
+    // Ajouter un écouteur d'événement global pour fermer les listes déroulantes
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.dropdown-multi')) {
+        dropdownOpen.value = false;
+        themeDropdownOpen.value = false;
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener('click', handleClickOutside);
     });
 
     return {
