@@ -5,14 +5,13 @@
       <div class="rectangle-wrapper">
         <h2 class="ajouter-un-lieu">Ajouter un sentier</h2>
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
-          <!-- Form fields -->
           <div class="input-group">
             <input class="group-item" type="text" v-model="form.nom" id="nom" placeholder="Nom" required>
           </div>
           <div class="input-group image-upload">
             <div class="rectangle-parent">
               <div class="group-child"></div>
-              <label class="supporting-text" for="image">Image</label>
+              <label class="supporting-text" for="image">{{ imageLabel }}</label>
               <input class="image-input" type="file" @change="onFileChange" id="image" required>
             </div>
           </div>
@@ -33,7 +32,7 @@
               <span class="arrow-down" @click="toggleThemeDropdown"></span>
               <div v-if="themeDropdownOpen" class="dropdown-list">
                 <label v-for="theme in themes" :key="theme.id" class="dropdown-list-item">
-                  <input type="radio" :value="theme.id" v-model="form.theme_id" />
+                  <input type="radio" :value="theme.id" v-model="form.theme_id" @click.stop />
                   {{ theme.nom }}
                 </label>
               </div>
@@ -48,7 +47,7 @@
               <div v-if="dropdownOpen" class="dropdown-list">
                 <input type="text" v-model="search" class="dropdown-search" placeholder="Rechercher..." @click.stop />
                 <label v-for="endroit in filteredEndroits" :key="endroit.id" class="dropdown-list-item">
-                  <input type="checkbox" :value="endroit.id" v-model="form.endroits" />
+                  <input type="checkbox" :value="endroit.id" v-model="form.endroits" @click.stop />
                   {{ endroit.nom }}
                 </label>
               </div>
@@ -58,20 +57,27 @@
             <button type="submit" class="ajouter">Créer</button>
           </div>
         </form>
-        <div v-else>
-          <p class="ajouter-un-lieu">Veuillez vous connecter pour créer un lieu.</p>
-        </div>
       </div>
     </div>
+    <custom-popup
+      :title="popupTitle"
+      :message="popupMessage"
+      :visible="popupVisible"
+      @close="popupVisible = false"
+    />
   </div>
 </template>
 
 <script>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import CustomPopup from '../Components/CustomPopup.vue';
 
 export default {
-  name: 'CreatePlace',
+  name: 'CreateSentier',
+  components: {
+    CustomPopup
+  },
   setup() {
     const themes = ref([]);
     const endroits = ref([]);
@@ -84,12 +90,17 @@ export default {
       duree: '',
       theme_id: '',
       user_id: null,
-      endroits: [] // Added for multi-select
+      endroits: []
     });
 
     const dropdownOpen = ref(false);
     const themeDropdownOpen = ref(false);
     const search = ref("");
+    const imageLabel = ref('Image');
+
+    const popupTitle = ref('');
+    const popupMessage = ref('');
+    const popupVisible = ref(false);
 
     const fetchThemesAndEndroits = async () => {
       try {
@@ -108,9 +119,19 @@ export default {
         const response = await axios.get('/api/user'); // Assurez-vous que cette route existe
         isAuthenticated.value = response.data.authenticated;
         form.value.user_id = response.data.user.id;
+        if (!isAuthenticated.value) {
+          // Handle unauthenticated state, maybe redirect or show an error
+          popupTitle.value = 'Erreur!';
+          popupMessage.value = 'Vous devez être connecté pour ajouter un sentier.';
+          popupVisible.value = true;
+        }
       } catch (error) {
         console.error('Erreur lors de la vérification de l\'authentification:', error);
         isAuthenticated.value = false;
+        // Handle error, maybe redirect or show an error
+        popupTitle.value = 'Erreur!';
+        popupMessage.value = 'Il y a eu une erreur lors de la vérification de l\'authentification.';
+        popupVisible.value = true;
       }
     };
 
@@ -120,7 +141,23 @@ export default {
     });
 
     const onFileChange = (e) => {
-      form.value.image = e.target.files[0];
+      const file = e.target.files[0];
+      form.value.image = file;
+      imageLabel.value = file ? file.name : 'Image';
+    };
+
+    const resetForm = () => {
+      form.value = {
+        nom: '',
+        image: null,
+        description: '',
+        longueur: '',
+        duree: '',
+        theme_id: '',
+        user_id: form.value.user_id,
+        endroits: []
+      };
+      imageLabel.value = 'Image';
     };
 
     const submitForm = async () => {
@@ -145,19 +182,24 @@ export default {
           }
         });
         console.log('Sentier créé avec succès:', response.data);
+        popupTitle.value = 'Merci!';
+        popupMessage.value = 'Votre sentier a été créé avec succès!';
+        popupVisible.value = true;
+        resetForm();
       } catch (error) {
         console.error('Erreur lors de la création du sentier:', error);
+        popupTitle.value = 'Erreur!';
+        popupMessage.value = 'Il y a eu une erreur lors de la création de votre sentier.';
+        popupVisible.value = true;
       }
     };
 
-    const toggleDropdown = (event) => {
+    const toggleDropdown = () => {
       dropdownOpen.value = !dropdownOpen.value;
-      event.stopPropagation(); // Empêcher la propagation pour éviter les clics non désirés
     };
 
-    const toggleThemeDropdown = (event) => {
+    const toggleThemeDropdown = () => {
       themeDropdownOpen.value = !themeDropdownOpen.value;
-      event.stopPropagation(); // Empêcher la propagation pour éviter les clics non désirés
     };
 
     const selectedThemeText = computed(() => {
@@ -200,6 +242,7 @@ export default {
       isAuthenticated,
       dropdownOpen,
       themeDropdownOpen,
+      imageLabel,
       onFileChange,
       submitForm,
       toggleDropdown,
@@ -207,7 +250,11 @@ export default {
       selectedThemeText,
       selectedEndroitsText,
       search,
-      filteredEndroits
+      filteredEndroits,
+      popupTitle,
+      popupMessage,
+      popupVisible,
+      resetForm
     };
   }
 };
@@ -399,6 +446,7 @@ select.group-item:focus {
   color: #fafafa;
   margin: 30px auto 0 auto;
   width: fit-content;
+  cursor: pointer;
 }
 .group-container {
   position: relative;

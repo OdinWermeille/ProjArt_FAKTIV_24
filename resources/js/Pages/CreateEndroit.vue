@@ -17,7 +17,7 @@
           <div class="input-group image-upload">
             <div class="rectangle-parent">
               <div class="group-child"></div>
-              <label class="supporting-text" for="image">Image</label>
+              <label class="supporting-text" :for="image">{{ fileName || 'Image' }}</label>
               <input class="image-input" type="file" @change="onFileChange" id="image" required>
             </div>
           </div>
@@ -28,11 +28,14 @@
             <button type="submit" class="ajouter">Créer</button>
           </div>
         </form>
-        <div v-else>
-          <p class="ajouter-un-lieu">Veuillez vous connecter pour créer un endroit.</p>
-        </div>
       </div>
     </div>
+    <custom-popup
+      :title="popupTitle"
+      :message="popupMessage"
+      :visible="popupVisible"
+      @close="popupVisible = false"
+    />
   </div>
 </template>
 
@@ -41,9 +44,13 @@ import { ref, onMounted, nextTick } from 'vue';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import CustomPopup from '../Components/CustomPopup.vue';
 
 export default {
   name: 'CreatePlace',
+  components: {
+    CustomPopup
+  },
   setup() {
     const isAuthenticated = ref(false);
     const form = ref({
@@ -56,7 +63,13 @@ export default {
       user_id: null,
     });
 
+    const fileName = ref('');
     const userCoords = ref({ latitude: Number.POSITIVE_INFINITY, longitude: Number.POSITIVE_INFINITY });
+    let marker = ref(null);
+
+    const popupTitle = ref('');
+    const popupMessage = ref('');
+    const popupVisible = ref(false);
 
     const checkAuthentication = async () => {
       try {
@@ -80,8 +93,6 @@ export default {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
-      let marker;
-
       // Obtenir la géolocalisation de l'utilisateur
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -95,11 +106,11 @@ export default {
       map.on('click', function(e) {
         const { lat, lng } = e.latlng;
 
-        if (marker) {
-          map.removeLayer(marker);
+        if (marker.value) {
+          map.removeLayer(marker.value);
         }
 
-        marker = L.marker([lat, lng]).addTo(map)
+        marker.value = L.marker([lat, lng]).addTo(map)
           .bindPopup(`Lieu sélectionné: ${lat}, ${lng}`)
           .openPopup();
 
@@ -109,7 +120,27 @@ export default {
     });
 
     const onFileChange = (e) => {
-      form.value.image = e.target.files[0];
+      const file = e.target.files[0];
+      form.value.image = file;
+      fileName.value = file ? file.name : '';
+      console.log('Fichier sélectionné :', fileName.value); // Debug
+    };
+
+    const resetForm = () => {
+      form.value = {
+        nom: '',
+        description: '',
+        localite: '',
+        coordonneesX: null,
+        coordonneesY: null,
+        image: null,
+        user_id: form.value.user_id, // Préserver user_id
+      };
+      fileName.value = '';
+      if (marker.value) {
+        marker.value.remove();
+        marker.value = null;
+      }
     };
 
     const submitForm = async () => {
@@ -129,8 +160,15 @@ export default {
           }
         });
         console.log('Endroit créé avec succès:', response.data);
+        popupTitle.value = 'Merci!';
+        popupMessage.value = 'Votre endroit a été créé avec succès!';
+        popupVisible.value = true;
+        resetForm();
       } catch (error) {
         console.error('Erreur lors de la création de l\'endroit:', error);
+        popupTitle.value = 'Erreur!';
+        popupMessage.value = 'Il y a eu une erreur lors de la création de votre endroit.';
+        popupVisible.value = true;
       }
     };
 
@@ -139,7 +177,11 @@ export default {
       isAuthenticated,
       onFileChange,
       submitForm,
-      userCoords
+      userCoords,
+      popupTitle,
+      popupMessage,
+      popupVisible,
+      fileName
     };
   }
 };
@@ -164,6 +206,7 @@ export default {
   height: 100%;
   border: none; /* Enlever le contour */
 }
+
 .rectangle-wrapper {
   position: relative;
   width: 100%;
@@ -171,6 +214,7 @@ export default {
   padding: 30px 15px; /* Ajouter plus de padding en haut et en bas */
   box-sizing: border-box;
 }
+
 .ajouter-un-lieu {
   font-size: 18px;
   font-weight: bold; /* Mettre le titre en gras */
@@ -184,9 +228,11 @@ export default {
   justify-content: center;
   margin-bottom: 20px;
 }
+
 .input-group {
   margin-bottom: 20px; /* Augmenter la marge entre les champs */
 }
+
 .group-item {
   border-radius: 10px;
   border: 1px solid #7d7d7d;
@@ -199,16 +245,31 @@ export default {
   background-color: transparent; /* Enlever le fond blanc */
   margin: 0 16px; /* Ajouter de la marge sur les côtés */
 }
+
+.file-name-input {
+  margin-top: 5px;
+  margin-left: 16px;
+  font-size: 14px;
+  color: #7d7d7d;
+  font-family: "Inter", sans-serif;
+  width: calc(100% - 32px);
+  border: none;
+  background-color: transparent;
+  cursor: default;
+}
+
 .description-field {
   height: 100px;
   padding: 12px; /* Ajouter un padding pour un espacement uniforme */
   margin: 0 16px; /* Ajouter de la marge sur les côtés */
 }
+
 .rectangle-parent {
   position: relative;
   height: 40px;
   margin: 0 16px; /* Ajouter de la marge sur les côtés */
 }
+
 .group-child {
   position: absolute;
   top: 0;
@@ -219,9 +280,11 @@ export default {
   height: 100%;
   border: none; /* Enlever le contour */
 }
+
 .image-upload .group-child {
   border: 1px solid #7d7d7d; /* Ajouter un contour au champ d'insert d'image */
 }
+
 .supporting-text {
   position: absolute;
   top: 8px;
@@ -235,6 +298,7 @@ export default {
   background: url('/images/IconeImage.png') no-repeat left center;
   padding-left: 30px; /* Ajuster pour fournir plus d'espace pour l'icône */
 }
+
 .image-input {
   opacity: 0;
   position: absolute;
@@ -244,16 +308,19 @@ export default {
   height: 100%;
   cursor: pointer;
 }
+
 .rectangle-parent2 {
   height: 250px; /* Rendre la carte un peu plus petite */
   width: calc(100% - 32px); /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
   margin: 0 16px; /* Ajouter de la marge sur les côtés */
 }
+
 .ajouter {
   position: relative;
   text-transform: uppercase;
   font-weight: 500;
 }
+
 .ajouter-wrapper {
   border-radius: 20px;
   background-color: #4a8c2a;
@@ -268,7 +335,9 @@ export default {
   color: #fafafa;
   margin: 30px auto 0 auto;
   width: fit-content;
+  cursor: pointer;
 }
+
 .group-container {
   position: relative;
   top: 0px;
@@ -276,6 +345,7 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .group-parent {
   width: 100%;
   position: relative;
@@ -287,6 +357,7 @@ export default {
   padding: 20px;
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   line-height: normal;
