@@ -7,7 +7,7 @@
         <div class="footer-content">
             <div class="logo-container">
                 <img class="logo-scvd" src="/images/Group.svg" alt="SCVD Logo" />
-                <img class="logo-vd" src="/images/Group2.svg" alt="Canton de Vaud Logo" />
+                <img class="logo-vd" src="/images/Rectangle 11.png" alt="Canton de Vaud Logo" />
             </div>
             <div class="text-container">
                 <p><strong>2024 SCVD, Sentiers culturels vaudois</strong></p>
