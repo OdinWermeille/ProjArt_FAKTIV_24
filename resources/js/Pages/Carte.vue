@@ -20,7 +20,7 @@
             <div class="buttonsWrapper">    
                 <button class="button" @click="showSortModal = true">Trier par</button>
                 <button class="button" @click="showFilterModal = true">Filtrer</button>
-                <img class="mapIcon" alt="Map Icon" src="/images/map.svg" @click="redirectToMap" />
+                <img class="listIcon" alt="List Icon" src="/images/list.png" @click="redirectToList" />
             </div>
         </div>
     </div>
