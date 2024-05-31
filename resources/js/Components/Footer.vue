@@ -4,82 +4,57 @@
 
 <template>
     <footer class="footer">
-        <div class="container mx-auto rectangle-parent">
-            <div class="group-child"></div>
-            <img class="group-icon" alt="" src="Group.svg" />
-
-            <div class="scvd-sentiers-culturels-container">
-                <span class="scvd-sentiers-culturels-container1">
-                    <p class="scvd-sentiers-culturels-vaudo">
-                        <b>2024 SCVD, Sentiers culturels vaudois</b>
-                    </p>
-                    <p class="scvd-sentiers-culturels-vaudo">
-                        <b>Etat de Vaud</b>
-                    </p>
-                    <p class="scvd-sentiers-culturels-vaudo">
-                        <b>&nbsp;</b>
-                    </p>
-                    <p class="scvd-sentiers-culturels-vaudo">
-                        Les designs sont des marques par l’état de Vaud en Suisse ainsi que dans certaines autres
-                        juridictions.
-                    </p>
-                </span>
+        <div class="footer-content">
+            <div class="logo-container">
+                <img class="logo-scvd" src="/images/Group.svg" alt="SCVD Logo" />
+                <img class="logo-vd" src="/images/Group2.svg" alt="Canton de Vaud Logo" />
             </div>
-            <img class="group-item" alt="" src="Rectangle 11.png" />
+            <div class="text-container">
+                <p><strong>2024 SCVD, Sentiers culturels vaudois</strong></p>
+                <p><strong>Etat de Vaud</strong></p>
+                <p>Les designs sont des marques par l’état de Vaud en Suisse ainsi que dans certaines autres juridictions.</p>
+            </div>
         </div>
     </footer>
 </template>
-
 <style scoped>
 .footer {
     background: #bfd2a6;
     color: #333;
-    padding: 20px 0;
+    padding: 20px;
     text-align: center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
     width: 100%;
-    z-index: 999; /* Inférieur au pop-up */
+    box-sizing: border-box;
 }
 
-.dark .footer {
-    background: #333;
-    color: #f8f8f8;
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
+.logo-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
 }
 
-.rectangle-parent {
-    position: relative;
-}
-
-.group-icon {
-    width: 50px;
+.logo {
     height: auto;
+    max-width: 100%;
 }
 
-.scvd-sentiers-culturels-container {
+.text-container {
     text-align: left;
-}
-
-.scvd-sentiers-culturels-container1 {
+    max-width: 500px;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     line-height: 1.5;
 }
 
-.scvd-sentiers-culturels-vaudo {
+.text-container p {
     margin: 5px 0;
-}
-
-.group-item {
-    width: 100%;
-    height: auto;
-    margin-top: 10px;
 }
 </style>
