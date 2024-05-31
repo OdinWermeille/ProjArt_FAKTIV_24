@@ -49,14 +49,14 @@ class SentierController extends Controller
     public function index(Request $request)
     {
         $query = Sentier::with('theme');
-    
+
         if ($request->filterActivity && $request->filterActivity != 'tout') {
             $query->whereHas('theme', function($q) use ($request) {
                 $q->where('nom', $request->filterActivity);
             });
         }
-    
-        if ($request->filterDistance) {
+
+        if ($request->filterDistance && $request->filterDistance != 'tout') {
             if ($request->filterDistance == '0-5') {
                 $query->where('longueur', '<=', 5);
             } elseif ($request->filterDistance == '6-10') {
@@ -65,7 +65,7 @@ class SentierController extends Controller
                 $query->where('longueur', '>', 10);
             }
         }
-    
+
         if ($request->sortOption) {
             if ($request->sortOption === 'newest') {
                 $query->orderBy('created_at', 'desc');
@@ -73,9 +73,9 @@ class SentierController extends Controller
                 $query->orderBy('created_at', 'asc');
             }
         }
-    
+
         $sentiers = $query->get();
-    
+
         return Inertia::render('PageListeSentiers', [
             'sentiers' => $sentiers,
             'sortOption' => $request->sortOption,
@@ -83,7 +83,6 @@ class SentierController extends Controller
             'filterDistance' => $request->filterDistance
         ]);
     }
-    
 
     public function show($id)
     {

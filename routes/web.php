@@ -7,7 +7,6 @@ use Inertia\Inertia;
 use App\Http\Controllers\SentierController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CarteController;
-use App\Models\Sentier;
 use App\Http\Controllers\EndroitController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
@@ -73,22 +72,11 @@ Route::get('/api/user', function () {
     ]);
 });
 
-Route::get('/test', function () {
+/* Route::get('/test', function () {
     return Inertia::render('Test', [
         'sentiers' => Sentier::all()
     ]);
-});
-
-
-Route::get('/sentiers', function () {
-    return Inertia::render('PageListeSentiers', [
-        'sentiers' => Sentier::with('theme')->get()
-    ]);
-});
-
-Route::get('/carte/{id}', [CarteController::class, 'carte']);
-Route::get('/carte', [CarteController::class, 'carte']);
-require __DIR__ . '/auth.php';
+}); */
 
 Route::get('/endroits/{id}', [EndroitController::class, 'show']);
 
