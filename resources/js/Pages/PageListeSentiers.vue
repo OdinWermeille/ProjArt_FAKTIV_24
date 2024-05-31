@@ -13,8 +13,11 @@
       </div>
     </div>
 
-    <!-- Liste des sentiers -->
-    <div :class="$style.groupParent">
+    <!-- Liste des sentiers ou message d'absence de sentiers -->
+    <div v-if="filteredSentiers.length === 0" :class="$style.noResults">
+      <p>Aucun sentier ne correspond aux filtres appliqués. Veuillez essayer avec d'autres filtres.</p>
+    </div>
+    <div v-else :class="$style.groupParent">
       <div
         v-for="sentier in filteredSentiers"
         :key="sentier.id"
@@ -78,35 +81,35 @@
                 Tout
               </label>
               <label>
-                <input type="radio" name="activity" value="history" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Historique" v-model="filterActivity" />
                 Historique
               </label>
               <label>
-                <input type="radio" name="activity" value="art" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Arts & Culture" v-model="filterActivity" />
                 Arts & Culture
               </label>
               <label>
-                <input type="radio" name="activity" value="nature" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Nature" v-model="filterActivity" />
                 Nature
               </label>
               <label>
-                <input type="radio" name="activity" value="architecture" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Architecture" v-model="filterActivity" />
                 Architecture
               </label>
               <label>
-                <input type="radio" name="activity" value="street-art" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Street Art" v-model="filterActivity" />
                 Street Art
               </label>
               <label>
-                <input type="radio" name="activity" value="sportif" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Sportif" v-model="filterActivity" />
                 Sportif
               </label>
               <label>
-                <input type="radio" name="activity" value="gastronomie" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Gastronomie" v-model="filterActivity" />
                 Gastronomie
               </label>
               <label>
-                <input type="radio" name="activity" value="ephemere" v-model="filterActivity" />
+                <input type="radio" name="activity" value="Éphémère" v-model="filterActivity" />
                 Éphémère
               </label>
             </div>
@@ -141,9 +144,9 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent, watch } from 'vue';
-import { Inertia } from '@inertiajs/inertia';
 
 export default defineComponent({
   name: "PageListeSentiers",
@@ -224,6 +227,7 @@ export default defineComponent({
   }
 })
 </script>
+
 <style module>
 /* existing styles */
 .searchContainer {
@@ -282,6 +286,13 @@ export default defineComponent({
   width: 24px;
   height: 24px;
   cursor: pointer;
+}
+
+.noResults {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.25rem;
+  color: #555;
 }
 
 .groupParent {
