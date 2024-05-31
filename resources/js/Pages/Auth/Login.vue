@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-start items-center pt-20 sm:pt-32"> <!-- Adjusted pt-6 to pt-20 or pt-32 -->
+  <div class="min-h-screen flex flex-col justify-start items-center pt-20 sm:pt-32">
     <div class="group-parent inter-text">
       <div class="group-container">
         <div class="group-child"></div>
@@ -53,27 +53,33 @@
 
 <script setup>
 import InputError from '@/Components/InputError.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
+import { Inertia } from '@inertiajs/inertia';
 
 defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
+  canResetPassword: {
+    type: Boolean,
+  },
+  status: {
+    type: String,
+  },
 });
 
 const form = useForm({
-    username: '',
-    password: '',
-    remember: false,
+  username: '',
+  password: '',
+  remember: false,
 });
 
 const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
+  form.post(route('login'), {
+    onFinish: () => {
+      form.reset('password');
+      if (Object.keys(form.errors).length === 0) {
+        Inertia.visit('/sentiers');
+      }
+    },
+  });
 };
 </script>
 
