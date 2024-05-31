@@ -43,6 +43,8 @@ Route::get('/carte', [CarteController::class, 'carte']);
 Route::get('/carteFetch/sentiers', [CarteController::class, 'index']);
 Route::get('/carteFetch/sentier/{id}', [CarteController::class, 'index']);
 Route::get('/sentiers', [SentierController::class, 'index']);
+
+Route::get('/sentiers', [SentierController::class, 'index'])->name('sentiers');
 Route::post('/api/sentiers', [SentierController::class, 'store']);
 Route::get('/sentiers/create', [SentierController::class, 'create']);
 Route::post('/sentiers', [SentierController::class, 'store']);
