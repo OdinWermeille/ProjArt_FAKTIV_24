@@ -33,18 +33,19 @@
 <style scoped>
 .footer {
     background: #bfd2a6;
-    /* Adapté au thème clair */
     color: #333;
-    /* Texte de couleur sombre */
     padding: 20px 0;
     text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999; /* Inférieur au pop-up */
 }
 
 .dark .footer {
     background: #333;
-    /* Adapté au thème sombre */
     color: #f8f8f8;
-    /* Texte de couleur claire */
 }
 
 .container {
@@ -56,7 +57,6 @@
 .rectangle-parent {
     position: relative;
 }
-
 
 .group-icon {
     width: 50px;

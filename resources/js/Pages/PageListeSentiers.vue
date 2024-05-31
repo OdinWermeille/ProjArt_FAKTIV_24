@@ -15,7 +15,12 @@
 
     <!-- Liste des sentiers ou message d'absence de sentiers -->
     <div v-if="filteredSentiers.length === 0" :class="$style.noResults">
-      <p>Aucun sentier ne correspond aux filtres appliqués. Veuillez essayer avec d'autres filtres.</p>
+      <CustomPopup
+        :title="popupTitle"
+        :message="popupMessage"
+        :visible="showPopup"
+        @close="handlePopupClose"
+      />
     </div>
     <div v-else :class="$style.groupParent">
       <div
@@ -146,10 +151,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
+import CustomPopup from '../Components/CustomPopup.vue';  // Assurez-vous que le chemin est correct
 
 export default defineComponent({
   name: "PageListeSentiers",
+  components: {
+    CustomPopup
+  },
   props: {
     sentiers: {
       type: Array,
@@ -164,7 +173,10 @@ export default defineComponent({
       filterActivity: 'tout', // Default to "tout"
       filterDistance: 'tout', // Default to "tout"
       allSentiers: this.sentiers, // Use a different name for the local copy
-      filteredSentiers: this.sentiers // Initializing with all sentiers
+      filteredSentiers: this.sentiers, // Initializing with all sentiers
+      showPopup: false,
+      popupTitle: '',
+      popupMessage: ''
     }
   },
   methods: {
@@ -198,6 +210,7 @@ export default defineComponent({
       this.filterDistance = 'tout';
       this.filteredSentiers = this.allSentiers; // Reset to all sentiers
       this.applySort(); // Apply sort after reset
+      this.showPopup = false; // Close popup if it was open
     },
     applyFilters() {
       this.filteredSentiers = this.allSentiers.filter(sentier => {
@@ -209,8 +222,17 @@ export default defineComponent({
         );
         return matchActivity && matchDistance;
       });
+      if (this.filteredSentiers.length === 0) {
+        this.popupTitle = 'Aucun sentier trouvé';
+        this.popupMessage = 'Aucun sentier ne correspond aux filtres appliqués. Veuillez essayer avec d\'autres filtres.';
+        this.showPopup = true;
+      }
       this.applySort(); // Apply sort after filtering
       this.closeModal();
+    },
+    handlePopupClose() {
+      this.showPopup = false;
+      this.resetFilters();
     }
   },
   watch: {
