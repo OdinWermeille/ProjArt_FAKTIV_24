@@ -3,21 +3,52 @@
 </script>
 
 <template>
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="logo-container">
-                <img class="logo-scvd" src="/images/Group.svg" alt="SCVD Logo" />
-                <img class="logo-vd" src="/images/Rectangle 11.png" alt="Canton de Vaud Logo" />
-            </div>
-            <div class="text-container">
-                <p><strong>2024 SCVD, Sentiers culturels vaudois</strong></p>
-                <p><strong>Etat de Vaud</strong></p>
-                <p>Les designs sont des marques par l’état de Vaud en Suisse ainsi que dans certaines autres juridictions.</p>
+    <div class="container">
+        <div class="main-content">
+            <!-- Ajoutez ici le contenu principal de votre page, par exemple les cartes des sentiers -->
+            <div class="content">
+                <!-- Ici vos cartes des sentiers -->
             </div>
         </div>
-    </footer>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="logo-container">
+                    <img class="logo-scvd" src="/images/Group.svg" alt="SCVD Logo" />
+                    <img class="logo-vd" src="/images/Rectangle 11.png" alt="Canton de Vaud Logo" />
+                </div>
+                <div class="text-container">
+                    <p><strong>2024 SCVD, Sentiers culturels vaudois</strong></p>
+                    <p><strong>Etat de Vaud</strong></p>
+                    <p>Les designs sont des marques par l’état de Vaud en Suisse ainsi que dans certaines autres juridictions.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
 </template>
+
 <style scoped>
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex-grow: 1;
+    /* Ajoutez du style supplémentaire ici si nécessaire */
+}
+
 .footer {
     background: #bfd2a6;
     color: #333;

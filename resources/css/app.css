@@ -1,22 +1,41 @@
+/* Importation des polices depuis Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
+/* Tailwind CSS - Base, Components, Utilities */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Réinitialisation des marges et paddings pour tous les éléments */
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
 }
 
+/* Définition de la hauteur et largeur pour l'élément #page */
 #page {
     height: 100vh;
     width: 100vw;
 }
 
+/* Correction de la propriété line-height pour le corps du document */
 body {
     margin: 0;
     line-height: normal;
+}
+
+/* Correction de la répétition des styles pour html et body */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* Configuration de l'élément #app pour utiliser Flexbox */
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
