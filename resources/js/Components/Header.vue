@@ -16,18 +16,18 @@
         </li>
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <a href="/sentiers/create"><img src="/path/to/add-trail-icon.svg" alt="Add Trail Icon" class="nav-icon" /> Ajouter un sentier</a>
+          <a href="/sentiers/create"><img src="/images/add.svg" alt="Add Trail Icon" class="nav-icon" /> Ajouter un sentier</a>
         </li>
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <a href="/endroits/create"><img src="/path/to/add-place-icon.svg" alt="Add Place Icon" class="nav-icon" /> Ajouter un lieu</a>
+          <a href="/endroits/create"><img src="/images/add.svg" alt="Add Place Icon" class="nav-icon" /> Ajouter un lieu</a>
         </li>
         <div class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <a href="/logout"><img src="/path/to/logout-icon.svg" alt="Logout Icon" class="nav-icon" /> Logout</a>
+          <a href="/logout"><img src="/images/logout.svg" alt="Logout Icon" class="nav-icon" /> Logout</a>
         </li>
         <li v-else class="nav-item">
-          <a href="/login"><img src="/path/to/login-icon.svg" alt="Login Icon" class="nav-icon" /> Login</a>
+          <a href="/login"><img src="/images/login.svg" alt="Login Icon" class="nav-icon" /> Login</a>
         </li>
       </ul>
       <button class="burger-menu" @click="toggleMobileMenu">
