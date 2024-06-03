@@ -20,7 +20,7 @@
             <div class="buttonsWrapper">    
                 <button class="button" @click="showSortModal = true">Trier par</button>
                 <button class="button" @click="showFilterModal = true">Filtrer</button>
-                <img class="listIcon" alt="List Icon" src="/images/list.png" @click="redirectToList" />
+                <img class="listIcon" alt="List Icon" src="/images/list.svg" @click="redirectToList" />
             </div>
         </div>
     </div>
@@ -28,27 +28,24 @@
 </template>
 
 <script setup>
-    import { Head } from '@inertiajs/vue3';
-    import { onMounted, ref, watchEffect } from 'vue'
-    import leaflet from 'leaflet'
-    import { useGeolocation } from '@vueuse/core'
-    import { userMarker, nearbyMarkers } from '@/stores/mapStore'
-    import 'leaflet/dist/leaflet.css';
-    import 'leaflet-routing-machine';
-    import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import { Head } from '@inertiajs/vue3';
+import { onMounted, ref, watchEffect } from 'vue'
+import leaflet from 'leaflet'
+import { useGeolocation } from '@vueuse/core'
+import { userMarker, nearbyMarkers } from '@/stores/mapStore'
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 
+const { coords } = useGeolocation();
+let map;
+let userGeoMarker;
 
-    const here = window.location.href;
-    const urlArr = here.split(`/`);
-    const { coords } = useGeolocation();
+const redirectToList = () => {
+    window.location.href = '/sentiers';
+};
 
-    let map;
-    let userGeoMarker;
-
-
-
-
-    onMounted(() => {
+onMounted(() => {
     map = leaflet
         .map("map")
         .setView([userMarker.value.latitude, userMarker.value.longitude], 13);
@@ -64,16 +61,6 @@
         .addTo(map)
         .bindPopup(`Nouveau lieu de l'utilisateur à ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
     });
-
-    // map.addEventListener("click", (e) => {
-    //     const latitude = e.latlng.lat;
-    //     const longitude = e.latlng.lng;
-    //     const NewGeoMarker = leaflet.marker([latitude, longitude])
-    //     .addTo(map)
-    //     .bindPopup(`Nouveau lieu de l'utilisateur à ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
-    //     nearbyMarkers.value.push({ latitude, longitude });
-    //     console.log(routingControl);
-    // });
 
     watchEffect(() => {
         if (coords.value.latitude !== Number.POSITIVE_INFINITY && coords.value.longitude !== Number.POSITIVE_INFINITY) {
@@ -98,6 +85,9 @@
 
     let routingControl;
 
+    const here = window.location.href;
+    const urlArr = here.split(`/`);
+
     if (urlArr[urlArr.length-1] !== "carte") {
         fetch(`/carteFetch/sentier/${urlArr[urlArr.length-1]}`)
         .then((res) => res.json())
@@ -108,12 +98,8 @@
                 show: false,
                 addWaypoints: false,
                 draggableWaypoints: true,
-                // router: new leaflet.Routing.OSRMv1({
-                //     serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
-                // })    
             }).addTo(map);
             data.endroits.forEach((endroit) => {
-                console.log(endroit);
                 routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
             })
             routingControl.setWaypoints(routingControl.options.waypoints);
@@ -121,7 +107,7 @@
         .catch((err) => {
             console.log(err);
         });
-    }else{
+    } else {
         fetch("/carteFetch/sentiers")
         .then((res) => res.json())
         .then((data) => {
@@ -132,9 +118,6 @@
                     show: false,
                     addWaypoints: false,
                     draggableWaypoints: true,
-                    // router: new leaflet.Routing.OSRMv1({
-                    //     serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
-                    // })    
                 }).addTo(map);
                 sentier.endroits.forEach((endroit) => {
                     routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
@@ -143,11 +126,6 @@
             })
         });
     }
-
-    
-        
-    
-    
 
     routingControl = leaflet.Routing.control({
         waypoints: [
@@ -161,9 +139,8 @@
         router: new leaflet.Routing.OSRMv1({
             serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
         })
-        }).addTo(map);
-        
-    });
+    }).addTo(map);
+});
 </script>
 
 <style scoped>

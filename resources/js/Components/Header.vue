@@ -8,7 +8,7 @@
     <nav class="nav">
       <ul class="nav-list" :class="{ 'nav-list-mobile': isMobileMenuOpen }">
         <li class="nav-item">
-          <img src="/images/list.png" alt="List Icon" class="nav-icon" />
+          <img src="/images/list.svg" alt="List Icon" class="nav-icon" />
           <a href="/sentiers">Liste</a>
         </li>
         <div class="nav-divider"></div>
