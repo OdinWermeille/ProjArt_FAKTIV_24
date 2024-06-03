@@ -155,6 +155,7 @@ onMounted(() => {
                     addWaypoints: false,
                     draggableWaypoints: true,
                     lineOptions: lineOptions,
+                    fitSelectedRoutes: false,
                     createMarker: function(i, waypoint) {
                         const marker = leaflet.marker(waypoint.latLng, {
                             icon: customIcon,
@@ -217,6 +218,7 @@ onMounted(() => {
                         addWaypoints: false,
                         draggableWaypoints: true,
                         lineOptions: lineOptions,
+                        fitSelectedRoutes: false,
                         createMarker: function(i, waypoint) {
                             const marker = leaflet.marker(waypoint.latLng, {
                                 icon: customIcon,
