@@ -11,7 +11,7 @@ use App\Http\Controllers\EndroitController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
-  
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -20,6 +20,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
