@@ -1,20 +1,20 @@
 <script setup>
-// Vous pouvez ajouter ici des scripts si nécessaire
+// Ajoutez ici des scripts si nécessaire
 </script>
 
 <template>
-    <div class="container">
+    <div class="app-container">
+        <!-- Contenu principal -->
         <div class="main-content">
-            <!-- Ajoutez ici le contenu principal de votre page, par exemple les cartes des sentiers -->
-            <div class="content">
-                <!-- Ici vos cartes des sentiers -->
-            </div>
+            <!-- Votre contenu ici -->
         </div>
+        
+        <!-- Pied de page -->
         <footer class="footer">
             <div class="footer-content">
                 <div class="logo-container">
-                    <img class="logo-scvd" src="/images/Group.svg" alt="SCVD Logo" />
-                    <img class="logo-vd" src="/images/Rectangle 11.png" alt="Canton de Vaud Logo" />
+                    <img class="logo" src="/images/Group.svg" alt="SCVD Logo" />
+                    <img class="logo" src="/images/Rectangle 11.png" alt="Canton de Vaud Logo" />
                 </div>
                 <div class="text-container">
                     <p><strong>2024 SCVD, Sentiers culturels vaudois</strong></p>
@@ -27,19 +27,14 @@
 </template>
 
 <style scoped>
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-.container {
+.app-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 10vh; /* Assurez-vous que le conteneur prend toute la hauteur de la fenêtre */
 }
 
 .main-content {
-    flex: 1;
+    flex: 1; /* Permet au contenu principal de prendre autant d'espace qu'il le peut, poussant le footer vers le bas */
     display: flex;
     flex-direction: column;
 }
@@ -56,6 +51,9 @@ html, body {
     text-align: center;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
+    bottom: 0;
+    left: 0;
 }
 
 .footer-content {
