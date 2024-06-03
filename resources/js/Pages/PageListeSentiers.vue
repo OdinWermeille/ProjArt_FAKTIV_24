@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-container">
     <!-- Barre de recherche et boutons -->
     <div :class="$style.searchContainer">
       <div :class="$style.searchWrapper">
@@ -20,33 +20,31 @@
     </div>
 
     <!-- Liste des sentiers ou message d'absence de sentiers -->
-    <div v-if="filteredSentiers.length === 0" :class="$style.noResults">
-      <CustomPopup
-        :title="popupTitle"
-        :message="popupMessage"
-        :visible="showPopup"
-        @close="handlePopupClose"
-      />
-    </div>
-    <div v-else :class="$style.groupParent">
-      <div
-        v-for="sentier in filteredSentiers"
-        :key="sentier.id"
-        :class="$style.card"
-        @click="onGroupContainerClick(sentier.id)"
-      >
-        <img
-          :class="$style.image"
-          :alt="sentier.nom"
-          :src="`/${sentier.image_url}`"
-        />
-        <div :class="$style.content">
-          <b :class="$style.title">{{ sentier.nom }}</b>
-          <div :class="$style.description">{{ truncateDescription(sentier.description) }}</div>
-          <div :class="$style.info">
-            <div :class="$style.length">{{ sentier.longueur }} km</div>
-            <div :class="$style.separator">•</div>
-            <div :class="$style.theme">{{ sentier.theme.nom }}</div>
+    <div class="content">
+      <div v-if="filteredSentiers.length === 0" :class="$style.noResults">
+        <!-- Message personnalisé ici -->
+        <p>Aucun sentier ne correspond aux filtres appliqués.</p>
+      </div>
+      <div v-else :class="$style.groupParent">
+        <div
+          v-for="sentier in filteredSentiers"
+          :key="sentier.id"
+          :class="$style.card"
+          @click="onGroupContainerClick(sentier.id)"
+        >
+          <img
+            :class="$style.image"
+            :alt="sentier.nom"
+            :src="`/${sentier.image_url}`"
+          />
+          <div :class="$style.content">
+            <b :class="$style.title">{{ sentier.nom }}</b>
+            <div :class="$style.description">{{ truncateDescription(sentier.description) }}</div>
+            <div :class="$style.info">
+              <div :class="$style.length">{{ sentier.longueur }} km</div>
+              <div :class="$style.separator">•</div>
+              <div :class="$style.theme">{{ sentier.theme.nom }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -158,13 +156,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CustomPopup from '../Components/CustomPopup.vue';  // Assurez-vous que le chemin est correct
 
 export default defineComponent({
   name: "PageListeSentiers",
-  components: {
-    CustomPopup
-  },
   props: {
     sentiers: {
       type: Array,
@@ -180,10 +174,7 @@ export default defineComponent({
       filterDistance: 'tout', // Default to "tout"
       searchQuery: '', // Search query
       allSentiers: this.sentiers, // Use a different name for the local copy
-      filteredSentiers: this.sentiers, // Initializing with all sentiers
-      showPopup: false,
-      popupTitle: '',
-      popupMessage: ''
+      filteredSentiers: this.sentiers // Initializing with all sentiers
     }
   },
   methods: {
@@ -216,7 +207,6 @@ export default defineComponent({
       this.filterActivity = 'tout';
       this.filterDistance = 'tout';
       this.applyFiltersAndSearch();
-      this.showPopup = false; // Close popup if it was open
     },
     applyFilters() {
       this.applyFiltersAndSearch();
@@ -235,10 +225,6 @@ export default defineComponent({
       });
 
       this.applySort(); // Apply sort after filtering and searching
-    },
-    handlePopupClose() {
-      this.showPopup = false;
-      this.resetFilters();
     }
   },
   watch: {
@@ -256,6 +242,16 @@ export default defineComponent({
 </script>
 
 <style module>
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+
 .searchContainer {
   display: flex;
   flex-direction: column;
@@ -478,5 +474,48 @@ export default defineComponent({
   padding: 8px 16px;
   color: white;
   cursor: pointer;
+}
+
+/* Footer Styles */
+.footer {
+  background: #bfd2a6;
+  color: #333;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.logo {
+  height: auto;
+  max-width: 100%;
+}
+
+.text-container {
+  text-align: left;
+  max-width: 500px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.text-container p {
+  margin: 5px 0;
 }
 </style>
