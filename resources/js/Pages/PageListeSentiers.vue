@@ -3,7 +3,13 @@
     <!-- Barre de recherche et boutons -->
     <div :class="$style.searchContainer">
       <div :class="$style.searchWrapper">
-        <input type="text" :class="$style.searchInput" placeholder="Rechercher" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          :class="$style.searchInput"
+          placeholder="Rechercher"
+          @input="applyFiltersAndSearch"
+        />
         <img :class="$style.searchIcon" alt="Search Icon" src="/images/icon.svg" />
       </div>
       <div :class="$style.buttonsWrapper">
@@ -172,6 +178,7 @@ export default defineComponent({
       sortOption: '',
       filterActivity: 'tout', // Default to "tout"
       filterDistance: 'tout', // Default to "tout"
+      searchQuery: '', // Search query
       allSentiers: this.sentiers, // Use a different name for the local copy
       filteredSentiers: this.sentiers, // Initializing with all sentiers
       showPopup: false,
@@ -196,7 +203,7 @@ export default defineComponent({
     },
     resetSort() {
       this.sortOption = '';
-      this.applySort();
+      this.applyFiltersAndSearch();
     },
     applySort() {
       if (this.sortOption === 'newest') {
@@ -208,11 +215,14 @@ export default defineComponent({
     resetFilters() {
       this.filterActivity = 'tout';
       this.filterDistance = 'tout';
-      this.filteredSentiers = this.allSentiers; // Reset to all sentiers
-      this.applySort(); // Apply sort after reset
+      this.applyFiltersAndSearch();
       this.showPopup = false; // Close popup if it was open
     },
     applyFilters() {
+      this.applyFiltersAndSearch();
+      this.closeModal();
+    },
+    applyFiltersAndSearch() {
       this.filteredSentiers = this.allSentiers.filter(sentier => {
         const matchActivity = this.filterActivity === 'tout' || sentier.theme.nom.trim().toLowerCase() === this.filterActivity.trim().toLowerCase();
         const matchDistance = this.filterDistance === 'tout' || (
@@ -220,15 +230,11 @@ export default defineComponent({
           this.filterDistance === '6-10' && sentier.longueur > 5 && sentier.longueur <= 10 ||
           this.filterDistance === '11+' && sentier.longueur > 10
         );
-        return matchActivity && matchDistance;
+        const matchSearchQuery = sentier.nom.toLowerCase().includes(this.searchQuery.trim().toLowerCase());
+        return matchActivity && matchDistance && matchSearchQuery;
       });
-      if (this.filteredSentiers.length === 0) {
-        this.popupTitle = 'Aucun sentier trouvé';
-        this.popupMessage = 'Aucun sentier ne correspond aux filtres appliqués. Veuillez essayer avec d\'autres filtres.';
-        this.showPopup = true;
-      }
-      this.applySort(); // Apply sort after filtering
-      this.closeModal();
+
+      this.applySort(); // Apply sort after filtering and searching
     },
     handlePopupClose() {
       this.showPopup = false;
@@ -238,20 +244,18 @@ export default defineComponent({
   watch: {
     sentiers(newSentiers) {
       this.allSentiers = newSentiers;
-      this.filteredSentiers = newSentiers; // Ensure the filtered list is updated
-      this.applySort(); // Apply sort when new sentiers are received
+      this.applyFiltersAndSearch(); // Ensure the filtered list is updated
     }
   },
   created() {
     // Initialize with all sentiers on component creation
     this.allSentiers = this.sentiers;
-    this.filteredSentiers = this.sentiers;
+    this.applyFiltersAndSearch();
   }
 })
 </script>
 
 <style module>
-/* existing styles */
 .searchContainer {
   display: flex;
   flex-direction: column;
