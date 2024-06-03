@@ -6,15 +6,15 @@
       </section>
       <section class="info-section">
         <div class="info">
-          <span>Longueur</span>
+          <img src="/images/chemin.svg" alt="List Icon" class="nav-icon" />
           <p>{{ sentier.longueur }} km</p>
         </div>
         <div class="info">
-          <span>Thématique</span>
+          <img src="/images/theme.svg" alt="List Icon" class="nav-icon" />
           <p>{{ sentier.theme.nom }}</p>
         </div>
         <div class="info">
-          <span>Durée</span>
+          <img src="/images/horloge.svg" alt="List Icon" class="nav-icon" />
           <p>{{ sentier.duree }} min</p>
         </div>
       </section>
@@ -85,20 +85,21 @@
     border-radius: 10px;
   }
  
-  .info-section {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-  }
- 
-  .info {
-    text-align: left;
-  }
- 
-  .info span {
-    display: flex;
-    font-weight: bold;
-  }
+.info-section {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.info img {
+  margin-right: 10px;
+}
  
   .button-container {
     display: flex;
