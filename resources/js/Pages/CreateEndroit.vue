@@ -356,6 +356,8 @@ export default {
   font-family: "Inter", sans-serif;
   padding: 20px;
   box-sizing: border-box;
+  max-width: 700px; /* Limiter la largeur maximale */
+  margin: 0 auto; /* Centrer le formulaire */
 }
 
 body {

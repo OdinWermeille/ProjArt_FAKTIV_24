@@ -24,6 +24,7 @@
         "@vueuse/core": "^10.10.0",
         "leaflet": "^1.9.4",
         "leaflet-routing-machine": "^3.2.12",
+        "leaflet.awesome-markers": "^2.0.5",
         "react-leaflet": "^4.2.1",
         "vue-leaflet": "^0.1.0",
         "vue3-leaflet": "^1.0.48",
