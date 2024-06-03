@@ -47,6 +47,38 @@ const redirectToList = () => {
     window.location.href = '/sentiers';
 };
 
+const returnColor = (theme_id) => {
+        switch (theme_id) {
+            case 1:
+                return 'orange';
+                break;
+            case 2:
+                return 'darkred';
+                break;
+            case 3:
+                return 'darkgreen';
+                break;
+            case 4:
+                return 'cadetblue';
+                break;
+            case 5:
+                return 'purple';
+                break;
+            case 6:
+                return 'red';
+                break;
+            case 7:
+                return 'green';
+                break;
+            case 8:
+                return 'darkpurple';
+                break;
+            default:
+                return 'blue';
+                break;
+        }
+    }
+
 onMounted(() => {
     map = leaflet
         .map("map")
