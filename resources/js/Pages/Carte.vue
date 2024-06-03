@@ -36,6 +36,8 @@ import { userMarker, nearbyMarkers } from '@/stores/mapStore'
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import 'leaflet.awesome-markers';
+import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 
 const { coords } = useGeolocation();
 let map;
@@ -138,7 +140,7 @@ onMounted(() => {
                     ]
                 };
                 lineOptions.styles[0].color = returnColor(sentier.theme_id);
-                
+
                 const customIcon = leaflet.AwesomeMarkers.icon({
                     icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
                     markerColor: 'blue', // Couleur du marqueur
@@ -200,7 +202,7 @@ onMounted(() => {
                         ]
                     };
                     lineOptions.styles[0].color = returnColor(sentier.theme_id);
-
+                    console.log(leaflet);
                     const customIcon = leaflet.AwesomeMarkers.icon({
                         icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
                         markerColor: 'blue', // Couleur du marqueur
