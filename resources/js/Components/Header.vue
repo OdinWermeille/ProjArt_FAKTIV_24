@@ -7,33 +7,27 @@
     </div>
     <nav class="nav">
       <ul class="nav-list" :class="{ 'nav-list-mobile': isMobileMenuOpen }">
-        <li class="nav-item">
-          <img src="/images/list.png" alt="List Icon" class="nav-icon" />
-          <a href="/sentiers">Liste</a>
+        <li class="nav-item"> 
+          <a href="/sentiers"><img src="/images/list.png" alt="List Icon" class="nav-icon" /> Liste</a>
         </li>
         <div class="nav-divider"></div>
         <li class="nav-item">
-          <img src="/images/map.svg" alt="Map Icon" class="nav-icon" />
-          <a href="/carte">Carte</a>
+          <a href="/carte"><img src="/images/map.svg" alt="Map Icon" class="nav-icon" /> Carte</a>
         </li>
-        <div class="nav-divider"></div>
-        <li class="nav-item">
-          <img src="/path/to/add-trail-icon.svg" alt="Add Trail Icon" class="nav-icon" />
-          <a href="/sentiers/create">Ajouter un sentier</a>
+        <div v-if="isAuthenticated" class="nav-divider"></div>
+        <li v-if="isAuthenticated" class="nav-item">
+          <a href="/sentiers/create"><img src="/path/to/add-trail-icon.svg" alt="Add Trail Icon" class="nav-icon" /> Ajouter un sentier</a>
         </li>
-        <div class="nav-divider"></div>
-        <li class="nav-item">
-          <img src="/path/to/add-place-icon.svg" alt="Add Place Icon" class="nav-icon" />
-          <a href="/endroits/create">Ajouter un lieu</a>
+        <div v-if="isAuthenticated" class="nav-divider"></div>
+        <li v-if="isAuthenticated" class="nav-item">
+          <a href="/endroits/create"><img src="/path/to/add-place-icon.svg" alt="Add Place Icon" class="nav-icon" /> Ajouter un lieu</a>
         </li>
         <div class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <img src="/path/to/logout-icon.svg" alt="Logout Icon" class="nav-icon" />
-          <a href="/logout">Logout</a>
+          <a href="/logout"><img src="/path/to/logout-icon.svg" alt="Logout Icon" class="nav-icon" /> Logout</a>
         </li>
         <li v-else class="nav-item">
-          <img src="/path/to/login-icon.svg" alt="Login Icon" class="nav-icon" />
-          <a href="/login">Login</a>
+          <a href="/login"><img src="/path/to/login-icon.svg" alt="Login Icon" class="nav-icon" /> Login</a>
         </li>
       </ul>
       <button class="burger-menu" @click="toggleMobileMenu">
@@ -43,7 +37,6 @@
     <div class="header-line"></div>
   </header>
 </template>
-
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -134,6 +127,8 @@ export default {
 }
 
 .nav-item a {
+  display: flex;
+  align-items: center;
   color: #333; /* Couleur noire plus douce */
   text-decoration: none;
   font-weight: 500; /* Ajoute du poids au texte pour une meilleure lisibilité */
