@@ -78,6 +78,7 @@ const submit = () => {
       if (Object.keys(form.errors).length === 0) {
         Inertia.visit('/sentiers');
       }
+      location.replace("/sentiers");
     },
   });
 };
