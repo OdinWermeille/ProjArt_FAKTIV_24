@@ -18,22 +18,21 @@
         <p>{{ sentier.duree }} min</p>
       </div>
     </section>
+    <div class="voir-sur-la-carte-wrapper">
+      <button class="voir-sur-la" @click="scrollToMap">Voir sur la carte</button>
+    </div>
     <hr class="separator" />
     <section class="description">
       <h2>Description</h2>
       <p>{{ sentier.description }}</p>
     </section>
+    
     <hr class="separator" />
     <section class="points-section">
       <h2>Le parcours</h2>
-      <section class="map-section">
+      <section class="map-section" ref="mapContainer">
         <div id="map" class="map-container"></div>
       </section>
-      <ul>
-        <li v-for="endroit in sentier.endroits" :key="endroit.id" @click="onGroupContainerClick(endroit.id)">
-          {{ endroit.nom }}
-        </li>
-      </ul>
     </section>
   </div>
 </template>
@@ -51,6 +50,7 @@ export default {
   },
   setup(props) {
     let map = ref(null);
+    const mapContainer = ref(null);
 
     const initializeMap = () => {
       if (map.value) return;
@@ -77,9 +77,17 @@ export default {
           serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
         }),
         createMarker: function(i, waypoint) {
+          const endroit = props.sentier.endroits[i];
           const marker = L.marker(waypoint.latLng, {
             draggable: false
           });
+
+          // Ajouter un pop-up avec le nom de l'endroit et un lien vert pointant vers la page de détail
+          marker.bindPopup(`
+            <b>${endroit.nom}</b><br>
+            <a href="/endroits/${endroit.id}" style="color: #4a8c2a">Plus d'infos</a>
+          `);
+
           return marker;
         }
       }).addTo(map.value);
@@ -89,11 +97,20 @@ export default {
       });
     };
 
+    const scrollToMap = () => {
+      if (mapContainer.value) {
+        mapContainer.value.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
     onMounted(() => {
       initializeMap();
     });
 
-    return {};
+    return {
+      mapContainer,
+      scrollToMap
+    };
   },
   methods: {
     onGroupContainerClick(id) {
@@ -161,24 +178,28 @@ h2 {
   border-radius: 10px;
 }
 
-.points-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.points-section li {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.points-section i {
-  margin-right: 10px;
-}
-
 .separator {
   border: none;
   border-top: 2px solid #ddd;
   margin: 20px 0;
 }
+
+.voir-sur-la-carte-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
+}
+
+.voir-sur-la {
+  background-color: #4a8c2a;
+  color: #fafafa;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
+}
+
 </style>
