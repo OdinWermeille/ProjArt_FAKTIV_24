@@ -11,9 +11,6 @@
           <div class="input-group">
             <textarea class="group-item description-field" v-model="form.description" id="description" placeholder="Description" required></textarea>
           </div>
-          <div class="input-group">
-            <input class="group-item" type="text" v-model="form.localite" id="localite" placeholder="Localité" required>
-          </div>
           <div class="input-group image-upload">
             <div class="rectangle-parent">
               <div class="group-child"></div>
@@ -56,7 +53,6 @@ export default {
     const form = ref({
       nom: '',
       description: '',
-      localite: '',
       coordonneesX: null,
       coordonneesY: null,
       image: null,
@@ -103,7 +99,7 @@ export default {
         });
       }
 
-      map.on('click', function(e) {
+      map.on('click', async function(e) {
         const { lat, lng } = e.latlng;
 
         if (marker.value) {
@@ -116,6 +112,14 @@ export default {
 
         form.value.coordonneesX = lat;
         form.value.coordonneesY = lng;
+
+        try {
+          const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+          form.value.localite = response.data.address.city || response.data.address.town || response.data.address.village || response.data.address.hamlet || 'Localité inconnue';
+        } catch (error) {
+          console.error('Erreur lors de l\'obtention de la localité:', error);
+          form.value.localite = 'Localité inconnue';
+        }
       });
     });
 
@@ -130,7 +134,6 @@ export default {
       form.value = {
         nom: '',
         description: '',
-        localite: '',
         coordonneesX: null,
         coordonneesY: null,
         image: null,
@@ -147,11 +150,11 @@ export default {
       const formData = new FormData();
       formData.append('nom', form.value.nom);
       formData.append('description', form.value.description);
-      formData.append('localite', form.value.localite);
       formData.append('coordonneesX', form.value.coordonneesX);
       formData.append('coordonneesY', form.value.coordonneesY);
       formData.append('image', form.value.image);
       formData.append('user_id', form.value.user_id);
+      formData.append('localite', form.value.localite); // Ajouter localité ici
 
       try {
         const response = await axios.post('/api/endroits', formData, {
