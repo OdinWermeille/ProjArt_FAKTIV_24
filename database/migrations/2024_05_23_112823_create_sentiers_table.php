@@ -15,21 +15,21 @@ return new class extends Migration
             $table->increments('id');
             $table->string('nom');
             $table->string('image_url');
-            $table->string('description');
+            $table->text('description');
             $table->integer('longueur');
             $table->integer('duree');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
-                    ->references('id')
-                    ->on('users')
-                    ->onDelete('restrict')
-                    ->onUpdate('restrict');
+                ->references('id')
+                ->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
             $table->integer('theme_id')->unsigned();
             $table->foreign('theme_id')
-                    ->references('id')
-                    ->on('themes')
-                    ->onDelete('restrict')
-                    ->onUpdate('restrict');
+                ->references('id')
+                ->on('themes')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
             $table->timestamps();
         });
     }

@@ -87,7 +87,7 @@
             <h3>Aperçu du sentier</h3>
           </div>
 
-          <div class="input-group map-container">
+          <div class="input-group map-container" v-if="form.endroits.length > 0">
             <div id="map" class="rectangle-parent2"></div>
           </div>
 
@@ -107,13 +107,14 @@
 </template>
 
 <script>
-import { ref, onMounted, nextTick, computed } from 'vue';
+import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import draggable from 'vuedraggable';
 import { Inertia } from '@inertiajs/inertia';
 import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import CustomPopup from '../Components/CustomPopup.vue';
 
 export default {
@@ -171,12 +172,8 @@ export default {
       }
     };
 
-    onMounted(async () => {
-      await checkAuthentication();
-      if (isAuthenticated.value) {
-        await fetchThemesAndEndroits();
-      }
-      await nextTick();
+    const initializeMap = async () => {
+      if (map.value) return;
 
       map.value = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
 
@@ -195,7 +192,6 @@ export default {
           const marker = L.marker(waypoint.latLng, {
             draggable: true
           });
-
           return marker;
         },
         lineOptions: {
@@ -203,17 +199,27 @@ export default {
         },
         fitSelectedRoutes: true,
         routeWhileDragging: true,
-        showAlternatives: false
+        showAlternatives: false,
+        router: new L.Routing.OSRMv1({
+          serviceUrl: 'http://routing.openstreetmap.de/routed-foot/route/v1'
+        })
       }).addTo(map.value);
+    };
 
-      // Obtenir la géolocalisation de l'utilisateur
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const { latitude, longitude } = position.coords;
-          map.value.setView([latitude, longitude], 13);
-        });
+    onMounted(async () => {
+      await checkAuthentication();
+      if (isAuthenticated.value) {
+        await fetchThemesAndEndroits();
       }
     });
+
+    watch(() => form.value.endroits, async (newEndroits) => {
+      if (newEndroits.length > 0 && !map.value) {
+        await nextTick();
+        await initializeMap();
+      }
+      updateMap();
+    }, { deep: true });
 
     const onFileChange = (e) => {
       const file = e.target.files[0];
@@ -233,7 +239,9 @@ export default {
         endroits: []
       };
       imageLabel.value = 'Image';
-      routingControl.value.setWaypoints([]);
+      if (routingControl.value) {
+        routingControl.value.setWaypoints([]);
+      }
     };
 
     const submitForm = async () => {
@@ -270,6 +278,7 @@ export default {
     };
 
     const updateMap = () => {
+      if (!map.value) return;
       const selectedEndroits = form.value.endroits.map(endroitId => {
         return endroits.value.find(endroit => endroit.id === endroitId);
       });
@@ -391,7 +400,8 @@ export default {
 };
 </script>
 
-<style scoped>@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
 
 .inter-text {
   font-family: "Inter", sans-serif;
@@ -757,5 +767,4 @@ a {
   width: fit-content;
   cursor: pointer;
 }
-
 </style>
