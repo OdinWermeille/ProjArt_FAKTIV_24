@@ -34,7 +34,7 @@
                 {{ selectedThemeText }}
               </div>
               <span class="arrow-down" @click="toggleThemeDropdown"></span>
-              <div v-if="themeDropdownOpen" class="dropdown-list theme-dropdown-list">
+              <div v-if="themeDropdownOpen" class="dropdown-list">
                 <label v-for="theme in themes" :key="theme.id" class="dropdown-list-item">
                   <input type="radio" :value="theme.id" v-model="form.theme_id" @click.stop />
                   {{ theme.nom }}
@@ -51,7 +51,7 @@
               <div v-if="dropdownOpen" class="dropdown-list">
                 <input type="text" v-model="search" class="dropdown-search" placeholder="Rechercher..." @click.stop />
                 <label v-for="endroit in filteredEndroits" :key="endroit.id" class="dropdown-list-item">
-                  <input type="checkbox" :value="endroit.id" v-model="form.endroits" @change="updateMap" @click.stop />
+                  <input type="checkbox" :value="endroit.id" v-model="form.endroits" @click.stop />
                   {{ endroit.nom }}
                 </label>
                 <a href="/endroits/create" class="create-new-endroit">Créer un lieu ici</a>
@@ -83,14 +83,6 @@
             </template>
           </draggable>
 
-          <div v-if="form.endroits.length > 0" class="order-title">
-            <h3>Aperçu du sentier</h3>
-          </div>
-
-          <div class="input-group map-container">
-            <div id="map" class="rectangle-parent2"></div>
-          </div>
-
           <div class="ajouter-wrapper">
             <button type="submit" class="ajouter">Créer</button>
           </div>
@@ -105,22 +97,18 @@
     @close="popupVisible = false"
   />
 </template>
-
 <script>
-import { ref, onMounted, nextTick, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import CustomPopup from '../Components/CustomPopup.vue';
 import draggable from 'vuedraggable';
 import { Inertia } from '@inertiajs/inertia';
-import 'leaflet-routing-machine';
-import CustomPopup from '../Components/CustomPopup.vue';
 
 export default {
   name: 'CreateSentier',
   components: {
-    draggable,
-    CustomPopup
+    CustomPopup,
+    draggable
   },
   setup() {
     const themes = ref([]);
@@ -141,8 +129,6 @@ export default {
     const themeDropdownOpen = ref(false);
     const search = ref("");
     const imageLabel = ref('Image');
-    let routingControl = ref(null);
-    let map = ref(null);
 
     const fetchThemesAndEndroits = async () => {
       try {
@@ -176,43 +162,6 @@ export default {
       if (isAuthenticated.value) {
         await fetchThemesAndEndroits();
       }
-      await nextTick();
-
-      map.value = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map.value);
-
-      routingControl.value = L.Routing.control({
-        waypoints: [],
-        routeWhileDragging: true,
-        show: false,
-        addWaypoints: false,
-        draggableWaypoints: false,
-        createMarker: function(i, waypoint) {
-          const marker = L.marker(waypoint.latLng, {
-            draggable: true
-          });
-
-          return marker;
-        },
-        lineOptions: {
-          styles: [{ color: 'blue', opacity: 1, weight: 5 }]
-        },
-        fitSelectedRoutes: true,
-        routeWhileDragging: true,
-        showAlternatives: false
-      }).addTo(map.value);
-
-      // Obtenir la géolocalisation de l'utilisateur
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const { latitude, longitude } = position.coords;
-          map.value.setView([latitude, longitude], 13);
-        });
-      }
     });
 
     const onFileChange = (e) => {
@@ -233,7 +182,6 @@ export default {
         endroits: []
       };
       imageLabel.value = 'Image';
-      routingControl.value.setWaypoints([]);
     };
 
     const submitForm = async () => {
@@ -267,16 +215,6 @@ export default {
         popupMessage.value = 'Il y a eu une erreur lors de la création de votre sentier.';
         popupVisible.value = true;
       }
-    };
-
-    const updateMap = () => {
-      const selectedEndroits = form.value.endroits.map(endroitId => {
-        return endroits.value.find(endroit => endroit.id === endroitId);
-      });
-
-      routingControl.value.setWaypoints(
-        selectedEndroits.map(endroit => L.latLng(endroit.coordonneesY, endroit.coordonneesX))
-      );
     };
 
     const toggleDropdown = () => {
@@ -324,7 +262,6 @@ export default {
 
     const onDragUpdate = (event) => {
       console.log('Drag update:', event);
-      updateMap(); // Mettre à jour la carte lorsque l'ordre des endroits est modifié
     };
 
     const onDragChange = (event) => {
@@ -335,7 +272,6 @@ export default {
         form.value.endroits.splice(newIndex, 0, movedItem);
         console.log(`Moved item from index ${oldIndex} to ${newIndex}`);
         console.log('New order:', form.value.endroits);
-        updateMap(); // Mettre à jour la carte lorsque l'ordre des endroits est modifié
       }
     };
 
@@ -382,7 +318,6 @@ export default {
       handleClickOutside,
       resetForm,
       getEndroitName,
-      updateMap,
       popupTitle,
       popupMessage,
       popupVisible
@@ -390,8 +325,8 @@ export default {
   }
 };
 </script>
-
-<style scoped>@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
 
 .inter-text {
   font-family: "Inter", sans-serif;
@@ -757,5 +692,4 @@ a {
   width: fit-content;
   cursor: pointer;
 }
-
 </style>
