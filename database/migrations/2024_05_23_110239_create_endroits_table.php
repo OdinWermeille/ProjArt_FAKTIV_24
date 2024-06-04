@@ -15,16 +15,16 @@ return new class extends Migration
             $table->increments('id');
             $table->string('nom');
             $table->string('image_url');
-            $table->string('description');
+            $table->text('description');
             $table->string('localite');
             $table->string('coordonneesX');
             $table->string('coordonneesY');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
-                    ->references('id')
-                    ->on('users')
-                    ->onDelete('restrict')
-                    ->onUpdate('restrict');
+                ->references('id')
+                ->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
             $table->timestamps();
         });
     }
