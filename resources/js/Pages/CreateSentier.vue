@@ -275,7 +275,7 @@ export default {
       });
 
       routingControl.value.setWaypoints(
-        selectedEndroits.map(endroit => L.latLng(endroit.coordonneesY, endroit.coordonneesX))
+        selectedEndroits.map(endroit => L.latLng(endroit.coordonneesX, endroit.coordonneesY))
       );
     };
 

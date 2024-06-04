@@ -85,21 +85,21 @@
     border-radius: 10px;
   }
  
-.info-section {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
-}
+  .info-section {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+  }
 
-.info {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
+  .info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
 
-.info img {
-  margin-right: 10px;
-}
+  .info img {
+    margin-right: 10px;
+  }
  
   .button-container {
     display: flex;
@@ -148,5 +148,5 @@
     border: none;
     border-top: 2px solid #ddd;
     margin: 20px 0;
-}
+  }
   </style>

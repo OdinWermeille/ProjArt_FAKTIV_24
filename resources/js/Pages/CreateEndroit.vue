@@ -114,8 +114,8 @@ export default {
           .bindPopup(`Lieu sélectionné: ${lat}, ${lng}`)
           .openPopup();
 
-        form.value.coordonneesX = lng;
-        form.value.coordonneesY = lat;
+        form.value.coordonneesX = lat;
+        form.value.coordonneesY = lng;
       });
     });
 

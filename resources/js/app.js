@@ -19,9 +19,11 @@ createInertiaApp({
   resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
   setup({ el, App, props, plugin }) {
     const vueApp = createApp({
-      render: () => h('div', [
+      render: () => h('div', { id: 'app' }, [
         h(Header),
-        h(App, props),
+        h('div', { class: 'main-content' }, [
+          h(App, props)
+        ]),
         h(Footer)
       ])
     });
