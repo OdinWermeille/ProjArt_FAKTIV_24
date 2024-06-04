@@ -36,6 +36,7 @@
   </div>
 </template>
 
+
 <script>
 import { ref, onMounted, nextTick, computed } from 'vue';
 import axios from 'axios';
@@ -106,9 +107,7 @@ export default {
           map.removeLayer(marker.value);
         }
 
-        marker.value = L.marker([lat, lng]).addTo(map)
-          .bindPopup(`Lieu sélectionné: ${lat}, ${lng}`)
-          .openPopup();
+        marker.value = L.marker([lat, lng]).addTo(map);
 
         form.value.coordonneesX = lat;
         form.value.coordonneesY = lng;
@@ -198,6 +197,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .inter-text {

@@ -26,8 +26,8 @@ class SentierController extends Controller
             'nom' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'required|string',
-            'longueur' => 'required|integer',
-            'duree' => 'required|integer',
+            'longueur' => 'required|numeric', // Changer integer en numeric
+            'duree' => 'required|numeric', // Changer integer en numeric
             'user_id' => 'required|exists:users,id',
             'theme_id' => 'required|exists:themes,id',
             'endroits' => 'required|array',
@@ -51,7 +51,7 @@ class SentierController extends Controller
         $query = Sentier::with('theme');
 
         if ($request->filterActivity && $request->filterActivity != 'tout') {
-            $query->whereHas('theme', function($q) use ($request) {
+            $query->whereHas('theme', function ($q) use ($request) {
                 $q->where('nom', $request->filterActivity);
             });
         }

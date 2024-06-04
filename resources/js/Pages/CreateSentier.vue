@@ -23,12 +23,6 @@
             <textarea class="group-item description-field" v-model="form.description" id="description" placeholder="Description" required></textarea>
           </div>
           <div class="input-group">
-            <input class="group-item" type="number" v-model="form.longueur" id="longueur" placeholder="Longueur (en km)" required>
-          </div>
-          <div class="input-group">
-            <input class="group-item" type="number" v-model="form.duree" id="duree" placeholder="Durée (en minutes)" required>
-          </div>
-          <div class="input-group">
             <div class="group-item dropdown-multi">
               <div class="dropdown-header" @click="toggleThemeDropdown">
                 {{ selectedThemeText }}
@@ -105,6 +99,7 @@
     @close="popupVisible = false"
   />
 </template>
+
 
 <script>
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
@@ -204,6 +199,12 @@ export default {
           serviceUrl: 'http://routing.openstreetmap.de/routed-foot/route/v1'
         })
       }).addTo(map.value);
+
+      routingControl.value.on('routesfound', function(e) {
+        const route = e.routes[0];
+        form.value.longueur = (route.summary.totalDistance / 1000).toFixed(2); // Convertir en km
+        form.value.duree = Math.round(route.summary.totalTime / 60); // Convertir en minutes
+      });
     };
 
     onMounted(async () => {
@@ -266,6 +267,11 @@ export default {
         formData.append(`endroits[${index}]`, endroit);
       });
 
+      // Log formData for debugging
+      for (let pair of formData.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]); 
+      }
+
       try {
         const response = await axios.post('/api/sentiers', formData, {
           headers: {
@@ -279,6 +285,7 @@ export default {
         resetForm();
       } catch (error) {
         console.error('Erreur lors de la création du sentier:', error);
+        console.error('Erreur détails:', error.response.data); // Ajoutez ceci pour voir les détails de l'erreur
         popupTitle.value = 'Erreur!';
         popupMessage.value = 'Il y a eu une erreur lors de la création de votre sentier.';
         popupVisible.value = true;
@@ -409,6 +416,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
 
@@ -468,6 +476,10 @@ export default {
   font-family: "Inter", sans-serif;
   background-color: transparent; /* Enlever le fond blanc */
   margin: 0 16px; /* Ajouter de la marge sur les côtés */
+}
+
+.group-item[readonly] {
+  background-color: #e9e9e9; /* Light grey background for readonly inputs */
 }
 
 .dropdown-item {

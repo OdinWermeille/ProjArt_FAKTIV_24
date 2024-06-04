@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('nom');
             $table->string('image_url');
             $table->text('description');
-            $table->integer('longueur');
-            $table->integer('duree');
+            $table->float('longueur'); // Changer en float
+            $table->float('duree'); // Changer en float
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
                 ->references('id')
