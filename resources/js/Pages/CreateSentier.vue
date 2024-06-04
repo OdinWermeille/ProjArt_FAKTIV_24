@@ -1,20 +1,21 @@
 <template>
   <div class="group-parent inter-text">
+    <div class="alert-box">
+      <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui composeront le sentier.</p> <br><br>
+      <p class="create-lieu-text">Créer un lieu <a href="/endroits/create" class="create-new-endroit">ici</a></p>
+    </div>
     <div class="group-container">
       <div class="group-child"></div>
       <div class="rectangle-wrapper">
-        <h2 class="ajouter-un-lieu">Ajouter un lieu</h2>
+        <h2 class="ajouter-un-lieu">Ajouter un sentier</h2>
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="input-group">
             <input class="group-item" type="text" v-model="form.nom" id="nom" placeholder="Nom" required>
           </div>
-          <div class="input-group">
-            <textarea class="group-item description-field" v-model="form.description" id="description" placeholder="Description" required></textarea>
-          </div>
           <div class="input-group image-upload">
             <div class="rectangle-parent">
               <div class="group-child"></div>
-              <label class="supporting-text" :for="image">{{ truncatedFileName || 'Image' }}</label>
+              <label class="supporting-text" for="image">{{ truncatedImageLabel }}</label>
               <input class="image-input" type="file" @change="onFileChange" id="image" required>
             </div>
           </div>
@@ -86,22 +87,23 @@
             <h3>Aperçu du sentier</h3>
           </div>
 
-          <div class="input-group map-container">
+          <div class="input-group map-container" v-if="form.endroits.length > 0">
             <div id="map" class="rectangle-parent2"></div>
           </div>
+
           <div class="ajouter-wrapper">
             <button type="submit" class="ajouter">Créer</button>
           </div>
         </form>
       </div>
     </div>
-    <custom-popup
-      :title="popupTitle"
-      :message="popupMessage"
-      :visible="popupVisible"
-      @close="popupVisible = false"
-    />
   </div>
+  <custom-popup
+    :title="popupTitle"
+    :message="popupMessage"
+    :visible="popupVisible"
+    @close="popupVisible = false"
+  />
 </template>
 
 <script>
@@ -112,51 +114,68 @@ import 'leaflet/dist/leaflet.css';
 import draggable from 'vuedraggable';
 import { Inertia } from '@inertiajs/inertia';
 import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import CustomPopup from '../Components/CustomPopup.vue';
 
 export default {
-  name: 'CreatePlace',
+  name: 'CreateSentier',
   components: {
+    draggable,
     CustomPopup
   },
   setup() {
+    const themes = ref([]);
+    const endroits = ref([]);
     const isAuthenticated = ref(false);
     const form = ref({
       nom: '',
-      description: '',
-      coordonneesX: null,
-      coordonneesY: null,
       image: null,
+      description: '',
+      longueur: '',
+      duree: '',
+      theme_id: '',
       user_id: null,
+      endroits: []
     });
 
-    const fileName = ref('');
-    const userCoords = ref({ latitude: Number.POSITIVE_INFINITY, longitude: Number.POSITIVE_INFINITY });
-    let marker = ref(null);
+    const dropdownOpen = ref(false);
+    const themeDropdownOpen = ref(false);
+    const search = ref("");
+    const imageLabel = ref('Image');
+    let routingControl = ref(null);
+    let map = ref(null);
 
-    const popupTitle = ref('');
-    const popupMessage = ref('');
-    const popupVisible = ref(false);
-
-    const checkAuthentication = async () => {
+    const fetchThemesAndEndroits = async () => {
       try {
-        const response = await axios.get('/api/user'); // Assurez-vous que cette route existe
-        isAuthenticated.value = response.data.authenticated;
-        form.value.user_id = response.data.user.id;
+        const themeResponse = await axios.get('/api/themes');
+        themes.value = themeResponse.data;
+
+        const endroitResponse = await axios.get('/api/endroits');
+        endroits.value = endroitResponse.data;
       } catch (error) {
-        console.error('Erreur lors de la vérification de l\'authentification:', error);
-        isAuthenticated.value = false;
+        console.error('Erreur lors de la récupération des thématiques et des endroits:', error);
       }
     };
 
-    onMounted(async () => {
-      await checkAuthentication();
-      if (isAuthenticated.value) {
-        await fetchThemesAndEndroits();
+    const checkAuthentication = async () => {
+      try {
+        const response = await axios.get('/api/user');
+        isAuthenticated.value = response.data.authenticated;
+        form.value.user_id = response.data.user.id;
+        if (!isAuthenticated.value) {
+          Inertia.visit('/login', { replace: true });
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        isAuthenticated.value = false;
+        Inertia.visit('/login', { replace: true });
       }
-      await nextTick();
+    };
 
-      const map = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
+    const initializeMap = async () => {
+      if (map.value) return;
+
+      map.value = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -173,7 +192,6 @@ export default {
           const marker = L.marker(waypoint.latLng, {
             draggable: true
           });
-
           return marker;
         },
         lineOptions: {
@@ -181,76 +199,94 @@ export default {
         },
         fitSelectedRoutes: true,
         routeWhileDragging: true,
-        showAlternatives: false
+        showAlternatives: false,
+        router: new L.Routing.OSRMv1({
+          serviceUrl: 'http://routing.openstreetmap.de/routed-foot/route/v1'
+        })
       }).addTo(map.value);
+    };
 
-      // Obtenir la géolocalisation de l'utilisateur
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const { latitude, longitude } = position.coords;
-          map.value.setView([latitude, longitude], 13);
-        });
+    onMounted(async () => {
+      await checkAuthentication();
+      if (isAuthenticated.value) {
+        await fetchThemesAndEndroits();
       }
     });
+
+    watch(() => form.value.endroits, async (newEndroits) => {
+      if (newEndroits.length > 0 && !map.value) {
+        await nextTick();
+        await initializeMap();
+      }
+      updateMap();
+    }, { deep: true });
 
     const onFileChange = (e) => {
       const file = e.target.files[0];
       form.value.image = file;
-      fileName.value = file ? file.name : '';
-      console.log('Fichier sélectionné :', fileName.value); // Debug
+      imageLabel.value = file ? file.name : 'Image';
     };
 
-    const truncatedFileName = computed(() => {
-      const maxLength = 20; // Maximum length of the file name to display
-      if (fileName.value.length > maxLength) {
-        return fileName.value.substring(0, maxLength) + '...';
+    const truncatedImageLabel = computed(() => {
+      const maxLength = 30; // Maximum length of the file name to display
+      if (imageLabel.value.length > maxLength) {
+        return imageLabel.value.substring(0, maxLength) + '...';
       }
-      return fileName.value;
+      return imageLabel.value;
     });
 
     const resetForm = () => {
       form.value = {
         nom: '',
-        description: '',
-        coordonneesX: null,
-        coordonneesY: null,
         image: null,
-        user_id: form.value.user_id, // Préserver user_id
+        description: '',
+        longueur: '',
+        duree: '',
+        theme_id: '',
+        user_id: form.value.user_id,
+        endroits: []
       };
       imageLabel.value = 'Image';
-      routingControl.value.setWaypoints([]);
+      if (routingControl.value) {
+        routingControl.value.setWaypoints([]);
+      }
     };
 
     const submitForm = async () => {
       const formData = new FormData();
       formData.append('nom', form.value.nom);
-      formData.append('description', form.value.description);
-      formData.append('coordonneesX', form.value.coordonneesX);
-      formData.append('coordonneesY', form.value.coordonneesY);
       formData.append('image', form.value.image);
+      formData.append('description', form.value.description);
+      formData.append('longueur', form.value.longueur);
+      formData.append('duree', form.value.duree);
+      formData.append('theme_id', form.value.theme_id);
       formData.append('user_id', form.value.user_id);
-      formData.append('localite', form.value.localite); // Ajouter localité ici
+
+      form.value.endroits.forEach((endroit, index) => {
+        formData.append(`endroits[${index}]`, endroit);
+      });
 
       try {
-        const response = await axios.post('/api/endroits', formData, {
+        const response = await axios.post('/api/sentiers', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log('Endroit créé avec succès:', response.data);
+        console.log('Sentier créé avec succès:', response.data);
         popupTitle.value = 'Merci!';
-        popupMessage.value = 'Votre endroit a été créé avec succès!';
+        popupMessage.value = 'Votre sentier a été créé avec succès!';
         popupVisible.value = true;
         resetForm();
       } catch (error) {
-        console.error('Erreur lors de la création de l\'endroit:', error);
+        console.error('Erreur lors de la création du sentier:', error);
         popupTitle.value = 'Erreur!';
-        popupMessage.value = 'Il y a eu une erreur lors de la création de votre endroit.';
+        popupMessage.value = 'Il y a eu une erreur lors de la création de votre sentier.';
         popupVisible.value = true;
       }
     };
 
     const updateMap = () => {
+      if (!map.value) return;
       const selectedEndroits = form.value.endroits.map(endroitId => {
         return endroits.value.find(endroit => endroit.id === endroitId);
       });
@@ -342,21 +378,39 @@ export default {
 
     return {
       form,
+      themes,
+      endroits,
       isAuthenticated,
+      dropdownOpen,
+      themeDropdownOpen,
+      imageLabel,
       onFileChange,
       submitForm,
-      userCoords,
+      toggleDropdown,
+      toggleThemeDropdown,
+      selectedThemeText,
+      selectedEndroitsText,
+      search,
+      filteredEndroits,
+      onDragStart,
+      onDragEnd,
+      onDragUpdate,
+      onDragChange,
+      handleClickOutside,
+      resetForm,
+      getEndroitName,
+      updateMap,
+      truncatedImageLabel,
       popupTitle,
       popupMessage,
-      popupVisible,
-      fileName,
-      truncatedFileName
+      popupVisible
     };
   }
 };
 </script>
 
-<style scoped>@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
 
 .inter-text {
   font-family: "Inter", sans-serif;
@@ -408,7 +462,7 @@ export default {
   border: 1px solid #7d7d7d;
   box-sizing: border-box;
   width: calc(100% - 32px); /* Ajouter de la marge sur les côtés */
-  height: 40px;
+  height: 50px;
   padding: 12px; /* Ajouter un padding pour un espacement uniforme */
   font-size: 16px;
   font-family: "Inter", sans-serif;
@@ -416,16 +470,83 @@ export default {
   margin: 0 16px; /* Ajouter de la marge sur les côtés */
 }
 
-.file-name-input {
-  margin-top: 5px;
-  margin-left: 16px;
-  font-size: 14px;
-  color: #7d7d7d;
-  font-family: "Inter", sans-serif;
-  width: calc(100% - 32px);
-  border: none;
+.dropdown-item {
+  height: 50px; /* Agrandir la hauteur de la liste déroulante */
+}
+
+.dropdown-multi {
+  position: relative;
+  border: 1px solid #7d7d7d;
+  border-radius: 10px;
   background-color: transparent;
-  cursor: default;
+  padding: 12px;
+  font-size: 16px;
+  width: calc(100% - 32px);
+  margin: 0 16px;
+  height: 50px; /* Ajuster la hauteur */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer; /* Ajouter le curseur pointeur pour indiquer qu'il est cliquable */
+}
+
+.dropdown-header {
+  width: calc(100% - 24px); /* Laisser de la place pour la flèche */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #7d7d7d;
+  border-radius: 0 0 10px 10px;
+  z-index: 1600; /* Modifier la valeur du z-index pour qu'elle soit plus élevée */
+  max-height: 200px; /* Limiter la hauteur de la liste déroulante */
+  overflow-y: auto; /* Ajouter un défilement si nécessaire */
+}
+
+.theme-dropdown-list {
+  z-index: 1700; /* Ajouter un z-index plus élevé pour que la liste déroulante des thématiques soit au-dessus des autres éléments */
+}
+
+.dropdown-search {
+  width: calc(100% - 24px); /* Laisser de la place pour la marge */
+  margin: 8px 12px;
+  padding: 8px 12px;
+  border: 1px solid #7d7d7d;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+.dropdown-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.dropdown-list-item input {
+  margin-right: 8px;
+}
+
+.create-new-endroit {
+  display: inline-block;
+  margin: 10px 12px; /* Ajouter de la marge autour du lien */
+  color: black; /* Change link color to black */
+  text-decoration: underline;
+}
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #7d7d7d; /* Couleur de la flèche */
 }
 
 .description-field {
@@ -653,5 +774,4 @@ a {
   width: fit-content;
   cursor: pointer;
 }
-
 </style>
