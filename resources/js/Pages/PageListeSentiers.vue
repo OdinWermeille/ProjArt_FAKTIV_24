@@ -22,7 +22,6 @@
     <!-- Liste des sentiers ou message d'absence de sentiers -->
     <div class="content">
       <div v-if="filteredSentiers.length === 0" :class="$style.noResults">
-        <!-- Message personnalisé ici -->
         <p>Aucun sentier ne correspond aux filtres appliqués.</p>
       </div>
       <div v-else :class="$style.groupParent">
@@ -170,11 +169,11 @@ export default defineComponent({
       showSortModal: false,
       showFilterModal: false,
       sortOption: '',
-      filterActivity: 'tout', // Default to "tout"
-      filterDistance: 'tout', // Default to "tout"
-      searchQuery: '', // Search query
-      allSentiers: this.sentiers, // Use a different name for the local copy
-      filteredSentiers: this.sentiers // Initializing with all sentiers
+      filterActivity: 'tout',
+      filterDistance: 'tout',
+      searchQuery: '',
+      allSentiers: this.sentiers,
+      filteredSentiers: this.sentiers
     }
   },
   methods: {
@@ -224,17 +223,16 @@ export default defineComponent({
         return matchActivity && matchDistance && matchSearchQuery;
       });
 
-      this.applySort(); // Apply sort after filtering and searching
+      this.applySort();
     }
   },
   watch: {
     sentiers(newSentiers) {
       this.allSentiers = newSentiers;
-      this.applyFiltersAndSearch(); // Ensure the filtered list is updated
+      this.applyFiltersAndSearch();
     }
   },
   created() {
-    // Initialize with all sentiers on component creation
     this.allSentiers = this.sentiers;
     this.applyFiltersAndSearch();
   }
@@ -242,14 +240,15 @@ export default defineComponent({
 </script>
 
 <style module>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 .page-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-}
-
-.content {
-  flex: 1;
 }
 
 .searchContainer {
@@ -474,48 +473,5 @@ export default defineComponent({
   padding: 8px 16px;
   color: white;
   cursor: pointer;
-}
-
-/* Footer Styles */
-.footer {
-  background: #bfd2a6;
-  color: #333;
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  box-sizing: border-box;
-  position: absolute;
-  bottom: 0;
-}
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.logo-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 500px;
-  margin-bottom: 20px;
-}
-
-.logo {
-  height: auto;
-  max-width: 100%;
-}
-
-.text-container {
-  text-align: left;
-  max-width: 500px;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.text-container p {
-  margin: 5px 0;
 }
 </style>
