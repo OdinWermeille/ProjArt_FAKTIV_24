@@ -43,6 +43,8 @@ const { coords } = useGeolocation();
 let map;
 let userGeoMarker;
 
+const emit = defineEmits(['marker-click']);
+
 const sentiers = [];
 
 const redirectToList = () => {
@@ -84,7 +86,7 @@ const returnColor = (theme_id) => {
 onMounted(() => {
     map = leaflet
         .map("map")
-        .setView([userMarker.value.latitude, userMarker.value.longitude], 13);
+        .setView([`${userMarker.value.latitude ? userMarker.value.latitude : 46.519962}`, `${userMarker.value.longitude ? userMarker.value.longitude : 6.633597}`], 13);
 
     leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -165,10 +167,10 @@ onMounted(() => {
                         });
 
                         marker.on('click', function(e) {
-                            console.log(this);
+                            emit('marker-click',{param : e});
                             //window.location.href = `/carte/${sentier.id}`;
                         });
-
+                        
                         return marker;
                     },
                     // router: new leaflet.Routing.OSRMv1({
@@ -231,7 +233,7 @@ onMounted(() => {
                                 console.log(this);
                                 //window.location.href = `/carte/${sentier.id}`;
                             });
-
+                            
                             return marker;
                         },
                         // router: new leaflet.Routing.OSRMv1({
@@ -248,27 +250,13 @@ onMounted(() => {
                 })
             });
         }
-
-    routingControl = leaflet.Routing.control({
-        waypoints: [
-            leaflet.latLng([46.783, 6.650]),
-            leaflet.latLng([46.781, 6.651])
-        ],
-        routeWhileDragging: true,
-        show: false,
-        addWaypoints: false,
-        draggableWaypoints: true,
-        router: new leaflet.Routing.OSRMv1({
-            serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
-        })
-    }).addTo(map);
 });
 </script>
 
 <style scoped>
     #map {
         width: 100%;
-        height: calc(100vh - 375px);
+        height: calc(100vh - 390px);
         position: relative;
         z-index: 10;
     }

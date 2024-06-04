@@ -47,8 +47,8 @@ export default {
         };
 
         onMounted(() => {
-            const latitude = props.endroit.coordonneesY;
-            const longitude = props.endroit.coordonneesX;
+            const latitude = props.endroit.coordonneesX;
+            const longitude = props.endroit.coordonneesY;
 
             console.log(props.endroit);
 
