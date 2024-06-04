@@ -54,7 +54,6 @@ export default {
 
     const initializeMap = () => {
       if (map.value) return;
-
       map.value = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,

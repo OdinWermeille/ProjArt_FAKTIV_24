@@ -15,7 +15,7 @@
           <div class="input-group image-upload">
             <div class="rectangle-parent">
               <div class="group-child"></div>
-              <label class="supporting-text" for="image">{{ imageLabel }}</label>
+              <label class="supporting-text" for="image">{{ truncatedImageLabel }}</label>
               <input class="image-input" type="file" @change="onFileChange" id="image" required>
             </div>
           </div>
@@ -227,6 +227,14 @@ export default {
       imageLabel.value = file ? file.name : 'Image';
     };
 
+    const truncatedImageLabel = computed(() => {
+      const maxLength = 30; // Maximum length of the file name to display
+      if (imageLabel.value.length > maxLength) {
+        return imageLabel.value.substring(0, maxLength) + '...';
+      }
+      return imageLabel.value;
+    });
+
     const resetForm = () => {
       form.value = {
         nom: '',
@@ -392,6 +400,7 @@ export default {
       resetForm,
       getEndroitName,
       updateMap,
+      truncatedImageLabel,
       popupTitle,
       popupMessage,
       popupVisible
@@ -575,10 +584,12 @@ export default {
   line-height: 24px;
   display: flex;
   align-items: center;
-  width: 170px;
-  height: 25px;
-  background: url('/images/IconeImage.png') no-repeat left center;
+  width: calc(100% - 36px); /* Ajuster pour fournir plus d'espace pour le texte */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding-left: 30px; /* Ajuster pour fournir plus d'espace pour l'icône */
+  background: url('/images/icon_televerser_img.svg') no-repeat left center;
 }
 
 .image-input {
@@ -591,14 +602,10 @@ export default {
   cursor: pointer;
 }
 
-select.group-item {
-  -webkit-appearance: none; /* Supprimer l'apparence par défaut */
-  -moz-appearance: none; /* Supprimer l'apparence par défaut */
-  appearance: none; /* Supprimer l'apparence par défaut */
-}
-
-select.group-item:focus {
-  outline: none; /* Supprimer le contour lors du focus */
+.rectangle-parent2 {
+  height: 250px; /* Rendre la carte un peu plus petite */
+  width: calc(100% - 32px); /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
+  margin: 0 16px; /* Ajouter de la marge sur les côtés */
 }
 
 .ajouter {

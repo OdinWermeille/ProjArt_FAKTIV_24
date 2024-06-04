@@ -14,7 +14,7 @@
           <div class="input-group image-upload">
             <div class="rectangle-parent">
               <div class="group-child"></div>
-              <label class="supporting-text" :for="image">{{ fileName || 'Image' }}</label>
+              <label class="supporting-text" :for="image">{{ truncatedFileName || 'Image' }}</label>
               <input class="image-input" type="file" @change="onFileChange" id="image" required>
             </div>
           </div>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, computed } from 'vue';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -130,6 +130,14 @@ export default {
       console.log('Fichier sélectionné :', fileName.value); // Debug
     };
 
+    const truncatedFileName = computed(() => {
+      const maxLength = 30; // Maximum length of the file name to display
+      if (fileName.value.length > maxLength) {
+        return fileName.value.substring(0, maxLength) + '...';
+      }
+      return fileName.value;
+    });
+
     const resetForm = () => {
       form.value = {
         nom: '',
@@ -184,7 +192,8 @@ export default {
       popupTitle,
       popupMessage,
       popupVisible,
-      fileName
+      fileName,
+      truncatedFileName
     };
   }
 };
@@ -296,10 +305,12 @@ export default {
   line-height: 24px;
   display: flex;
   align-items: center;
-  width: 170px;
-  height: 25px;
-  background: url('/images/IconeImage.png') no-repeat left center;
+  width: calc(100% - 36px); /* Ajuster pour fournir plus d'espace pour le texte */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding-left: 30px; /* Ajuster pour fournir plus d'espace pour l'icône */
+  background: url('/images/icon_televerser_img.svg') no-repeat left center;
 }
 
 .image-input {
