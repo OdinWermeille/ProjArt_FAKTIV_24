@@ -4,7 +4,7 @@
       <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui
         composeront le sentier.</p>
       <div class="create-new-endroit-container-intro">
-        <a href="/endroits/create" class="create-new-endroit-intro">
+        <a href="/lieux/create" class="create-new-endroit-intro">
           Créer un lieu <span class="underline-intro">ici</span>
         </a>
       </div>
@@ -18,16 +18,16 @@
           <div class="input-group">
             <input class="group-item" type="text" v-model="form.nom" id="nom" placeholder="Nom" required>
           </div>
+          <div class="input-group">
+            <textarea class="group-item description-field" v-model="form.description" id="description"
+              placeholder="Description" required></textarea>
+          </div>
           <div class="input-group image-upload">
             <div class="rectangle-parent">
               <div class="group-child"></div>
               <label class="supporting-text" for="image">{{ truncatedImageLabel }}</label>
               <input class="image-input" type="file" @change="onFileChange" id="image" required>
             </div>
-          </div>
-          <div class="input-group">
-            <textarea class="group-item description-field" v-model="form.description" id="description"
-              placeholder="Description" required></textarea>
           </div>
           <div class="input-group">
             <div class="group-item dropdown-multi">
@@ -56,7 +56,7 @@
                   {{ endroit.nom }}
                 </label>
                 <div class="create-new-endroit-container">
-                  <a href="/endroits/create" class="create-new-endroit">
+                  <a href="/lieux/create" class="create-new-endroit">
                     <span class="plus-icon">+</span> Créer un lieu <span class="underline">ici</span>
                   </a>
                 </div>
@@ -264,18 +264,12 @@ export default {
         formData.append(`endroits[${index}]`, endroit);
       });
 
-      // Log formData for debugging
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-
       try {
         const response = await axios.post('/api/sentiers', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log('Sentier créé avec succès:', response.data);
         popupTitle.value = 'Merci!';
         popupMessage.value = 'Votre sentier a été créé avec succès!';
         popupVisible.value = true;
@@ -339,27 +333,15 @@ export default {
       return themes.value.filter(theme => theme.nom.toLowerCase() !== 'tout');
     });
 
-    const onDragStart = (event) => {
-      console.log('Drag start:', event);
-    };
-
-    const onDragEnd = (event) => {
-      console.log('Drag end:', event);
-    };
-
     const onDragUpdate = (event) => {
-      console.log('Drag update:', event);
       updateMap(); // Mettre à jour la carte lorsque l'ordre des endroits est modifié
     };
 
     const onDragChange = (event) => {
-      console.log('Drag change:', event);
       const { oldIndex, newIndex } = event;
       if (oldIndex !== undefined && newIndex !== undefined) {
         const movedItem = form.value.endroits.splice(oldIndex, 1)[0];
         form.value.endroits.splice(newIndex, 0, movedItem);
-        console.log(`Moved item from index ${oldIndex} to ${newIndex}`);
-        console.log('New order:', form.value.endroits);
         updateMap(); // Mettre à jour la carte lorsque l'ordre des endroits est modifié
       }
     };
@@ -401,8 +383,6 @@ export default {
       search,
       filteredEndroits,
       filteredThemes,
-      onDragStart,
-      onDragEnd,
       onDragUpdate,
       onDragChange,
       handleClickOutside,
@@ -489,7 +469,7 @@ export default {
 }
 
 .group-item[readonly] {
-  background-color: #e9e9e9;
+  background-color: #F0F0F0;
   /* Light grey background for readonly inputs */
 }
 
@@ -529,7 +509,7 @@ export default {
   top: 100%;
   left: 0;
   width: 100%;
-  background-color: white;
+  background-color: #FAFAFA;
   border: 1px solid #7d7d7d;
   border-radius: 0 0 10px 10px;
   z-index: 1600;
@@ -570,12 +550,12 @@ export default {
   display: inline-block;
   margin: 10px 12px;
   /* Ajouter de la marge autour du lien */
-  color: black;
+  color: #212121;
   /* Change link color to black */
 }
 
 .create-new-endroit-intro {
-  color: black;
+  color: #212121;
   margin-top: 10px;
   font-size: 14px;
   /* Change link color to black */
@@ -741,9 +721,9 @@ body {
   align-items: center;
   padding: 10px;
   margin: 5px 0;
-  border: 1px solid #ddd;
+  border: 1px solid #F0F0F0;
   border-radius: 4px;
-  background-color: #f9f9f9;
+  background-color: #F0F0F0;
   cursor: grab;
   /* Change the cursor to a hand when hovering over the item */
 }
@@ -791,7 +771,7 @@ body {
 .create-new-endroit {
   display: flex;
   align-items: center;
-  color: gray;
+  color: #7d7d7d;
   text-decoration: none;
   /* Enlevez la décoration par défaut du lien */
   font-family: "Inter", sans-serif;
@@ -825,7 +805,7 @@ body {
 }
 
 a {
-  color: black;
+  color: #212121;
 }
 
 .rectangle-parent2 {

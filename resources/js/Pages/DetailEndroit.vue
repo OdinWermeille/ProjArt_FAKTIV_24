@@ -168,12 +168,12 @@ h2{
 
 .map-container {
     width: 100%;
-    height: 400px; /* Assurez-vous que la hauteur est définie */
+    height: 400px;
     margin-bottom: 20px;
 }
 
 .rectangle-parent2 {
     width: 100%;
-    height: 100%; /* Assurez-vous que la hauteur est définie */
+    height: 100%;
 }
 </style>
