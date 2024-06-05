@@ -1,9 +1,16 @@
 <template>
   <div class="group-parent inter-text">
     <div class="alert-box">
-      <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui composeront le sentier.</p> <br><br>
-      <p class="create-lieu-text">Créer un lieu <a href="/endroits/create" class="create-new-endroit">ici</a></p>
+      <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui
+        composeront le sentier.</p>
+      <div class="create-new-endroit-container-intro">
+        <a href="/endroits/create" class="create-new-endroit-intro">
+          Créer un lieu <span class="underline-intro">ici</span>
+        </a>
+      </div>
     </div>
+
+
     <div class="group-container">
       <div class="group-child"></div>
       <div class="rectangle-wrapper">
@@ -20,7 +27,8 @@
             </div>
           </div>
           <div class="input-group">
-            <textarea class="group-item description-field" v-model="form.description" id="description" placeholder="Description" required></textarea>
+            <textarea class="group-item description-field" v-model="form.description" id="description"
+              placeholder="Description" required></textarea>
           </div>
           <div class="input-group">
             <div class="group-item dropdown-multi">
@@ -48,7 +56,14 @@
                   <input type="checkbox" :value="endroit.id" v-model="form.endroits" @change="updateMap" @click.stop />
                   {{ endroit.nom }}
                 </label>
-                <a href="/endroits/create" class="create-new-endroit">Créer un lieu ici</a>
+                <div class="create-new-endroit-container">
+                  <a href="/endroits/create" class="create-new-endroit">
+                    <span class="plus-icon">+</span> Créer un lieu <span class="underline">ici</span>
+                  </a>
+                </div>
+
+
+
               </div>
             </div>
           </div>
@@ -59,16 +74,8 @@
           </div>
 
           <!-- Ajouter les éléments cochés ici -->
-          <draggable
-            v-if="form.endroits.length > 0"
-            v-model="form.endroits"
-            class="draggable-list"
-            item-key="id"
-            @start="onDragStart"
-            @end="onDragEnd"
-            @update="onDragUpdate"
-            @change="onDragChange"
-          >
+          <draggable v-if="form.endroits.length > 0" v-model="form.endroits" class="draggable-list" item-key="id"
+            @start="onDragStart" @end="onDragEnd" @update="onDragUpdate" @change="onDragChange">
             <template #item="{ element }">
               <div class="draggable-item">
                 <i class="fas fa-grip-vertical grip-icon"></i> <!-- Icône de grip -->
@@ -92,12 +99,7 @@
       </div>
     </div>
   </div>
-  <custom-popup
-    :title="popupTitle"
-    :message="popupMessage"
-    :visible="popupVisible"
-    @close="popupVisible = false"
-  />
+  <custom-popup :title="popupTitle" :message="popupMessage" :visible="popupVisible" @close="popupVisible = false" />
 </template>
 
 
@@ -183,7 +185,7 @@ export default {
         show: false,
         addWaypoints: false,
         draggableWaypoints: false,
-        createMarker: function(i, waypoint) {
+        createMarker: function (i, waypoint) {
           const marker = L.marker(waypoint.latLng, {
             draggable: true
           });
@@ -200,7 +202,7 @@ export default {
         })
       }).addTo(map.value);
 
-      routingControl.value.on('routesfound', function(e) {
+      routingControl.value.on('routesfound', function (e) {
         const route = e.routes[0];
         form.value.longueur = (route.summary.totalDistance / 1000).toFixed(2); // Convertir en km
         form.value.duree = Math.round(route.summary.totalTime / 60); // Convertir en minutes
@@ -269,7 +271,7 @@ export default {
 
       // Log formData for debugging
       for (let pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
+        console.log(pair[0] + ', ' + pair[1]);
       }
 
       try {
@@ -418,7 +420,8 @@ export default {
 
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'); /* Import Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+/* Import Font Awesome */
 
 .inter-text {
   font-family: "Inter", sans-serif;
@@ -436,20 +439,23 @@ export default {
   background-color: #f0f0f0;
   width: 100%;
   height: 100%;
-  border: none; /* Enlever le contour */
+  border: none;
+  /* Enlever le contour */
 }
 
 .rectangle-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
-  padding: 30px 15px; /* Ajouter plus de padding en haut et en bas */
+  padding: 30px 15px;
+  /* Ajouter plus de padding en haut et en bas */
   box-sizing: border-box;
 }
 
 .ajouter-un-lieu {
   font-size: 18px;
-  font-weight: bold; /* Mettre le titre en gras */
+  font-weight: bold;
+  /* Mettre le titre en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -462,28 +468,35 @@ export default {
 }
 
 .input-group {
-  margin-bottom: 20px; /* Augmenter la marge entre les champs */
+  margin-bottom: 20px;
+  /* Augmenter la marge entre les champs */
 }
 
 .group-item {
   border-radius: 10px;
   border: 1px solid #7d7d7d;
   box-sizing: border-box;
-  width: calc(100% - 32px); /* Ajouter de la marge sur les côtés */
+  width: calc(100% - 32px);
+  /* Ajouter de la marge sur les côtés */
   height: 50px;
-  padding: 12px; /* Ajouter un padding pour un espacement uniforme */
+  padding: 12px;
+  /* Ajouter un padding pour un espacement uniforme */
   font-size: 16px;
   font-family: "Inter", sans-serif;
-  background-color: transparent; /* Enlever le fond blanc */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  background-color: transparent;
+  /* Enlever le fond blanc */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .group-item[readonly] {
-  background-color: #e9e9e9; /* Light grey background for readonly inputs */
+  background-color: #e9e9e9;
+  /* Light grey background for readonly inputs */
 }
 
 .dropdown-item {
-  height: 50px; /* Agrandir la hauteur de la liste déroulante */
+  height: 50px;
+  /* Agrandir la hauteur de la liste déroulante */
 }
 
 .dropdown-multi {
@@ -495,15 +508,18 @@ export default {
   font-size: 16px;
   width: calc(100% - 32px);
   margin: 0 16px;
-  height: 50px; /* Ajuster la hauteur */
+  height: 50px;
+  /* Ajuster la hauteur */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer; /* Ajouter le curseur pointeur pour indiquer qu'il est cliquable */
+  cursor: pointer;
+  /* Ajouter le curseur pointeur pour indiquer qu'il est cliquable */
 }
 
 .dropdown-header {
-  width: calc(100% - 24px); /* Laisser de la place pour la flèche */
+  width: calc(100% - 24px);
+  /* Laisser de la place pour la flèche */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -517,17 +533,22 @@ export default {
   background-color: white;
   border: 1px solid #7d7d7d;
   border-radius: 0 0 10px 10px;
-  z-index: 1600; /* Modifier la valeur du z-index pour qu'elle soit plus élevée */
-  max-height: 200px; /* Limiter la hauteur de la liste déroulante */
-  overflow-y: auto; /* Ajouter un défilement si nécessaire */
+  z-index: 1600;
+  /* Modifier la valeur du z-index pour qu'elle soit plus élevée */
+  max-height: 200px;
+  /* Limiter la hauteur de la liste déroulante */
+  overflow-y: auto;
+  /* Ajouter un défilement si nécessaire */
 }
 
 .theme-dropdown-list {
-  z-index: 1700; /* Ajouter un z-index plus élevé pour que la liste déroulante des thématiques soit au-dessus des autres éléments */
+  z-index: 1700;
+  /* Ajouter un z-index plus élevé pour que la liste déroulante des thématiques soit au-dessus des autres éléments */
 }
 
 .dropdown-search {
-  width: calc(100% - 24px); /* Laisser de la place pour la marge */
+  width: calc(100% - 24px);
+  /* Laisser de la place pour la marge */
   margin: 8px 12px;
   padding: 8px 12px;
   border: 1px solid #7d7d7d;
@@ -548,9 +569,17 @@ export default {
 
 .create-new-endroit {
   display: inline-block;
-  margin: 10px 12px; /* Ajouter de la marge autour du lien */
-  color: black; /* Change link color to black */
-  text-decoration: underline;
+  margin: 10px 12px;
+  /* Ajouter de la marge autour du lien */
+  color: black;
+  /* Change link color to black */
+}
+
+.create-new-endroit-intro {
+  color: black;
+  margin-top: 10px;
+  font-size: 14px;
+  /* Change link color to black */
 }
 
 .arrow-down {
@@ -558,19 +587,23 @@ export default {
   height: 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 6px solid #7d7d7d; /* Couleur de la flèche */
+  border-top: 6px solid #7d7d7d;
+  /* Couleur de la flèche */
 }
 
 .description-field {
   height: 100px;
-  padding: 12px; /* Ajouter un padding pour un espacement uniforme */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  padding: 12px;
+  /* Ajouter un padding pour un espacement uniforme */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .rectangle-parent {
   position: relative;
   height: 40px;
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .group-child {
@@ -581,26 +614,31 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: none; /* Enlever le contour */
+  border: none;
+  /* Enlever le contour */
 }
 
 .image-upload .group-child {
-  border: 1px solid #7d7d7d; /* Ajouter un contour au champ d'insert d'image */
+  border: 1px solid #7d7d7d;
+  /* Ajouter un contour au champ d'insert d'image */
 }
 
 .supporting-text {
   position: absolute;
   top: 8px;
-  left: 18px; /* Ajouter un peu plus de marge à gauche entre l'image et le bord du champ */
+  left: 18px;
+  /* Ajouter un peu plus de marge à gauche entre l'image et le bord du champ */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
   align-items: center;
-  width: calc(100% - 36px); /* Ajuster pour fournir plus d'espace pour le texte */
+  width: calc(100% - 36px);
+  /* Ajuster pour fournir plus d'espace pour le texte */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left: 30px; /* Ajuster pour fournir plus d'espace pour l'icône */
+  padding-left: 30px;
+  /* Ajuster pour fournir plus d'espace pour l'icône */
   background: url('/images/icon_televerser_img.svg') no-repeat left center;
 }
 
@@ -615,9 +653,12 @@ export default {
 }
 
 .rectangle-parent2 {
-  height: 250px; /* Rendre la carte un peu plus petite */
-  width: calc(100% - 32px); /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  height: 250px;
+  /* Rendre la carte un peu plus petite */
+  width: calc(100% - 32px);
+  /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .ajouter {
@@ -661,8 +702,10 @@ export default {
   font-family: "Inter", sans-serif;
   padding: 20px;
   box-sizing: border-box;
-  max-width: 700px; /* Limiter la largeur maximale */
-  margin: 0 auto; /* Centrer le formulaire */
+  max-width: 700px;
+  /* Limiter la largeur maximale */
+  margin: 0 auto;
+  /* Centrer le formulaire */
 }
 
 body {
@@ -702,18 +745,24 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #f9f9f9;
-  cursor: grab; /* Change the cursor to a hand when hovering over the item */
+  cursor: grab;
+  /* Change the cursor to a hand when hovering over the item */
 }
 
 .draggable-item:active {
-  cursor: grabbing; /* Change the cursor to a closed hand when dragging the item */
+  cursor: grabbing;
+  /* Change the cursor to a closed hand when dragging the item */
 }
 
 .grip-icon {
-  margin-right: 10px; /* Add some space between the icon and the text */
-  font-size: 14px; /* Adjust the size of the icon to make it smaller */
-  color: #7d7d7d; /* Use a color that fits your design */
-  line-height: 1; /* Ensure the dots are vertically centered */
+  margin-right: 10px;
+  /* Add some space between the icon and the text */
+  font-size: 14px;
+  /* Adjust the size of the icon to make it smaller */
+  color: #7d7d7d;
+  /* Use a color that fits your design */
+  line-height: 1;
+  /* Ensure the dots are vertically centered */
 }
 
 .alert-box {
@@ -723,6 +772,7 @@ body {
   padding: 15px;
   margin: 20px;
   text-align: center;
+  color: black;
 }
 
 .alert-box p {
@@ -730,38 +780,60 @@ body {
   margin: 0;
   font-family: "Inter", sans-serif;
   font-size: 14px;
-  color: black; /* Change text color to black */
+  color: black;
+  /* Change text color to black */
 }
 
-.alert-box a {
-  color: black; /* Change link color to black */
-  text-decoration: underline;
-}
 
-.alert-box a:hover {
-  text-decoration: underline;
+
+.create-new-endroit-container {
+  margin: 10px 0;
+  /* Ajustez la marge selon vos besoins */
 }
 
 .create-new-endroit {
-  display: inline;
-  text-align: center;
-  color: black; /* Change link color to black */
-  text-decoration: underline;
-  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  color: gray;
+  text-decoration: none;
+  /* Enlevez la décoration par défaut du lien */
+  font-family: "Inter", sans-serif;
+  /* Assurez-vous que la police est cohérente */
+  font-size: 16px;
+  /* Assurez-vous que la taille de la police est cohérente */
+  letter-spacing: 0.5px;
+  /* Assurez-vous que l'espacement des lettres est cohérent */
+  line-height: 24px;
+  /* Assurez-vous que la hauteur de ligne est cohérente */
 }
 
-.create-new-endroit:hover {
+.plus-icon {
+  margin-right: 5px;
+  /* Espace entre le symbole et le texte */
+}
+
+.underline-intro {
+  text-decoration: underline;
+  /* Souligner uniquement ce texte */
+}
+
+.create-new-endroit:hover .underline {
   text-decoration: underline;
 }
+
+
 
 a {
   color: black;
 }
 
 .rectangle-parent2 {
-  height: 250px; /* Rendre la carte un peu plus petite */
-  width: calc(100% - 32px); /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  height: 250px;
+  /* Rendre la carte un peu plus petite */
+  width: calc(100% - 32px);
+  /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .ajouter {
