@@ -1,33 +1,39 @@
 <template>
   <header class="header">
     <div class="logo">
-      <a href="/carte">
+      <a href="/sentiers">
         <img src="/images/Group.svg" alt="Logo" />
       </a>
     </div>
     <nav class="nav">
       <ul class="nav-list" :class="{ 'nav-list-mobile': isMobileMenuOpen }">
-        <li class="nav-item"> 
-          <a href="/sentiers"><img src="/images/list.svg" alt="List Icon" class="nav-icon" /> Liste</a>
-        </li>
-        <div class="nav-divider"></div>
         <li class="nav-item">
-          <a href="/carte"><img src="/images/map.svg" alt="Map Icon" class="nav-icon" /> Carte</a>
+          <a href="/sentiers">
+            <img src="/images/chemin_noir.svg" alt="Chemin Icon" class="nav-icon" /> Sentiers
+          </a>
         </li>
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <a href="/sentiers/create"><img src="/images/add.svg" alt="Add Trail Icon" class="nav-icon" /> Ajouter un sentier</a>
+          <a href="/sentiers/create">
+            <img src="/images/add.svg" alt="Icon +" class="nav-icon" /> Ajouter un sentier
+          </a>
         </li>
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <a href="/lieux/create"><img src="/images/add.svg" alt="Add Place Icon" class="nav-icon" /> Ajouter un lieu</a>
+          <a href="/lieux/create">
+            <img src="/images/add.svg" alt="Icon +" class="nav-icon" /> Ajouter un lieu
+          </a>
         </li>
         <div class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <a href="/logout"><img src="/images/logout.svg" alt="Logout Icon" class="nav-icon" /> Logout</a>
+          <a href="/logout">
+            <img src="/images/logout.svg" alt="Logout Icon" class="nav-icon" /> Logout
+          </a>
         </li>
         <li v-else class="nav-item">
-          <a href="/login"><img src="/images/login.svg" alt="Login Icon" class="nav-icon" /> Login</a>
+          <a href="/login">
+            <img src="/images/login.svg" alt="Login Icon" class="nav-icon" /> Login
+          </a>
         </li>
       </ul>
       <button class="burger-menu" @click="toggleMobileMenu">
@@ -50,7 +56,7 @@ export default {
 
     const checkAuthentication = async () => {
       try {
-        const response = await axios.get('/api/user'); // Assurez-vous que cette route existe
+        const response = await axios.get('/api/user');
         isAuthenticated.value = response.data.authenticated;
         form.value.user_id = response.data.user.id;
       } catch (error) {
@@ -82,8 +88,8 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background-color: #f8f9fa; /* Couleur de fond claire */
-  color: #333;
+  background-color: #FAFAFA; /* Couleur de fond claire */
+  color: #212121;
   position: relative;
   height: 70px;
   width: 100%;
@@ -110,14 +116,25 @@ export default {
 }
 
 .nav-item {
-  display: flex;
-  align-items: center;
   margin-left: 1rem;
   position: relative; /* Nécessaire pour le soulignement sur hover */
-  padding: 10px 15px;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-item a {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
   background-color: transparent;
+  color: #212121; /* Couleur noire plus douce */
+  text-decoration: none;
+  font-weight: 500; /* Ajoute du poids au texte pour une meilleure lisibilité */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-item a:hover {
+  background-color: #F0F0F0; /* Change la couleur de fond au survol */
+  color: #BFD2A6; /* Change la couleur de texte au survol */
 }
 
 .nav-icon {
@@ -126,27 +143,10 @@ export default {
   width: 24px;
 }
 
-.nav-item a {
-  display: flex;
-  align-items: center;
-  color: #333; /* Couleur noire plus douce */
-  text-decoration: none;
-  font-weight: 500; /* Ajoute du poids au texte pour une meilleure lisibilité */
-  transition: color 0.3s;
-}
-
-.nav-item:hover {
-  background-color: #e9ecef; /* Change la couleur de fond au survol */
-}
-
-.nav-item:hover a {
-  color: #BFD2A6; /* Change la couleur de texte au survol */
-}
-
 .nav-divider {
   height: 40px;
   width: 1px;
-  background-color: #ddd; /* Couleur de la barre entre les éléments */
+  background-color: #dedede; /* Couleur de la barre entre les éléments */
   margin: 0 1rem;
 }
 
@@ -154,7 +154,7 @@ export default {
   display: none;
   background: none;
   border: none;
-  color: #333;
+  color: #212121;
   font-size: 2rem;
   cursor: pointer;
 }
@@ -165,7 +165,7 @@ export default {
   left: 0;
   right: 0;
   height: 1px;
-  background-color: #ddd; /* Couleur de la ligne plus claire */
+  background-color: #F0F0F0; /* Couleur de la ligne plus claire */
 }
 
 @media (max-width: 768px) {
@@ -175,7 +175,7 @@ export default {
     top: 70px; /* Ajuste la position pour qu'elle soit sous le header */
     left: 0;
     right: 0;
-    background-color: white;
+    background-color: #fafafa;
     flex-direction: column;
     align-items: center; /* Centre les éléments */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajoute une ombre pour le menu mobile */
@@ -191,6 +191,11 @@ export default {
     margin: 1rem 0;
     width: 100%; /* Prend toute la largeur pour un meilleur clic */
     text-align: center;
+  }
+
+  .nav-item a {
+    width: 100%; /* Prend toute la largeur pour un meilleur clic */
+    justify-content: center; /* Centre le contenu horizontalement */
   }
 
   .nav-divider {
