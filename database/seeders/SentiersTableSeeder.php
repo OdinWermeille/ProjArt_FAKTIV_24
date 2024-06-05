@@ -8,34 +8,68 @@ use App\Models\Sentier;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Theme;
+use Illuminate\Support\Facades\DB;
 
 class SentiersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = User::all();
-        $themes = Theme::all();
-
-        foreach ($users as $user) {
-            for ($i = 1; $i <= 2; $i++) { 
-                $date = $this->randDate();
-                Sentier::create([
-                    'nom' => 'Nom '. $i,
-                    'image_url' => 'https://via.placeholder.com/150/'. $i. '?text=Example',
-                    'description' => 'Description '. $i. ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel auctor libero, quis venenatis augue. Curabitur a pulvinar tortor, vitae condimentum libero. Cras eu massa sed lorem mattis lacinia. Vestibulum id feugiat turpis. Proin a lorem ligula.',
-                    'longueur' => rand(500, 2000), 
-                    'duree' => rand(30, 120), 
-                    'user_id' => $user->id,
-                    'theme_id' => $themes[rand(0, count($themes)-1)]->id,
-                    'created_at' => $date,
-                    'updated_at' => $date,
-                ]);
-            }
-        }
-    }
-
-    private function randDate() {
-        $nbJours = rand(-2800, 0);
-        return Carbon::now()->addDays($nbJours);
+        DB::table('sentiers')->insert([
+            [
+                'nom' => 'Sentier du Lac Léman',
+                'image_url' => 'images\Seeder\Lac_Leman.jpg',
+                'description' => 'Un magnifique sentier longeant le lac Léman avec des vues imprenables sur les Alpes et de nombreux points d\'intérêt historiques et culturels. Ce sentier offre une expérience inoubliable le long des rives du lac, avec des points de vue spectaculaires et des arrêts dans des lieux emblématiques de Lausanne. Le parcours est idéal pour une promenade tranquille tout en profitant de la beauté naturelle et de l\'histoire locale.',
+                'longueur' => 10.0,
+                'duree' => 180,
+                'user_id' => 1,
+                'theme_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nom' => 'Sentier des Parcs de Lausanne',
+                'image_url' => 'images\Seeder\Parc_Lausanne2.png',
+                'description' => 'Un agréable sentier urbain traversant plusieurs parcs de Lausanne, parfait pour une promenade relaxante en ville. Découvrez les espaces verts de la ville tout en profitant de la tranquillité et de la beauté naturelle des parcs de Lausanne. Ce sentier est idéal pour les familles et les amateurs de nature souhaitant s\'échapper de l\'agitation urbaine.',
+                'longueur' => 5.0,
+                'duree' => 90,
+                'user_id' => 1,
+                'theme_id' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nom' => 'Sentier Culturel de Lausanne',
+                'image_url' => 'images\Seeder\Culture_Lausanne.jpg',
+                'description' => 'Ce sentier vous emmène à travers les hauts lieux culturels de Lausanne, y compris le Musée Olympique, la Cathédrale de Lausanne, et la Fondation de l\'Hermitage. Un parcours riche en histoire et en art qui offre une expérience culturelle unique. En chemin, profitez des magnifiques vues sur la ville et le lac, et découvrez des œuvres d\'art et des monuments historiques.',
+                'longueur' => 7.0,
+                'duree' => 120,
+                'user_id' => 1,
+                'theme_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nom' => 'Sentier Nature de Sauvabelin',
+                'image_url' => 'images\Seeder\Parc_Lausanne.jpg',
+                'description' => 'Explorez le parc de Sauvabelin et ses alentours avec ce sentier nature. Parfait pour les amateurs de plein air et les familles, ce sentier offre des vues sur le lac, une tour panoramique et des aires de pique-nique. Le parcours à travers la forêt et autour du lac est idéal pour observer la faune et la flore locales.',
+                'longueur' => 3.5,
+                'duree' => 60,
+                'user_id' => 1,
+                'theme_id' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nom' => 'Sentier Botanique',
+                'image_url' => 'images\Seeder\Botanique_Lausanne.jpg',
+                'description' => 'Découvrez la richesse botanique de Lausanne avec ce sentier qui traverse le Jardin Botanique et d\'autres espaces verts. Une belle façon de profiter de la biodiversité locale et des paysages floraux. Ce sentier est parfait pour les amoureux de la nature et ceux qui souhaitent en apprendre davantage sur la botanique.',
+                'longueur' => 4.0,
+                'duree' => 75,
+                'user_id' => 1,
+                'theme_id' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }
