@@ -84,6 +84,7 @@ export default {
 
 <style scoped>
 .header {
+  font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -122,6 +123,7 @@ export default {
 }
 
 .nav-item a {
+  font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   padding: 10px 15px;
@@ -151,6 +153,7 @@ export default {
 }
 
 .burger-menu {
+  font-family: "Inter", sans-serif;
   display: none;
   background: none;
   border: none;
