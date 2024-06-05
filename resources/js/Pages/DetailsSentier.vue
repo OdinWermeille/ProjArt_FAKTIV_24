@@ -18,8 +18,8 @@
         <p>{{ sentier.duree }} min</p>
       </div>
     </section>
-    <div class="voir-sur-la-carte-wrapper">
-      <button class="voir-sur-la" @click="scrollToMap">Voir sur la carte</button>
+    <div class="map-wrapper">
+      <button class="map-button" @click="scrollToMap">Voir sur la carte</button>
     </div>
     <hr class="separator" />
     <section class="description">
@@ -139,7 +139,7 @@ h2 {
 
 .sentier-page {
   font-family: "Inter", sans-serif;
-  color: #333;
+  color: #212121;
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
@@ -179,17 +179,17 @@ h2 {
 
 .separator {
   border: none;
-  border-top: 2px solid #ddd;
+  border-top: 2px solid #fafafa;
   margin: 20px 0;
 }
 
-.voir-sur-la-carte-wrapper {
+.map-wrapper {
   display: flex;
   justify-content: center;
   margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
 }
 
-.voir-sur-la {
+.map-button {
   background-color: #4a8c2a;
   color: #fafafa;
   text-transform: uppercase;

@@ -3,17 +3,17 @@ c<template>
         <div class="content">
             <h1 class="titre">{{ endroit.nom }}</h1>
             <img class="image-endroit" :alt="endroit.nom" :src="`/${endroit.image_url}`" />
-            <div class="localit-wrapper">
-                <div class="localit">Localité</div>
-                <b class="lausanne">{{ endroit.localite }}</b>
+            <div class="localite-wrapper">
+                <div class="localite">Localité</div>
+                <b class="localite-name">{{ endroit.localite }}</b>
             </div>
-            <div class="voir-sur-la-carte-wrapper">
-                <button class="voir-sur-la" @click="scrollToMap">Voir sur la carte</button>
+            <div class="button-wrapper">
+                <button class="map-button" @click="scrollToMap">Voir sur la carte</button>
             </div>
             <hr class="separator" />
             <div class="description-wrapper">
                 <h2>Description</h2>
-                <div class="la-cathdrale-de">
+                <div class="description-text">
                     {{ endroit.description }}
                 </div>
             </div>
@@ -112,27 +112,27 @@ h2{
     border-radius: 10px;
 }
 
-.localit-wrapper {
+.localite-wrapper {
     margin-bottom: 20px;
 }
 
-.localit {
+.localite {
     font-size: 14px;
-    color: #666;
+    color: #7D7D7D;
 }
 
-.lausanne {
+.localite-name {
     font-size: 16px;
     font-weight: bold;
 }
 
-.voir-sur-la-carte-wrapper {
+.button-wrapper {
     display: flex;
     justify-content: center;
     margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
 }
 
-.voir-sur-la {
+.map-button {
     background-color: #4a8c2a;
     color: #fafafa;
     text-transform: uppercase;
@@ -146,7 +146,7 @@ h2{
 
 .separator {
     border: none;
-    border-top: 2px solid #ddd;
+    border-top: 2px solid #F0F0F0;
     margin: 20px 0;
 }
 
@@ -160,10 +160,10 @@ h2{
     margin-bottom: 10px;
 }
 
-.la-cathdrale-de {
+.description-text {
     font-size: 14px;
     line-height: 1.6;
-    color: #666;
+    color: #7D7D7D;
 }
 
 .map-container {
