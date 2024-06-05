@@ -10,7 +10,6 @@
       </div>
     </div>
 
-
     <div class="group-container">
       <div class="group-child"></div>
       <div class="rectangle-wrapper">
@@ -37,7 +36,7 @@
               </div>
               <span class="arrow-down" @click="toggleThemeDropdown"></span>
               <div v-if="themeDropdownOpen" class="dropdown-list theme-dropdown-list">
-                <label v-for="theme in themes" :key="theme.id" class="dropdown-list-item">
+                <label v-for="theme in filteredThemes" :key="theme.id" class="dropdown-list-item">
                   <input type="radio" :value="theme.id" v-model="form.theme_id" @click.stop />
                   {{ theme.nom }}
                 </label>
@@ -61,9 +60,6 @@
                     <span class="plus-icon">+</span> Créer un lieu <span class="underline">ici</span>
                   </a>
                 </div>
-
-
-
               </div>
             </div>
           </div>
@@ -101,7 +97,6 @@
   </div>
   <custom-popup :title="popupTitle" :message="popupMessage" :visible="popupVisible" @close="popupVisible = false" />
 </template>
-
 
 <script>
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
@@ -340,6 +335,10 @@ export default {
       return endroits.value.filter(endroit => endroit.nom.toLowerCase().includes(search.value.toLowerCase()));
     });
 
+    const filteredThemes = computed(() => {
+      return themes.value.filter(theme => theme.nom.toLowerCase() !== 'tout');
+    });
+
     const onDragStart = (event) => {
       console.log('Drag start:', event);
     };
@@ -401,6 +400,7 @@ export default {
       selectedEndroitsText,
       search,
       filteredEndroits,
+      filteredThemes,
       onDragStart,
       onDragEnd,
       onDragUpdate,
@@ -417,7 +417,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
@@ -784,8 +783,6 @@ body {
   /* Change text color to black */
 }
 
-
-
 .create-new-endroit-container {
   margin: 10px 0;
   /* Ajustez la marge selon vos besoins */
@@ -817,11 +814,15 @@ body {
   /* Souligner uniquement ce texte */
 }
 
+.underline {
+  text-decoration: underline;
+  padding-left: 10px;
+  /* Souligner uniquement ce texte */
+}
+
 .create-new-endroit:hover .underline {
   text-decoration: underline;
 }
-
-
 
 a {
   color: black;
