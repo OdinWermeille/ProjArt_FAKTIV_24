@@ -3,13 +3,8 @@
     <!-- Barre de recherche et boutons -->
     <div :class="$style.searchContainer">
       <div :class="$style.searchWrapper">
-        <input
-          v-model="searchQuery"
-          type="text"
-          :class="$style.searchInput"
-          placeholder="Rechercher"
-          @input="applyFiltersAndSearch"
-        />
+        <input v-model="searchQuery" type="text" :class="$style.searchInput" placeholder="Rechercher"
+          @input="applyFiltersAndSearch" />
         <img :class="$style.searchIcon" alt="Search Icon" src="/images/icon.svg" />
       </div>
       <div :class="$style.buttonsWrapper">
@@ -25,17 +20,9 @@
         <p>Aucun sentier ne correspond aux filtres appliqués.</p>
       </div>
       <div v-else :class="$style.groupParent">
-        <div
-          v-for="sentier in filteredSentiers"
-          :key="sentier.id"
-          :class="$style.card"
-          @click="onGroupContainerClick(sentier.id)"
-        >
-          <img
-            :class="$style.image"
-            :alt="sentier.nom"
-            :src="`/${sentier.image_url}`"
-          />
+        <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card"
+          @click="onGroupContainerClick(sentier.id)">
+          <img :class="$style.image" :alt="sentier.nom" :src="`/${sentier.image_url}`" />
           <div :class="$style.content">
             <b :class="$style.title">{{ sentier.nom }}</b>
             <div :class="$style.description">{{ truncateDescription(sentier.description) }}</div>
@@ -242,7 +229,8 @@ export default defineComponent({
 </script>
 
 <style module>
-html, body {
+html,
+body {
   font-family: "Inter", sans-serif;
   height: 100%;
   margin: 0;
@@ -308,10 +296,21 @@ html, body {
   align-items: center;
 }
 
+.button:hover {
+  background-color: #F0F0F0;
+  /* Change la couleur de fond au survol */
+  color: #BFD2A6;
+  /* Change la couleur de texte au survol */
+}
+
 .mapIcon {
   width: 24px;
   height: 24px;
   cursor: pointer;
+}
+
+.mapIcon:hover {
+  transform: translateY(-5px);
 }
 
 .noResults {

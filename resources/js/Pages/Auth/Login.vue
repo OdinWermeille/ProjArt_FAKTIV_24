@@ -13,34 +13,20 @@
 
           <form @submit.prevent="submit">
             <div class="input-group">
-              <input
-                id="username"
-                type="text"
-                class="group-item"
-                v-model="form.username"
-                required
-                autofocus
-                autocomplete="username"
-                placeholder="Nom d'utilisateur"
-              />
+              <input id="username" type="text" class="group-item" v-model="form.username" required autofocus
+                autocomplete="username" placeholder="Nom d'utilisateur" />
               <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
             <div class="input-group">
-              <input
-                id="password"
-                type="password"
-                class="group-item"
-                v-model="form.password"
-                required
-                autocomplete="current-password"
-                placeholder="Mot de passe"
-              />
+              <input id="password" type="password" class="group-item" v-model="form.password" required
+                autocomplete="current-password" placeholder="Mot de passe" />
               <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="ajouter-wrapper">
-              <button type="submit" class="ajouter" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+              <button type="submit" class="ajouter" :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing">
                 Connexion
               </button>
             </div>
@@ -101,18 +87,23 @@ const submit = () => {
   background-color: #f0f0f0;
   width: 100%;
   height: 100%;
-  border: none; /* Enlever le contour */
+  border: none;
+  /* Enlever le contour */
 }
+
 .rectangle-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
-  padding: 30px 15px; /* Ajouter plus de padding en haut et en bas */
+  padding: 30px 15px;
+  /* Ajouter plus de padding en haut et en bas */
   box-sizing: border-box;
 }
+
 .ajouter-un-lieu {
   font-size: 18px;
-  font-weight: bold; /* Mettre le titre en gras */
+  font-weight: bold;
+  /* Mettre le titre en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -123,9 +114,12 @@ const submit = () => {
   justify-content: center;
   margin-bottom: 10px;
 }
+
 .sous-titre {
-  font-size: 18px; /* Même taille que le titre */
-  font-weight: normal; /* Pas en gras */
+  font-size: 18px;
+  /* Même taille que le titre */
+  font-weight: normal;
+  /* Pas en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -136,26 +130,35 @@ const submit = () => {
   justify-content: center;
   margin-bottom: 20px;
 }
+
 .input-group {
-  margin-bottom: 20px; /* Augmenter la marge entre les champs */
+  margin-bottom: 20px;
+  /* Augmenter la marge entre les champs */
 }
+
 .group-item {
   border-radius: 10px;
   border: 1px solid #7d7d7d;
   box-sizing: border-box;
-  width: calc(100% - 32px); /* Ajouter de la marge sur les côtés */
+  width: calc(100% - 32px);
+  /* Ajouter de la marge sur les côtés */
   height: 50px;
-  padding: 12px; /* Ajouter un padding pour un espacement uniforme */
+  padding: 12px;
+  /* Ajouter un padding pour un espacement uniforme */
   font-size: 16px;
   font-family: "Inter", sans-serif;
-  background-color: transparent; /* Enlever le fond blanc */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  background-color: transparent;
+  /* Enlever le fond blanc */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
+
 .ajouter {
   position: relative;
   text-transform: uppercase;
   font-weight: 500;
 }
+
 .ajouter-wrapper {
   border-radius: 20px;
   background-color: #4a8c2a;
@@ -171,6 +174,14 @@ const submit = () => {
   margin: 30px auto 0 auto;
   width: fit-content;
 }
+
+.ajouter-wrapper:hover {
+  background-color: #3c6e23;
+  border: 1px solid #bfd2a6;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
 .group-container {
   position: relative;
   top: 0px;
@@ -178,6 +189,7 @@ const submit = () => {
   width: 100%;
   height: 100%;
 }
+
 .group-parent {
   width: 100%;
   position: relative;
@@ -190,6 +202,7 @@ const submit = () => {
   box-sizing: border-box;
   max-width: 700px;
 }
+
 body {
   margin: 0;
   line-height: normal;
