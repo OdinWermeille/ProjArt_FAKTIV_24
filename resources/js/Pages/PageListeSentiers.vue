@@ -43,6 +43,8 @@
               <div :class="$style.length">{{ sentier.longueur }} km</div>
               <div :class="$style.separator">•</div>
               <div :class="$style.theme">{{ sentier.theme.nom }}</div>
+              <div :class="$style.separator">•</div>
+              <div :class="$style.duration">{{ sentier.duree }} min</div>
             </div>
           </div>
         </div>
@@ -241,6 +243,7 @@ export default defineComponent({
 
 <style module>
 html, body {
+  font-family: "Inter", sans-serif;
   height: 100%;
   margin: 0;
 }
@@ -354,14 +357,16 @@ html, body {
 .title {
   font-family: "Inter", sans-serif;
   font-size: 1.25rem;
-  margin-bottom: 8px;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .description {
   font-family: "Inter", sans-serif;
-  font-size: 1rem;
+  font-size: 14px;
   color: #7D7D7D;
-  margin-bottom: 16px;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .info {
