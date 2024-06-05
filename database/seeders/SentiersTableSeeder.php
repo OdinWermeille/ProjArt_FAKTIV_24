@@ -23,8 +23,8 @@ class SentiersTableSeeder extends Seeder
                 'duree' => 180,
                 'user_id' => 1,
                 'theme_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => '2024-06-05 12:33:00',
+                'updated_at' => '2024-06-05 12:33:00',
             ],
             [
                 'nom' => 'Sentier des Parcs de Lausanne',
@@ -34,8 +34,8 @@ class SentiersTableSeeder extends Seeder
                 'duree' => 90,
                 'user_id' => 1,
                 'theme_id' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => '2024-06-04 12:33:00',
+                'updated_at' => '2024-06-04 12:33:00',
             ],
             [
                 'nom' => 'Sentier Culturel de Lausanne',
@@ -45,8 +45,8 @@ class SentiersTableSeeder extends Seeder
                 'duree' => 120,
                 'user_id' => 1,
                 'theme_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => '2024-06-05 07:33:00',
+                'updated_at' => '2024-06-05 07:33:00',
             ],
             [
                 'nom' => 'Sentier Nature de Sauvabelin',
@@ -56,8 +56,8 @@ class SentiersTableSeeder extends Seeder
                 'duree' => 60,
                 'user_id' => 1,
                 'theme_id' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => '2024-06-03 15:33:00',
+                'updated_at' => '2024-06-03 15:33:00',
             ],
             [
                 'nom' => 'Sentier Botanique',
@@ -67,8 +67,8 @@ class SentiersTableSeeder extends Seeder
                 'duree' => 75,
                 'user_id' => 1,
                 'theme_id' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => '2024-06-03 18:20:00',
+                'updated_at' => '2024-06-03 18:20:00',
             ],
         ]);
     }
