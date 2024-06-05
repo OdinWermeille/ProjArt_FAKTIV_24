@@ -16,7 +16,7 @@ class EndroitController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Données reçues pour créer un endroit', $request->all());
+        Log::info('Données reçues pour créer un lieu', $request->all());
 
         try {
             $validated = $request->validate([
@@ -36,7 +36,7 @@ class EndroitController extends Controller
                 $validated['image_url'] = 'images/' . $imageName;
             }
 
-            Log::info('Données validées pour créer un endroit', $validated);
+            Log::info('Données validées pour créer un lieu', $validated);
 
             $endroit = Endroit::create($validated);
 
@@ -45,17 +45,17 @@ class EndroitController extends Controller
             Log::error('Erreur de validation: ' . $e->getMessage());
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            Log::error('Erreur lors de la création de l\'endroit: ' . $e->getMessage());
+            Log::error('Erreur lors de la création du lieu: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
-            return response()->json(['error' => 'Erreur lors de la création de l\'endroit'], 500);
+            return response()->json(['error' => 'Erreur lors de la création du lieu'], 500);
         }
     }
 
     public function show($id)
-{
-    $endroit = Endroit::findOrFail($id);
-    return Inertia::render('DetailEndroit', [
-        'endroit' => $endroit,
-    ]);
-}
+    {
+        $endroit = Endroit::findOrFail($id);
+        return Inertia::render('DetailEndroit', [
+            'endroit' => $endroit,
+        ]);
+    }
 }

@@ -323,7 +323,7 @@ export default {
     });
 
     const selectedEndroitsText = computed(() => {
-      if (form.value.endroits.length === 0) return "Endroits";
+      if (form.value.endroits.length === 0) return "Lieux";
       const selectedNames = endroits.value
         .filter(endroit => form.value.endroits.includes(endroit.id))
         .map(endroit => endroit.nom)

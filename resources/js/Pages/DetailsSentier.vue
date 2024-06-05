@@ -84,7 +84,7 @@ export default {
           // Ajouter un pop-up avec le nom de l'endroit et un lien vert pointant vers la page de détail
           marker.bindPopup(`
             <b>${endroit.nom}</b><br>
-            <a href="/endroits/${endroit.id}" style="color: #4a8c2a">Plus d'infos</a>
+            <a href="/lieux/${endroit.id}" style="color: #4a8c2a">Plus d'infos</a>
           `);
 
           return marker;

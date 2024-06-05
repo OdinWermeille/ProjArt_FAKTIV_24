@@ -20,7 +20,7 @@
         </li>
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
-          <a href="/endroits/create"><img src="/images/add.svg" alt="Add Place Icon" class="nav-icon" /> Ajouter un lieu</a>
+          <a href="/lieux/create"><img src="/images/add.svg" alt="Add Place Icon" class="nav-icon" /> Ajouter un lieu</a>
         </li>
         <div class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
