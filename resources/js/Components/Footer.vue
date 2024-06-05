@@ -16,8 +16,9 @@
   
   <style scoped>
   .footer {
+    font-family: "Inter", sans-serif;
     background: #bfd2a6;
-    color: #333;
+    color: #212121;
     padding: 20px;
     text-align: center;
     width: 100%;
