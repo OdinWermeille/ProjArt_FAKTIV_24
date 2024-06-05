@@ -133,7 +133,6 @@
                 userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude])
                 .addTo(map)
                 .bindPopup("Les informations sur le lieu vont ici");
-                map.setView([userMarker.value.latitude, userMarker.value.longitude]);
 
                 const el = userGeoMarker.getElement();
                 if (el) {
