@@ -271,6 +271,7 @@ html, body {
 }
 
 .searchInput {
+  font-family: "Inter", sans-serif;
   flex: 1;
   padding: 8px 16px;
   border: 1px solid #ccc;
@@ -294,10 +295,11 @@ html, body {
 }
 
 .button {
+  font-family: "Inter", sans-serif;
   padding: 8px 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #F0F0F0;
   border-radius: 24px;
-  background-color: #fff;
+  background-color: #FAFAFA;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -310,10 +312,11 @@ html, body {
 }
 
 .noResults {
+  font-family: "Inter", sans-serif;
   text-align: center;
   margin-top: 20px;
   font-size: 1.25rem;
-  color: #555;
+  color: #7D7D7D;
 }
 
 .groupParent {
@@ -325,7 +328,7 @@ html, body {
 }
 
 .card {
-  background: #fff;
+  background: #FAFAFA;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -349,21 +352,24 @@ html, body {
 }
 
 .title {
+  font-family: "Inter", sans-serif;
   font-size: 1.25rem;
   margin-bottom: 8px;
 }
 
 .description {
+  font-family: "Inter", sans-serif;
   font-size: 1rem;
-  color: #555;
+  color: #7D7D7D;
   margin-bottom: 16px;
 }
 
 .info {
+  font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  color: #777;
+  color: #7D7D7D;
 }
 
 .length {
@@ -392,7 +398,8 @@ html, body {
 }
 
 .modal {
-  background: white;
+  font-family: "Inter", sans-serif;
+  background: #FAFAFA;
   width: 100%;
   max-width: 400px;
   border-top-left-radius: 16px;
@@ -402,76 +409,86 @@ html, body {
 }
 
 .modalHeader {
+  font-family: "Inter", sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #F0F0F0;
   padding-bottom: 8px;
   margin-bottom: 16px;
 }
 
 .closeButton {
+  font-family: "Inter", sans-serif;
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #555;
+  color: #7D7D7D;
 }
 
 .modalContent {
+  font-family: "Inter", sans-serif;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
 .modalContent h4 {
+  font-family: "Inter", sans-serif;
   margin: 0;
   margin-bottom: 8px;
   font-size: 1rem;
 }
 
 .radioGroup {
+  font-family: "Inter", sans-serif;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .radioGroupHorizontal {
+  font-family: "Inter", sans-serif;
   display: flex;
   flex-direction: row;
   gap: 16px;
 }
 
 .radioGroup label {
+  font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .modalFooter {
+  font-family: "Inter", sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 16px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #F0F0F0;
   margin-top: 16px;
 }
 
 .resetButton {
+  font-family: "Inter", sans-serif;
   background: none;
-  border: 1px solid green;
+  border: 1px solid #4A8C2A;
   border-radius: 24px;
   padding: 8px 16px;
-  color: green;
+  color: #4A8C2A;
   cursor: pointer;
 }
 
 .validateButton {
-  background: green;
+  font-family: "Inter", sans-serif;
+  background: #4A8C2A;
   border: none;
   border-radius: 24px;
   padding: 8px 16px;
-  color: white;
+  color: #FAFAFA;
   cursor: pointer;
 }
 </style>
