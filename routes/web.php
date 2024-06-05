@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -12,26 +13,21 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Redirect the root URL to /sentiers
+Route::redirect('/', '/sentiers');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/sentiers/create', [SentierController::class, 'create'])->name('sentiers.create');
     Route::post('/sentiers', [SentierController::class, 'store']);
-    Route::get('/endroits/create', [EndroitController::class, 'create'])->name('endroits.create');
-    Route::post('/endroits', [EndroitController::class, 'store']);
+    Route::get('/lieux/create', [EndroitController::class, 'create'])->name('endroits.create');
+    Route::post('/lieux', [EndroitController::class, 'store']);
     Route::get('/user', function () {
         return response()->json([
             'authenticated' => Auth::check(),
@@ -39,10 +35,10 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 });
+
 Route::get('/carte/{id}', [CarteController::class, 'carte']);
 Route::get('/carte', [CarteController::class, 'carte']);
 Route::get('/carteFetch/sentiers', [CarteController::class, 'index']);
-Route::get('/carteFetch/sentier/{id}', [CarteController::class, 'index']);
 Route::get('/sentiers', [SentierController::class, 'index']);
 
 Route::get('/sentiers', [SentierController::class, 'index'])->name('sentiers');
@@ -81,6 +77,6 @@ Route::get('/carte/{id}', [CarteController::class, 'carte']);
 Route::get('/carte', [CarteController::class, 'carte']);
 require __DIR__ . '/auth.php';
 
-Route::get('/endroits/{id}', [EndroitController::class, 'show']);
+Route::get('/lieux/{id}', [EndroitController::class, 'show']);
 
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy']);

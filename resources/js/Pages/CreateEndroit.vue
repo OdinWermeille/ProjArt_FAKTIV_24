@@ -169,15 +169,15 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log('Endroit créé avec succès:', response.data);
+        console.log('Lieu créé avec succès:', response.data);
         popupTitle.value = 'Merci!';
-        popupMessage.value = 'Votre endroit a été créé avec succès!';
+        popupMessage.value = 'Votre lieu a été créé avec succès!';
         popupVisible.value = true;
         resetForm();
       } catch (error) {
-        console.error('Erreur lors de la création de l\'endroit:', error);
+        console.error('Erreur lors de la création du lieu:', error);
         popupTitle.value = 'Erreur!';
-        popupMessage.value = 'Il y a eu une erreur lors de la création de votre endroit.';
+        popupMessage.value = 'Il y a eu une erreur lors de la création de votre lieu.';
         popupVisible.value = true;
       }
     };
