@@ -12,11 +12,7 @@ class CarteController extends Controller
         return Inertia::render("Carte");
     }
 
-    function index($id = null) {
-        if ($id != null) {
-            $sentier = Sentier::with('endroits')->findOrFail($id);
-            return response()->json($sentier);
-        }
+    function index() {
         $sentiers = Sentier::with('endroits')->get();
         return response()->json($sentiers);
     }

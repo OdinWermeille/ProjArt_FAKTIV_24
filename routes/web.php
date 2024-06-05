@@ -43,7 +43,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/carte/{id}', [CarteController::class, 'carte']);
 Route::get('/carte', [CarteController::class, 'carte']);
 Route::get('/carteFetch/sentiers', [CarteController::class, 'index']);
-Route::get('/carteFetch/sentier/{id}', [CarteController::class, 'index']);
 Route::get('/sentiers', [SentierController::class, 'index']);
 
 Route::get('/sentiers', [SentierController::class, 'index'])->name('sentiers');
