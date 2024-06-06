@@ -204,22 +204,22 @@ const openDescription = (e) => {
         sentier.endroits.forEach((endroit) => {
             if (endroit.id == e.target.options.customProperties.endroit.id) {
                 html += `
-                <div class="sentierCard">
-                    <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
+                <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
+                    <div class="sentierCard">
                         <img class="sentierImage" src="${sentier.image_url}" alt="Sentier Image">
-                    </a>
-                    <div class="sentierContent">
-                        <h2 class="sentierTitle">${sentier.nom}</h2>
-                        <p class="sentierDescription">${sentier.description}</p>
-                        <div class="sentierInfo">
-                            <span class="sentierLength">${sentier.longueur} km</span>
-                            <span class="sentierSeparator">•</span>
-                            <span class="sentierDuration">${sentier.theme.nom}</span>
-                            <span class="sentierSeparator">•</span>
-                            <span class="sentierDuration">${sentier.duree} min</span>
+                        <div class="sentierContent">
+                            <h2 class="sentierTitle">${sentier.nom}</h2>
+                            <p class="sentierDescription">${sentier.description}</p>
+                            <div class="sentierInfo">
+                                <span class="sentierLength">${sentier.longueur} km</span>
+                                <span class="sentierSeparator">•</span>
+                                <span class="sentierDuration">${sentier.theme.nom}</span>
+                                <span class="sentierSeparator">•</span>
+                                <span class="sentierDuration">${sentier.duree} min</span>
+                            </div>
                         </div>
                     </div>
-                </div>`;
+                </a>`;
             }
         });
     });
@@ -534,18 +534,21 @@ onMounted(() => {
         margin: 0;
         margin-bottom: 8px;
         font-size: 2rem;
+        color: #212121;
     }
 
     .modalContent h3 {
         margin: 0;
         margin-bottom: 8px;
         font-size: 1.5rem;
+        color: #212121;
     }
 
     .modalContent h4 {
         margin: 0;
         margin-bottom: 8px;
         font-size: 1rem;
+        color: #212121;
     }
 
     .modalFooter {
@@ -644,11 +647,13 @@ onMounted(() => {
 
     .sentierContent {
         padding: 16px;
+        color: #212121;
     }
 
     .sentierTitle {
         font-size: 1.25rem;
         margin-bottom: 8px;
+        color: #212121;
     }
 
     .sentierDescription {
