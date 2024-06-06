@@ -21,7 +21,7 @@
       </div>
       <div v-else :class="$style.groupParent">
         <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card"
-          @click="onGroupContainerClick(sentier.id)">
+          @click="onGroupContainerClick(sentier.nom)">
           <img :class="$style.image" :alt="sentier.nom" :src="`/${sentier.image_url}`" />
           <div :class="$style.content">
             <b :class="$style.title">{{ sentier.nom }}</b>
@@ -166,8 +166,9 @@ export default defineComponent({
     }
   },
   methods: {
-    onGroupContainerClick(id) {
-      window.location.href = `/sentiers/${id}`;
+    onGroupContainerClick(nom) {
+      const slug = nom.toLowerCase().replace(/\s+/g, '-'); // Convertir le nom en un slug URL-friendly
+      window.location.href = `/sentiers/${slug}`;
     },
     redirectToMap() {
       window.location.href = '/carte';
@@ -190,6 +191,7 @@ export default defineComponent({
       } else if (this.sortOption === 'oldest') {
         this.filteredSentiers.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
       }
+      this.closeModal();
     },
     resetFilters() {
       this.filterActivity = 'tout';
