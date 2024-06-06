@@ -19,6 +19,7 @@
             </div>
           </div>
           <div class="input-group map-container">
+            <h3 class="placer-le-lieu">Placer le lieu sur la carte</h3> <!-- Added title here -->
             <div id="map" class="rectangle-parent2"></div>
           </div>
           <div class="ajouter-wrapper">
@@ -35,7 +36,6 @@
     />
   </div>
 </template>
-
 
 <script>
 import { ref, onMounted, nextTick, computed } from 'vue';
@@ -198,7 +198,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .inter-text {
   font-family: "Inter", sans-serif;
@@ -328,6 +327,22 @@ export default {
   width: calc(100% - 32px); /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
   margin: 0 16px; /* Ajouter de la marge sur les côtés */
 }
+
+.placer-le-lieu {
+  font-size: 16px;
+  font-weight: bold; /* Mettre le titre en gras */
+  letter-spacing: 0.5px;
+  line-height: 24px;
+  display: flex;
+  font-family: "Inter", sans-serif;
+  color: #212121;
+  text-align: center;
+  align-items: center;
+  justify-content: center; /* Ajouter cette ligne pour centrer horizontalement */
+  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  margin-bottom: 12px; /* Ajouter une marge en bas */
+}
+
 
 .ajouter {
   position: relative;

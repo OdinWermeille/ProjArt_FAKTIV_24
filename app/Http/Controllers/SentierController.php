@@ -84,11 +84,14 @@ class SentierController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function showByName($nom)
     {
-        $sentier = Sentier::with(['theme', 'endroits'])->findOrFail($id);
+        $formattedName = str_replace('-', ' ', $nom); // Convertir le slug en nom
+        $sentier = Sentier::with(['theme', 'endroits'])->where('nom', $formattedName)->firstOrFail();
         return Inertia::render('DetailsSentier', [
             'sentier' => $sentier
         ]);
     }
+
+
 }

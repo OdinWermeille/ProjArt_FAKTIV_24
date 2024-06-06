@@ -36,6 +36,11 @@ Route::get('/carteFetch/sentiers', [CarteController::class, 'index']);
 Route::get('/sentiers', [SentierController::class, 'index'])->name('sentiers');
 Route::post('/api/sentiers', [SentierController::class, 'store']);
 Route::get('/sentiers/{id}', [SentierController::class, 'show']);
+Route::get('/sentiers/create', [SentierController::class, 'create']);
+Route::post('/sentiers', [SentierController::class, 'store']);
+
+Route::get('/sentiers/{nom}', [SentierController::class, 'showByName']);
+
 Route::post('/api/endroits', [EndroitController::class, 'store']);
 Route::get('/api/themes', function () {
     return response()->json(App\Models\Theme::all());

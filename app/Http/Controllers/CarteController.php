@@ -13,7 +13,7 @@ class CarteController extends Controller
     }
 
     function index() {
-        $sentiers = Sentier::with('endroits')->get();
+        $sentiers = Sentier::with(['endroits', 'theme'])->get();
         return response()->json($sentiers);
     }
 }
