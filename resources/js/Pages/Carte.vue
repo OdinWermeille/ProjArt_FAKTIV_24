@@ -123,6 +123,7 @@ import { SwipeModal } from "@takuma-ru/vue-swipe-modal"
 const { coords } = useGeolocation();
 let map;
 let userGeoMarker;
+let routingControl;
 
 const sentiers = [];
 
@@ -173,7 +174,6 @@ const resetFilters = () => {
 const applyFilters = () => {
     // Filtrer les sentiers selon les critères sélectionnés
     filteredSentiers.value = sentiers.filter(sentier => {
-        console.log(sentier);
         const matchActivity = filterActivity.value === 'tout' || sentier.theme.nom.trim().toLowerCase() === filterActivity.value.trim().toLowerCase();
         const matchDistance = filterDistance.value === 'tout' || (
             filterDistance.value === '0-5' && sentier.longueur <= 5 ||
@@ -194,14 +194,12 @@ const openDescription = (e) => {
     </div>
     <div class="modalContent">
         <h3>Sentiers passant par cet endroit</h3>`
-    console.log(modalContent);
-    console.log(e.target.options.customProperties.endroit);
     sentiers.forEach((sentier) => {
         sentier.endroits.forEach((endroit) => {
             if (endroit.id == e.target.options.customProperties.endroit.id) {
                 html += `
                 <h4>Sentier : ${sentier.nom}</h4>
-                <a href="/sentiers/${sentier.id}">
+                <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
                     <img src="${sentier.image_url}"/>
                 </a>`
             }
@@ -210,6 +208,61 @@ const openDescription = (e) => {
     html += `</div>`
     modalContent.innerHTML = html;
     isOpen.value = true
+}
+
+const showSentier = (sentier) => {
+    console.log(sentier);
+    sentiers.push(sentier);
+    const lineOptions = {
+        styles : [{
+            color: 'blue',
+            weight: 5,
+            opacity: 0.4
+        }]
+    };
+    lineOptions.styles[0].color = returnColor(sentier.theme_id);
+    const customIcon = leaflet.AwesomeMarkers.icon({
+        icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
+        markerColor: 'blue', // Couleur du marqueur
+        prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
+    });
+    customIcon.options.markerColor = returnColor(sentier.theme_id);
+
+    routingControl = leaflet.Routing.control({
+        waypoints: [],
+        routeWhileDragging: true,
+        show: false,
+        addWaypoints: false,
+        draggableWaypoints: true,
+        lineOptions: lineOptions,
+        fitSelectedRoutes: false,
+        createMarker: function(i, waypoint) {
+            const marker = leaflet.marker(waypoint.latLng, {
+                icon: customIcon,
+                customProperties: {
+                    endroit: sentier.endroits[i]
+                }
+            });
+
+                            
+            marker.bindPopup("lieu séléctionné")
+
+            marker.on('click', function(e) {
+                openDescription(e);
+                //window.location.href = `/sentiers/${sentier.id}`;
+            });
+            return marker;
+        },
+        router: new leaflet.Routing.OSRMv1({
+            serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
+        })    
+    }).addTo(map);
+
+                    
+    sentier.endroits.forEach((endroit) => {
+        routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
+    })
+    routingControl.setWaypoints(routingControl.options.waypoints);
 }
 
 onMounted(() => {
@@ -249,7 +302,6 @@ onMounted(() => {
         }
     });
 
-    let routingControl;
 
     const here = window.location.href;
     const urlArr = here.split(`/`);
@@ -258,68 +310,61 @@ onMounted(() => {
         fetch(`/carteFetch/sentiers`)
         .then((res) => res.json())
         .then((data) => {
-            if (urlArr[urlArr.length-1] == "carte") {
-                    
-            }else{
-                    
-            }
             data.forEach((sentier) => {
                 if (sentier.id == urlArr[urlArr.length-1]) {
                     
-                    sentiers.push(sentier);
-                    console.log(sentier);
+                    
+                    showSentier(sentier);
 
-                    const lineOptions = {
-                        styles : [{
-                            color: 'blue',
-                            weight: 5,
-                            opacity: 0.7
-                        }]
-                    };
-                    lineOptions.styles[0].color = returnColor(sentier.theme_id);
+                    // const lineOptions = {
+                    //     styles : [{
+                    //         color: 'blue',
+                    //         weight: 5,
+                    //         opacity: 0.7
+                    //     }]
+                    // };
+                    // lineOptions.styles[0].color = returnColor(sentier.theme_id);
 
-                    const customIcon = leaflet.AwesomeMarkers.icon({
-                        icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
-                        markerColor: 'blue', // Couleur du marqueur
-                        prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
-                    });
-                        customIcon.options.markerColor = returnColor(sentier.theme_id);
+                    // const customIcon = leaflet.AwesomeMarkers.icon({
+                    //     icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
+                    //     markerColor: 'blue', // Couleur du marqueur
+                    //     prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
+                    // });
+                    //     customIcon.options.markerColor = returnColor(sentier.theme_id);
 
-                    routingControl = leaflet.Routing.control({
-                        waypoints: [],
-                        routeWhileDragging: true,
-                        show: false,
-                        addWaypoints: false,
-                        draggableWaypoints: true,
-                        lineOptions: lineOptions,
-                        fitSelectedRoutes: false,
-                        createMarker: function(i, waypoint) {
-                            const marker = leaflet.marker(waypoint.latLng, {
-                                icon: customIcon,
-                                customProperties: {
-                                    endroit: sentier.endroits[i]
-                                }
-                            });
+                    // routingControl = leaflet.Routing.control({
+                    //     waypoints: [],
+                    //     routeWhileDragging: true,
+                    //     show: false,
+                    //     addWaypoints: false,
+                    //     draggableWaypoints: true,
+                    //     lineOptions: lineOptions,
+                    //     fitSelectedRoutes: false,
+                    //     createMarker: function(i, waypoint) {
+                    //         const marker = leaflet.marker(waypoint.latLng, {
+                    //             icon: customIcon,
+                    //             customProperties: {
+                    //                 endroit: sentier.endroits[i]
+                    //             }
+                    //         });
 
-                            marker.bindPopup("Lieu séléctionné")
+                    //         marker.bindPopup("Lieu séléctionné")
 
-                            marker.on('click', function(e) {
-                                openDescription(e)
-                                //window.location.href = `/sentiers/${sentier.id}`;
-                            });
-                            console.log(sentier.endroits[i]);
-                            return marker;
-                        },
-                        router: new leaflet.Routing.OSRMv1({
-                            serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
-                        })    
-                    }).addTo(map);
+                    //         marker.on('click', function(e) {
+                    //             openDescription(e)
+                    //             //window.location.href = `/sentiers/${sentier.id}`;
+                    //         });
+                    //         return marker;
+                    //     },
+                    //     router: new leaflet.Routing.OSRMv1({
+                    //         serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
+                    //     })    
+                    // }).addTo(map);
                                 
-                    sentier.endroits.forEach((endroit) => {
-                        routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
-                    })
-                    console.log(routingControl.options.waypoints);
-                    routingControl.setWaypoints(routingControl.options.waypoints);
+                    // sentier.endroits.forEach((endroit) => {
+                    //     routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
+                    // })
+                    // routingControl.setWaypoints(routingControl.options.waypoints);
                 }
             })
         })
@@ -331,62 +376,59 @@ onMounted(() => {
         .then((res) => res.json())
         .then((data) => {
             data.forEach((sentier) => {
-                
-                sentiers.push(sentier);
-                console.log(sentier);
 
-                const lineOptions = {
-                    styles : [{
-                        color: 'blue',
-                        weight: 5,
-                        opacity: 0.4
-                    }]
-                };
-                lineOptions.styles[0].color = returnColor(sentier.theme_id);
-                const customIcon = leaflet.AwesomeMarkers.icon({
-                    icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
-                    markerColor: 'blue', // Couleur du marqueur
-                    prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
-                });
-                customIcon.options.markerColor = returnColor(sentier.theme_id);
+                showSentier(sentier);
 
-                routingControl = leaflet.Routing.control({
-                    waypoints: [],
-                    routeWhileDragging: true,
-                    show: false,
-                    addWaypoints: false,
-                    draggableWaypoints: true,
-                    lineOptions: lineOptions,
-                    fitSelectedRoutes: false,
-                    createMarker: function(i, waypoint) {
-                        const marker = leaflet.marker(waypoint.latLng, {
-                            icon: customIcon,
-                            customProperties: {
-                                endroit: sentier.endroits[i]
-                            }
-                        });
+                // const lineOptions = {
+                //         styles : [{
+                //             color: 'blue',
+                //             weight: 5,
+                //             opacity: 0.7
+                //         }]
+                //     };
+                //     lineOptions.styles[0].color = returnColor(sentier.theme_id);
 
-                            
-                        marker.bindPopup("lieu séléctionné")
+                //     const customIcon = leaflet.AwesomeMarkers.icon({
+                //         icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
+                //         markerColor: 'blue', // Couleur du marqueur
+                //         prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
+                //     });
+                //         customIcon.options.markerColor = returnColor(sentier.theme_id);
 
-                        marker.on('click', function(e) {
-                            openDescription(e);
-                            //window.location.href = `/sentiers/${sentier.id}`;
-                        });
-                        console.log(sentier.endroits[i]);
-                        return marker;
-                    },
-                    // router: new leaflet.Routing.OSRMv1({
-                    //     serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
-                    // })    
-                }).addTo(map);
+                //     routingControl = leaflet.Routing.control({
+                //         waypoints: [],
+                //         routeWhileDragging: true,
+                //         show: false,
+                //         addWaypoints: false,
+                //         draggableWaypoints: true,
+                //         lineOptions: lineOptions,
+                //         fitSelectedRoutes: false,
+                //         createMarker: function(i, waypoint) {
+                //             const marker = leaflet.marker(waypoint.latLng, {
+                //                 icon: customIcon,
+                //                 customProperties: {
+                //                     endroit: sentier.endroits[i]
+                //                 }
+                //             });
 
-                    
-                sentier.endroits.forEach((endroit) => {
-                    routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
-                })
-                console.log(routingControl.options.waypoints);
-                routingControl.setWaypoints(routingControl.options.waypoints);
+                //             marker.bindPopup("Lieu séléctionné")
+
+                //             marker.on('click', function(e) {
+                //                 openDescription(e)
+                //                 //window.location.href = `/sentiers/${sentier.id}`;
+                //             });
+                //             return marker;
+                //         },
+                //         router: new leaflet.Routing.OSRMv1({
+                //             serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
+                //         })    
+                //     }).addTo(map);
+                                
+                //     sentier.endroits.forEach((endroit) => {
+                //         routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
+                //     })
+                //     routingControl.setWaypoints(routingControl.options.waypoints);
+
             })
         });
     }
