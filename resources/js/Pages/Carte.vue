@@ -1,32 +1,29 @@
 <template>
-    <Head title="Carte">
-        <link 
-        rel="stylesheet" 
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""/>
 
-        <link 
-        rel="stylesheet" 
-        href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <Head title="Carte">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+        <link rel="stylesheet"
+            href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     </Head>
     <div>
         <!-- Barre de recherche et boutons -->
         <div class="searchContainer">
             <div class="searchWrapper">
                 <input type="text" class="searchInput" placeholder="Rechercher" />
-                <img class="searchIcon" alt="Search Icon" src="/images/icon.svg" />
+                <img class="searchIcon" alt="Search Icon" src="/storage/images/icon.svg" />
             </div>
             <div class="buttonsWrapper">
                 <button class="button" @click="showFilterModal = true">Filtrer</button>
-                <img class="listIcon" alt="List Icon" src="/images/list.svg" @click="redirectToList" />
+                <img class="listIcon" alt="List Icon" src="/storage/images/list.svg" @click="redirectToList" />
             </div>
         </div>
     </div>
     <div id="map"></div>
     <SwipeModal v-model="isOpen" id="modal">
     </SwipeModal>
-    
+
     <!-- Filter Modal -->
     <div v-if="showFilterModal" class="modalBackdrop" @click="closeModal">
         <div class="modal" @click.stop>
@@ -131,27 +128,27 @@ const redirectToList = () => {
 };
 
 const returnColor = (theme_id) => {
-        switch (theme_id) {
-            case 1:
-                return 'orange';
-            case 2:
-                return 'darkred';
-            case 3:
-                return 'darkgreen';
-            case 4:
-                return 'cadetblue';
-            case 5:
-                return 'purple';
-            case 6:
-                return 'red';
-            case 7:
-                return 'green';
-            case 8:
-                return 'darkpurple';
-            default:
-                return 'blue';
-        }
+    switch (theme_id) {
+        case 1:
+            return 'orange';
+        case 2:
+            return 'darkred';
+        case 3:
+            return 'darkgreen';
+        case 4:
+            return 'cadetblue';
+        case 5:
+            return 'purple';
+        case 6:
+            return 'red';
+        case 7:
+            return 'green';
+        case 8:
+            return 'darkpurple';
+        default:
+            return 'blue';
     }
+}
 
 const isOpen = ref(false);
 const showFilterModal = ref(false);
@@ -187,7 +184,7 @@ const applyFilters = () => {
 
 const openDescription = (e) => {
     const modalHandleWrapper = document.querySelector("#modal .swipe-modal-content .swipe-modal-drag-handle-wrapper");
-    modalHandleWrapper.addEventListener("click", function() {
+    modalHandleWrapper.addEventListener("click", function () {
         isOpen.value = false;
     });
 
@@ -229,7 +226,7 @@ const openDescription = (e) => {
 
     // Add event listener to the close button
     const closeModalButton = document.getElementById("closeModalButton");
-    closeModalButton.addEventListener("click", function() {
+    closeModalButton.addEventListener("click", function () {
         isOpen.value = false;
     });
 
@@ -240,7 +237,7 @@ const showSentier = (sentier) => {
     console.log(sentier);
     sentiers.push(sentier);
     const lineOptions = {
-        styles : [{
+        styles: [{
             color: 'blue',
             weight: 5,
             opacity: 0.4
@@ -262,7 +259,7 @@ const showSentier = (sentier) => {
         draggableWaypoints: true,
         lineOptions: lineOptions,
         fitSelectedRoutes: false,
-        createMarker: function(i, waypoint) {
+        createMarker: function (i, waypoint) {
             const marker = leaflet.marker(waypoint.latLng, {
                 icon: customIcon,
                 customProperties: {
@@ -270,10 +267,10 @@ const showSentier = (sentier) => {
                 }
             });
 
-                            
+
             marker.bindPopup("lieu séléctionné")
 
-            marker.on('click', function(e) {
+            marker.on('click', function (e) {
                 openDescription(e);
                 //window.location.href = `/sentiers/${sentier.id}`;
             });
@@ -281,10 +278,10 @@ const showSentier = (sentier) => {
         },
         router: new leaflet.Routing.OSRMv1({
             serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
-        })    
+        })
     }).addTo(map);
 
-                    
+
     sentier.endroits.forEach((endroit) => {
         routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
     })
@@ -303,9 +300,9 @@ onMounted(() => {
 
     nearbyMarkers.value.forEach(({ latitude, longitude }) => {
         leaflet
-        .marker([latitude, longitude])
-        .addTo(map)
-        .bindPopup(`Nouveau lieu de l'utilisateur à ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
+            .marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup(`Nouveau lieu de l'utilisateur à ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
     });
 
     watchEffect(() => {
@@ -318,12 +315,12 @@ onMounted(() => {
             }
 
             userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude])
-            .addTo(map)
-            .bindPopup("Les informations sur le lieu vont ici");
+                .addTo(map)
+                .bindPopup("Les informations sur le lieu vont ici");
 
             const el = userGeoMarker.getElement();
             if (el) {
-            el.style.filter = "hue-rotate(140deg)";
+                el.style.filter = "hue-rotate(140deg)";
             }
         }
     });
@@ -332,367 +329,366 @@ onMounted(() => {
     const here = window.location.href;
     const urlArr = here.split(`/`);
 
-    if (urlArr[urlArr.length-1] !== "carte") {
+    if (urlArr[urlArr.length - 1] !== "carte") {
         fetch(`/carteFetch/sentiers`)
-        .then((res) => res.json())
-        .then((data) => {
-            data.forEach((sentier) => {
-                if (sentier.id == urlArr[urlArr.length-1]) {
-                    showSentier(sentier);
-                }
+            .then((res) => res.json())
+            .then((data) => {
+                data.forEach((sentier) => {
+                    if (sentier.id == urlArr[urlArr.length - 1]) {
+                        showSentier(sentier);
+                    }
+                })
             })
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-    }else{
+            .catch((err) => {
+                console.log(err);
+            });
+    } else {
         fetch("/carteFetch/sentiers")
-        .then((res) => res.json())
-        .then((data) => {
-            data.forEach((sentier) => {
-                showSentier(sentier);
-            })
-        });
+            .then((res) => res.json())
+            .then((data) => {
+                data.forEach((sentier) => {
+                    showSentier(sentier);
+                })
+            });
     }
 });
 </script>
 
 <style>
-    #map {
-        width: 100%;
-        height: calc(100vh - 190px);
-        position: relative;
-        z-index: 10;
-    }
+#map {
+    width: 100%;
+    height: calc(100vh - 190px);
+    position: relative;
+    z-index: 10;
+}
 
-    .searchContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 16px;
-        background-color: #F0F0F0;
-        border-bottom: 1px solid #7d7d7d;
-    }
+.searchContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background-color: #F0F0F0;
+    border-bottom: 1px solid #7d7d7d;
+}
 
-    .searchWrapper {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        max-width: 600px;
-        margin-bottom: 16px;
-        position: relative;
-    }
+.searchWrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 16px;
+    position: relative;
+}
 
-    .searchInput {
-        flex: 1;
-        padding: 8px 16px;
-        border: 1px solid #ccc;
-        border-radius: 24px;
-        padding-right: 40px;
-    }
+.searchInput {
+    flex: 1;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 24px;
+    padding-right: 40px;
+}
 
-    .searchIcon {
-        position: absolute;
-        right: 12px;
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-    }
+.searchIcon {
+    position: absolute;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
 
-    .buttonsWrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        }
+.buttonsWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
 
-    .button {
-        padding: 8px 16px;
-        border: 1px solid #ccc;
-        border-radius: 24px;
-        background-color: #FAFAFA;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-    }
+.button {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 24px;
+    background-color: #FAFAFA;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
 
-    .mapIcon {
-        width: 24px;
-        height: 24px;
-        cursor: pointer;
-    }
+.mapIcon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
 
-    .groupParent {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        gap: 16px;
-        padding: 16px;
-    }
+.groupParent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 16px;
+    padding: 16px;
+}
 
-    .card {
-        background: #FAFAFA;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        cursor: pointer;
-        transition: transform 0.2s;
-        width: 300px;
-    }
+.card {
+    background: #FAFAFA;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 300px;
+}
 
-    .card:hover {
-        transform: translateY(-5px);
-    }
+.card:hover {
+    transform: translateY(-5px);
+}
 
-    .image {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-    }
+.image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
 
-    .content {
-        padding: 16px;
-    }
+.content {
+    padding: 16px;
+}
 
-    .title {
-        font-size: 1.25rem;
-        margin-bottom: 8px;
-    }
+.title {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
 
-    .description {
-        font-size: 1rem;
-        color: #7d7d7d;
-        margin-bottom: 16px;
-    }
+.description {
+    font-size: 1rem;
+    color: #7d7d7d;
+    margin-bottom: 16px;
+}
 
-    .info {
-        display: flex;
-        align-items: center;
-        font-size: 0.875rem;
-        color: #7d7d7d;
-    }
+.info {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #7d7d7d;
+}
 
-    .length {
-        margin-right: 8px;
-    }
+.length {
+    margin-right: 8px;
+}
 
-    .separator {
-        margin: 0 8px;
-    }
+.separator {
+    margin: 0 8px;
+}
 
-    .duration {
-        margin-left: 8px;
-    }
+.duration {
+    margin-left: 8px;
+}
 
-    .modalBackdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        z-index: 1000;
-    }
+.modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1000;
+}
 
-    #modal {
-        background: #FAFAFA;
-        width: 100%;
-        border-top-left-radius: 16px;
-        border-top-right-radius: 16px;
-        padding: 16px;
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-    }
+#modal {
+    background: #FAFAFA;
+    width: 100%;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+}
 
-    .modalHeader {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #7d7d7d;
-        padding-bottom: 8px;
-        margin-bottom: 16px;
-    }
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #7d7d7d;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
 
-    .closeButton {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: #7d7d7d;
-    }
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #7d7d7d;
+}
 
-    .modalContent {
-        display: flex;
-        flex-direction: column;
-        align-items: left;
-        gap: 16px;
-    }
+.modalContent {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 16px;
+}
 
-    .modalHeader h2{
-        margin: 0;
-        margin-bottom: 8px;
-        font-size: 2rem;
-        color: #212121;
-    }
+.modalHeader h2 {
+    margin: 0;
+    margin-bottom: 8px;
+    font-size: 2rem;
+    color: #212121;
+}
 
-    .modalContent h3 {
-        margin: 0;
-        margin-bottom: 8px;
-        font-size: 1.5rem;
-        color: #212121;
-    }
+.modalContent h3 {
+    margin: 0;
+    margin-bottom: 8px;
+    font-size: 1.5rem;
+    color: #212121;
+}
 
-    .modalContent h4 {
-        margin: 0;
-        margin-bottom: 8px;
-        font-size: 1rem;
-        color: #212121;
-    }
+.modalContent h4 {
+    margin: 0;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #212121;
+}
 
-    .modalFooter {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 16px;
-        border-top: 1px solid #F0F0F0;
-        margin-top: 16px;
-    }
+.modalFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #F0F0F0;
+    margin-top: 16px;
+}
 
-    .modal {
-        font-family: "Inter", sans-serif;
-        background: #FAFAFA;
-        width: 100%;
-        max-width: 400px;
-        border-top-left-radius: 16px;
-        border-top-right-radius: 16px;
-        padding: 16px;
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-    }
+.modal {
+    font-family: "Inter", sans-serif;
+    background: #FAFAFA;
+    width: 100%;
+    max-width: 400px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+}
 
-    .radioGroup {
-        font-family: "Inter", sans-serif;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
+.radioGroup {
+    font-family: "Inter", sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-    .radioGroupHorizontal {
-        font-family: "Inter", sans-serif;
-        display: flex;
-        flex-direction: row;
-        gap: 16px;
-    }
+.radioGroupHorizontal {
+    font-family: "Inter", sans-serif;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
 
-    .radioGroup label {
-        font-family: "Inter", sans-serif;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+.radioGroup label {
+    font-family: "Inter", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-    .modalFooter {
-        font-family: "Inter", sans-serif;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 16px;
-        border-top: 1px solid #F0F0F0;
-        margin-top: 16px;
-    }
+.modalFooter {
+    font-family: "Inter", sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #F0F0F0;
+    margin-top: 16px;
+}
 
-    .resetButton {
-        font-family: "Inter", sans-serif;
-        background: none;
-        border: 1px solid #4A8C2A;
-        border-radius: 24px;
-        padding: 8px 16px;
-        color: #4A8C2A;
-        cursor: pointer;
-    }
+.resetButton {
+    font-family: "Inter", sans-serif;
+    background: none;
+    border: 1px solid #4A8C2A;
+    border-radius: 24px;
+    padding: 8px 16px;
+    color: #4A8C2A;
+    cursor: pointer;
+}
 
-    .validateButton {
-        font-family: "Inter", sans-serif;
-        background: #4A8C2A;
-        border: none;
-        border-radius: 24px;
-        padding: 8px 16px;
-        color: #FAFAFA;
-        cursor: pointer;
-    }
+.validateButton {
+    font-family: "Inter", sans-serif;
+    background: #4A8C2A;
+    border: none;
+    border-radius: 24px;
+    padding: 8px 16px;
+    color: #FAFAFA;
+    cursor: pointer;
+}
 
-    .sentierCard {
-        background: #FAFAFA;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        cursor: pointer;
-        transition: transform 0.2s;
-        width: 90%;
-        margin: 0 auto;
-        margin-bottom: 16px;
-        max-width: 600px;
-    }
+.sentierCard {
+    background: #FAFAFA;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 16px;
+    max-width: 600px;
+}
 
-    .sentierCard:hover {
-        transform: translateY(-5px);
-    }
+.sentierCard:hover {
+    transform: translateY(-5px);
+}
 
-    .sentierImage {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-    }
+.sentierImage {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
 
-    .sentierContent {
-        padding: 16px;
-        color: #212121;
-    }
+.sentierContent {
+    padding: 16px;
+    color: #212121;
+}
 
-    .sentierTitle {
-        font-size: 1.25rem;
-        margin-bottom: 8px;
-        color: #212121;
-    }
+.sentierTitle {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    color: #212121;
+}
 
-    .sentierDescription {
-        font-size: 1rem;
-        color: #7d7d7d;
-        margin-bottom: 16px;
-    }
+.sentierDescription {
+    font-size: 1rem;
+    color: #7d7d7d;
+    margin-bottom: 16px;
+}
 
-    .sentierInfo {
-        display: flex;
-        align-items: center;
-        font-size: 0.875rem;
-        color: #7d7d7d;
-    }
+.sentierInfo {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #7d7d7d;
+}
 
-    .sentierLength {
-        margin-right: 8px;
-    }
+.sentierLength {
+    margin-right: 8px;
+}
 
-    .sentierSeparator {
-        margin: 0 8px;
-    }
+.sentierSeparator {
+    margin: 0 8px;
+}
 
-    .sentierDuration {
-        margin-left: 8px;
-    }
+.sentierDuration {
+    margin-left: 8px;
+}
 
-    .closeButton {
-        background: none;
-        border: none;
-        font-size: 3.5rem;
-        cursor: pointer;
-        color: #7d7d7d;
-        position: absolute;
-        right: 48px;
-    }
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 3.5rem;
+    cursor: pointer;
+    color: #7d7d7d;
+    position: absolute;
+    right: 48px;
+}
 
-    .swipe-modal-drag-handle-wrapper {
-        display: none !important;
-    }
-
+.swipe-modal-drag-handle-wrapper {
+    display: none !important;
+}
 </style>

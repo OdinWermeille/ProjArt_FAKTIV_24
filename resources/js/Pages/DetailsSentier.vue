@@ -6,15 +6,15 @@
     </section>
     <section class="info-section">
       <div class="info">
-        <img src="/images/chemin.svg" alt="List Icon" class="nav-icon" />
+        <img src="/storage/images/chemin.svg" alt="List Icon" class="nav-icon" />
         <p>{{ sentier.longueur }} km</p>
       </div>
       <div class="info">
-        <img src="/images/theme.svg" alt="List Icon" class="nav-icon" />
+        <img src="/storage/images/theme.svg" alt="List Icon" class="nav-icon" />
         <p>{{ sentier.theme.nom }}</p>
       </div>
       <div class="info">
-        <img src="/images/horloge.svg" alt="List Icon" class="nav-icon" />
+        <img src="/storage/images/horloge.svg" alt="List Icon" class="nav-icon" />
         <p>{{ formattedDuration }}</p>
       </div>
     </section>

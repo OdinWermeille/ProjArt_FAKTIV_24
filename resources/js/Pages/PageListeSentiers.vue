@@ -3,13 +3,14 @@
     <!-- Barre de recherche et boutons -->
     <div :class="$style.searchContainer">
       <div :class="$style.searchWrapper">
-        <input v-model="searchQuery" type="text" :class="$style.searchInput" placeholder="Rechercher" @input="applyFiltersAndSearch" />
-        <img :class="$style.searchIcon" alt="Search Icon" src="/images/icon.svg" />
+        <input v-model="searchQuery" type="text" :class="$style.searchInput" placeholder="Rechercher"
+          @input="applyFiltersAndSearch" />
+        <img :class="$style.searchIcon" alt="Search Icon" src="/storage/images/icon.svg" />
       </div>
       <div :class="$style.buttonsWrapper">
         <button :class="$style.button" @click="showSortModal = true">Trier par</button>
         <button :class="$style.button" @click="showFilterModal = true">Filtrer</button>
-        <img :class="$style.mapIcon" alt="Map Icon" src="/images/map.svg" @click="redirectToMap" />
+        <img :class="$style.mapIcon" alt="Map Icon" src="/storage/images/map.svg" @click="redirectToMap" />
       </div>
     </div>
 
@@ -19,7 +20,8 @@
         <p>Aucun sentier ne correspond aux filtres appliqués.</p>
       </div>
       <div v-else :class="$style.groupParent">
-        <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card" @click="onGroupContainerClick(sentier.nom)">
+        <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card"
+          @click="onGroupContainerClick(sentier.nom)">
           <img :class="$style.image" :alt="sentier.nom" :src="`/${sentier.image_url}`" />
           <div :class="$style.content">
             <b :class="$style.title">{{ sentier.nom }}</b>

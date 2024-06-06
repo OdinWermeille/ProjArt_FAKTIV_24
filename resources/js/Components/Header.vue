@@ -2,37 +2,37 @@
   <header class="header">
     <div class="logo">
       <a href="/sentiers">
-        <img src="/images/Group.svg" alt="Logo" />
+        <img src="/storage/images/Group.svg" alt="Logo" />
       </a>
     </div>
     <nav class="nav">
       <ul class="nav-list" :class="{ 'nav-list-mobile': isMobileMenuOpen }">
         <li class="nav-item">
           <a href="/sentiers">
-            <img src="/images/chemin_noir.svg" alt="Chemin Icon" class="nav-icon" /> Sentiers
+            <img src="/storage/images/chemin_noir.svg" alt="Chemin Icon" class="nav-icon" /> Sentiers
           </a>
         </li>
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
           <a href="/sentiers/create">
-            <img src="/images/add.svg" alt="Icon +" class="nav-icon" /> Ajouter un sentier
+            <img src="/storage/images/add.svg" alt="Icon +" class="nav-icon" /> Ajouter un sentier
           </a>
         </li>
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
           <a href="/lieux/create">
-            <img src="/images/add.svg" alt="Icon +" class="nav-icon" /> Ajouter un lieu
+            <img src="/storage/images/add.svg" alt="Icon +" class="nav-icon" /> Ajouter un lieu
           </a>
         </li>
         <div class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
           <a href="/logout">
-            <img src="/images/logout.svg" alt="Logout Icon" class="nav-icon" /> Logout
+            <img src="/storage/images/logout.svg" alt="Logout Icon" class="nav-icon" /> Logout
           </a>
         </li>
         <li v-else class="nav-item">
           <a href="/login">
-            <img src="/images/login.svg" alt="Login Icon" class="nav-icon" /> Login
+            <img src="/storage/images/login.svg" alt="Login Icon" class="nav-icon" /> Login
           </a>
         </li>
       </ul>

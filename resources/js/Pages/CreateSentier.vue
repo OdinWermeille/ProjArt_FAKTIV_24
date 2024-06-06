@@ -1,7 +1,8 @@
 <template>
   <div class="group-parent inter-text">
     <div class="alert-box">
-      <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui composeront le sentier.</p>
+      <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui
+        composeront le sentier.</p>
       <div class="create-new-endroit-container-intro">
         <a href="/lieux/create" class="create-new-endroit-intro">
           Créer un lieu <span class="underline-intro">ici</span>
@@ -15,26 +16,33 @@
         <h2 class="ajouter-un-lieu">Ajouter un sentier</h2>
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="input-group">
-            <input :class="{'input-error': errors.nom}" class="group-item" type="text" v-model="form.nom" id="nom" placeholder="Nom">
-            <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
+            <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" id="nom"
+              placeholder="Nom">
+            <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom
+              }}</span>
           </div>
           <div class="input-group">
-            <textarea :class="{'input-error': errors.description}" class="group-item description-field" v-model="form.description" id="description" placeholder="Description"></textarea>
-            <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
+            <textarea :class="{ 'input-error': errors.description }" class="group-item description-field"
+              v-model="form.description" id="description" placeholder="Description"></textarea>
+            <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+              errors.description }}</span>
           </div>
           <div class="input-group image-upload">
-            <div :class="{'input-error': errors.image || isFileTooLarge}" class="rectangle-parent">
+            <div :class="{ 'input-error': errors.image || isFileTooLarge }" class="rectangle-parent">
               <div class="group-child"></div>
-              <label :class="{'label-error': isFileTooLarge}" class="supporting-text" for="image">
+              <label :class="{ 'label-error': isFileTooLarge }" class="supporting-text" for="image">
                 {{ truncatedImageLabel }} ({{ imageSize }} / {{ maxFileSize }} KB max)
               </label>
-              <input class="image-input" type="file" @change="onFileChange" id="image" accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
+              <input class="image-input" type="file" @change="onFileChange" id="image"
+                accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
             </div>
-            <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image }}</span>
-            <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est trop lourd.</span>
+            <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image
+              }}</span>
+            <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est
+              trop lourd.</span>
           </div>
           <div class="input-group">
-            <div :class="{'input-error': errors.theme_id}" class="group-item dropdown-multi">
+            <div :class="{ 'input-error': errors.theme_id }" class="group-item dropdown-multi">
               <div class="dropdown-header" @click="toggleThemeDropdown">
                 {{ selectedThemeText }}
               </div>
@@ -46,10 +54,11 @@
                 </label>
               </div>
             </div>
-            <span v-if="errors.theme_id" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.theme_id }}</span>
+            <span v-if="errors.theme_id" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+              errors.theme_id }}</span>
           </div>
           <div class="input-group">
-            <div :class="{'input-error': errors.endroits}" class="group-item dropdown-multi">
+            <div :class="{ 'input-error': errors.endroits }" class="group-item dropdown-multi">
               <div class="dropdown-header" @click="toggleDropdown">
                 {{ selectedEndroitsText }}
               </div>
@@ -67,7 +76,8 @@
                 </div>
               </div>
             </div>
-            <span v-if="errors.endroits" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.endroits }}</span>
+            <span v-if="errors.endroits" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+              errors.endroits }}</span>
           </div>
 
           <!-- Titre conditionnel centré -->
@@ -76,7 +86,8 @@
           </div>
 
           <!-- Ajouter les éléments cochés ici -->
-          <draggable v-if="form.endroits.length > 0" v-model="form.endroits" class="draggable-list" item-key="id" @start="onDragStart" @end="onDragEnd" @update="onDragUpdate" @change="onDragChange">
+          <draggable v-if="form.endroits.length > 0" v-model="form.endroits" class="draggable-list" item-key="id"
+            @start="onDragStart" @end="onDragEnd" @update="onDragUpdate" @change="onDragChange">
             <template #item="{ element }">
               <div class="draggable-item">
                 <i class="fas fa-grip-vertical grip-icon"></i> <!-- Icône de grip -->
@@ -663,7 +674,7 @@ export default {
   text-overflow: ellipsis;
   padding-left: 30px;
   /* Ajuster pour fournir plus d'espace pour l'icône */
-  background: url('/images/icon_televerser_img.svg') no-repeat left center;
+  background: url('/storage/images/icon_televerser_img.svg') no-repeat left center;
 }
 
 .image-input {

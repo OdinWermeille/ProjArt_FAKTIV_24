@@ -6,28 +6,36 @@
         <h2 class="ajouter-un-lieu">Ajouter un lieu</h2>
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="input-group">
-            <input :class="{'input-error': errors.nom}" class="group-item" type="text" v-model="form.nom" id="nom" placeholder="Nom">
-            <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
+            <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" id="nom"
+              placeholder="Nom">
+            <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom
+              }}</span>
           </div>
           <div class="input-group">
-            <textarea :class="{'input-error': errors.description}" class="group-item description-field" v-model="form.description" id="description" placeholder="Description"></textarea>
-            <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
+            <textarea :class="{ 'input-error': errors.description }" class="group-item description-field"
+              v-model="form.description" id="description" placeholder="Description"></textarea>
+            <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+              errors.description }}</span>
           </div>
           <div class="input-group image-upload">
-            <div :class="{'input-error': errors.image || isFileTooLarge}" class="rectangle-parent">
+            <div :class="{ 'input-error': errors.image || isFileTooLarge }" class="rectangle-parent">
               <div class="group-child"></div>
-              <label :class="{'label-error': isFileTooLarge}" class="supporting-text" for="image">
+              <label :class="{ 'label-error': isFileTooLarge }" class="supporting-text" for="image">
                 {{ truncatedFileName }} ({{ imageSize }} / {{ maxFileSize }} KB max)
               </label>
-              <input class="image-input" type="file" @change="onFileChange" id="image" accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
+              <input class="image-input" type="file" @change="onFileChange" id="image"
+                accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
             </div>
-            <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image }}</span>
-            <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est trop lourd.</span>
+            <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image
+              }}</span>
+            <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est
+              trop lourd.</span>
           </div>
           <div class="input-group map-container">
             <h3 class="placer-le-lieu">Placer le lieu sur la carte</h3>
             <div id="map" class="rectangle-parent2"></div>
-            <span v-if="errors.coordonneesX || errors.coordonneesY" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.coordonneesX || errors.coordonneesY }}</span>
+            <span v-if="errors.coordonneesX || errors.coordonneesY" class="error-message"><i
+                class="fas fa-exclamation-circle"></i>{{ errors.coordonneesX || errors.coordonneesY }}</span>
           </div>
           <div class="ajouter-wrapper">
             <button type="submit" class="ajouter">Créer</button>
@@ -35,12 +43,7 @@
         </form>
       </div>
     </div>
-    <custom-popup
-      :title="popupTitle"
-      :message="popupMessage"
-      :visible="popupVisible"
-      @close="popupVisible = false"
-    />
+    <custom-popup :title="popupTitle" :message="popupMessage" :visible="popupVisible" @close="popupVisible = false" />
   </div>
 </template>
 
@@ -111,7 +114,7 @@ export default {
         });
       }
 
-      map.on('click', async function(e) {
+      map.on('click', async function (e) {
         const { lat, lng } = e.latlng;
 
         if (marker.value) {
@@ -385,7 +388,7 @@ export default {
   text-overflow: ellipsis;
   padding-left: 30px;
   /* Ajuster pour fournir plus d'espace pour l'icône */
-  background: url('/images/icon_televerser_img.svg') no-repeat left center;
+  background: url('/storage/images/icon_televerser_img.svg') no-repeat left center;
 }
 
 .image-input {
