@@ -534,18 +534,21 @@ onMounted(() => {
         margin: 0;
         margin-bottom: 8px;
         font-size: 2rem;
+        color: #212121;
     }
 
     .modalContent h3 {
         margin: 0;
         margin-bottom: 8px;
         font-size: 1.5rem;
+        color: #212121;
     }
 
     .modalContent h4 {
         margin: 0;
         margin-bottom: 8px;
         font-size: 1rem;
+        color: #212121;
     }
 
     .modalFooter {
