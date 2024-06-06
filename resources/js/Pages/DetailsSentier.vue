@@ -15,7 +15,7 @@
       </div>
       <div class="info">
         <img src="/images/horloge.svg" alt="List Icon" class="nav-icon" />
-        <p>{{ sentier.duree }} min</p>
+        <p>{{ formattedDuration }}</p>
       </div>
     </section>
     <div class="map-wrapper">
@@ -37,8 +37,9 @@
   </div>
 </template>
 
+
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet/dist/leaflet.css';
@@ -67,6 +68,7 @@ export default {
         routeWhileDragging: true,
         addWaypoints: false,
         draggableWaypoints: false,
+        show: false,
         lineOptions: {
           styles: [{ color: 'blue', opacity: 1, weight: 5 }]
         },
@@ -90,10 +92,6 @@ export default {
           return marker;
         }
       }).addTo(map.value);
-
-      control.on('routesfound', function () {
-        document.querySelector('.leaflet-routing-container').style.display = 'none';
-      });
     };
 
     const scrollToMap = () => {
@@ -102,13 +100,24 @@ export default {
       }
     };
 
+    const formattedDuration = computed(() => {
+      const minutes = props.sentier.duree;
+      if (minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+        return `${hours}h ${remainingMinutes}min`;
+      }
+      return `${minutes} min`;
+    });
+
     onMounted(() => {
       initializeMap();
     });
 
     return {
       mapContainer,
-      scrollToMap
+      scrollToMap,
+      formattedDuration
     };
   },
   methods: {
@@ -118,6 +127,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 @import url('https://unpkg.com/leaflet/dist/leaflet.css');

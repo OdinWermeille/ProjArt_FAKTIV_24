@@ -3,8 +3,7 @@
     <!-- Barre de recherche et boutons -->
     <div :class="$style.searchContainer">
       <div :class="$style.searchWrapper">
-        <input v-model="searchQuery" type="text" :class="$style.searchInput" placeholder="Rechercher"
-          @input="applyFiltersAndSearch" />
+        <input v-model="searchQuery" type="text" :class="$style.searchInput" placeholder="Rechercher" @input="applyFiltersAndSearch" />
         <img :class="$style.searchIcon" alt="Search Icon" src="/images/icon.svg" />
       </div>
       <div :class="$style.buttonsWrapper">
@@ -20,8 +19,7 @@
         <p>Aucun sentier ne correspond aux filtres appliqués.</p>
       </div>
       <div v-else :class="$style.groupParent">
-        <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card"
-          @click="onGroupContainerClick(sentier.nom)">
+        <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card" @click="onGroupContainerClick(sentier.nom)">
           <img :class="$style.image" :alt="sentier.nom" :src="`/${sentier.image_url}`" />
           <div :class="$style.content">
             <b :class="$style.title">{{ sentier.nom }}</b>
@@ -31,7 +29,7 @@
               <div :class="$style.separator">•</div>
               <div :class="$style.theme">{{ sentier.theme.nom }}</div>
               <div :class="$style.separator">•</div>
-              <div :class="$style.duration">{{ sentier.duree }} min</div>
+              <div :class="$style.duration">{{ formatDuration(sentier.duree) }}</div>
             </div>
           </div>
         </div>
@@ -142,8 +140,9 @@
   </div>
 </template>
 
+
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   name: "PageListeSentiers",
@@ -215,6 +214,14 @@ export default defineComponent({
       });
 
       this.applySort();
+    },
+    formatDuration(duree) {
+      if (duree >= 60) {
+        const hours = Math.floor(duree / 60);
+        const remainingMinutes = duree % 60;
+        return `${hours}h ${remainingMinutes}min`;
+      }
+      return `${duree} min`;
     }
   },
   watch: {
@@ -229,6 +236,7 @@ export default defineComponent({
   }
 })
 </script>
+
 
 <style module>
 html,
