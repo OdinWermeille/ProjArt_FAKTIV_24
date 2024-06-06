@@ -25,7 +25,6 @@
     </div>
     <div id="map"></div>
     <SwipeModal v-model="isOpen" id="modal">
-      <div>test</div>
     </SwipeModal>
     
     <!-- Filter Modal -->
@@ -188,31 +187,54 @@ const applyFilters = () => {
 
 const openDescription = (e) => {
     const modalHandleWrapper = document.querySelector("#modal .swipe-modal-content .swipe-modal-drag-handle-wrapper");
-    modalHandleWrapper.addEventListener("click", function(){
+    modalHandleWrapper.addEventListener("click", function() {
         isOpen.value = false;
-    })
+    });
+
     const modalContent = document.querySelector("#modal .swipe-modal-content .panel");
     let html = `
     <div class="modalHeader">
         <h2>${e.target.options.customProperties.endroit.nom}</h2>
+        <button class="closeButton" id="closeModalButton">&times;</button>
     </div>
     <div class="modalContent">
-        <h3>Sentiers passant par cet endroit</h3>`
+        <h3>Sentiers passant par cet endroit</h3>`;
+
     sentiers.forEach((sentier) => {
         sentier.endroits.forEach((endroit) => {
             if (endroit.id == e.target.options.customProperties.endroit.id) {
                 html += `
-                <h4>Sentier : ${sentier.nom}</h4>
-                <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
-                    <img src="${sentier.image_url}"/>
-                </a>`
+                <div class="sentierCard">
+                    <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
+                        <img class="sentierImage" src="${sentier.image_url}" alt="Sentier Image">
+                    </a>
+                    <div class="sentierContent">
+                        <h2 class="sentierTitle">${sentier.nom}</h2>
+                        <p class="sentierDescription">${sentier.description}</p>
+                        <div class="sentierInfo">
+                            <span class="sentierLength">${sentier.longueur} km</span>
+                            <span class="sentierSeparator">•</span>
+                            <span class="sentierDuration">${sentier.theme.nom}</span>
+                            <span class="sentierSeparator">•</span>
+                            <span class="sentierDuration">${sentier.duree} min</span>
+                        </div>
+                    </div>
+                </div>`;
             }
-        })
-    })
-    html += `</div>`
+        });
+    });
+
+    html += `</div>`;
     modalContent.innerHTML = html;
-    isOpen.value = true
-}
+
+    // Add event listener to the close button
+    const closeModalButton = document.getElementById("closeModalButton");
+    closeModalButton.addEventListener("click", function() {
+        isOpen.value = false;
+    });
+
+    isOpen.value = true;
+};
 
 const showSentier = (sentier) => {
     console.log(sentier);
@@ -338,7 +360,7 @@ onMounted(() => {
 <style>
     #map {
         width: 100%;
-        height: calc(100vh - 390px);
+        height: calc(100vh - 190px);
         position: relative;
         z-index: 10;
     }
@@ -348,9 +370,8 @@ onMounted(() => {
         flex-direction: column;
         align-items: center;
         padding: 16px;
-        background-color: #f5f5f5;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 16px;
+        background-color: #F0F0F0;
+        border-bottom: 1px solid #7d7d7d;
     }
 
     .searchWrapper {
@@ -389,7 +410,7 @@ onMounted(() => {
         padding: 8px 16px;
         border: 1px solid #ccc;
         border-radius: 24px;
-        background-color: #fff;
+        background-color: #FAFAFA;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -410,7 +431,7 @@ onMounted(() => {
     }
 
     .card {
-        background: #fff;
+        background: #FAFAFA;
         border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         overflow: hidden;
@@ -440,7 +461,7 @@ onMounted(() => {
 
     .description {
         font-size: 1rem;
-        color: #555;
+        color: #7d7d7d;
         margin-bottom: 16px;
     }
 
@@ -448,7 +469,7 @@ onMounted(() => {
         display: flex;
         align-items: center;
         font-size: 0.875rem;
-        color: #777;
+        color: #7d7d7d;
     }
 
     .length {
@@ -477,7 +498,7 @@ onMounted(() => {
     }
 
     #modal {
-        background: white;
+        background: #FAFAFA;
         width: 100%;
         border-top-left-radius: 16px;
         border-top-right-radius: 16px;
@@ -489,7 +510,7 @@ onMounted(() => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #7d7d7d;
         padding-bottom: 8px;
         margin-bottom: 16px;
     }
@@ -499,13 +520,13 @@ onMounted(() => {
         border: none;
         font-size: 1.5rem;
         cursor: pointer;
-        color: #555;
+        color: #7d7d7d;
     }
 
     .modalContent {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: left;
         gap: 16px;
     }
 
@@ -527,18 +548,12 @@ onMounted(() => {
         font-size: 1rem;
     }
 
-    .modalContent img {
-        width: 100%;
-        height: auto;
-        border-radius: 10px;
-    }
-
     .modalFooter {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-top: 16px;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #F0F0F0;
         margin-top: 16px;
     }
 
@@ -603,4 +618,76 @@ onMounted(() => {
         color: #FAFAFA;
         cursor: pointer;
     }
+
+    .sentierCard {
+        background: #FAFAFA;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s;
+        width: 90%;
+        margin: 0 auto;
+        margin-bottom: 16px;
+        max-width: 600px;
+    }
+
+    .sentierCard:hover {
+        transform: translateY(-5px);
+    }
+
+    .sentierImage {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .sentierContent {
+        padding: 16px;
+    }
+
+    .sentierTitle {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+    }
+
+    .sentierDescription {
+        font-size: 1rem;
+        color: #7d7d7d;
+        margin-bottom: 16px;
+    }
+
+    .sentierInfo {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        color: #7d7d7d;
+    }
+
+    .sentierLength {
+        margin-right: 8px;
+    }
+
+    .sentierSeparator {
+        margin: 0 8px;
+    }
+
+    .sentierDuration {
+        margin-left: 8px;
+    }
+
+    .closeButton {
+        background: none;
+        border: none;
+        font-size: 3.5rem;
+        cursor: pointer;
+        color: #7d7d7d;
+        position: absolute;
+        right: 48px;
+    }
+
+    .swipe-modal-drag-handle-wrapper {
+        display: none !important;
+    }
+
 </style>
