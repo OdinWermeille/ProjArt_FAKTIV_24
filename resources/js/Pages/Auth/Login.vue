@@ -12,7 +12,7 @@
           </div>
 
           <form @submit.prevent="submit">
-            <div class="input-group">
+            <div class="input-group">{{ verifIfError }}
               <input id="username" type="text" class="group-item" v-model="form.username" required autofocus
                 autocomplete="username" placeholder="Nom d'utilisateur" />
               <InputError class="mt-2" :message="form.errors.username" />
@@ -41,6 +41,7 @@
 import InputError from '@/Components/InputError.vue';
 import { useForm } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
+import { ref } from 'vue';
 
 defineProps({
   canResetPassword: {
@@ -51,11 +52,14 @@ defineProps({
   },
 });
 
+const verifIfError = ref((window.location.search.includes('error=AuthFailed') ? 'Nom d\'utilisateur ou mot de passe incorrect' : ''));
+
 const form = useForm({
   username: '',
   password: '',
   remember: false,
 });
+
 
 const submit = () => {
   form.post(route('login'), {
@@ -63,11 +67,15 @@ const submit = () => {
       form.reset('password');
       if (Object.keys(form.errors).length === 0) {
         Inertia.visit('/sentiers');
+        /* window.location.href = '/sentiers'; */
       }
-      location.replace("/sentiers");
+      window.location.href = '/login?error=AuthFailed';
     },
   });
 };
+
+
+
 </script>
 
 <style scoped>
