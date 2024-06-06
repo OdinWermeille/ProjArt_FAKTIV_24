@@ -79,13 +79,12 @@ export default {
 
 
 <style scoped>
-
-h2{
+h2 {
     font-family: "Inter", sans-serif;
     font-size: 16px;
     font-weight: bold;
     height: 48px;
-  }
+}
 
 .container {
     max-width: 600px;
@@ -130,7 +129,8 @@ h2{
 .button-wrapper {
     display: flex;
     justify-content: center;
-    margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
+    margin: 20px 0;
+    /* Ajoute de l'espacement avant et après le bouton */
 }
 
 .map-button {
@@ -142,7 +142,15 @@ h2{
     border-radius: 20px;
     border: none;
     cursor: pointer;
-    margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
+    margin: 20px 0;
+    /* Ajoute de l'espacement avant et après le bouton */
+}
+
+.map-button:hover {
+    background-color: #fafafa;
+    color: #4a8c2a;
+    border: #4a8c2a solid 1px;
+    cursor: pointer;
 }
 
 .separator {

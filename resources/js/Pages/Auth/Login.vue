@@ -12,16 +12,20 @@
           </div>
 
           <form @submit.prevent="submit">
-            <div class="input-group">{{ verifIfError }}
-              <input id="username" type="text" class="group-item" v-model="form.username" required autofocus
-                autocomplete="username" placeholder="Nom d'utilisateur" />
-              <InputError class="mt-2" :message="form.errors.username" />
+            <div class="input-group">
+              <input id="username" type="text" :class="{ 'group-item': true, 'input-error': form.errors.username }"
+                v-model="form.username" required autofocus autocomplete="username" placeholder="Nom d'utilisateur" />
+              <span v-if="form.errors.username" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+                form.errors.username }}</span>
             </div>
 
             <div class="input-group">
-              <input id="password" type="password" class="group-item" v-model="form.password" required
-                autocomplete="current-password" placeholder="Mot de passe" />
-              <InputError class="mt-2" :message="form.errors.password" />
+              <input id="password" type="password" :class="{ 'group-item': true, 'input-error': form.errors.password }"
+                v-model="form.password" required autocomplete="current-password" placeholder="Mot de passe" />
+              <span v-if="form.errors.password" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+                form.errors.password }}</span>
+            </div>
+            <div v-if="verifIfError" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ verifIfError }}
             </div>
 
             <div class="ajouter-wrapper">
@@ -52,7 +56,7 @@ defineProps({
   },
 });
 
-const verifIfError = ref((window.location.search.includes('error=AuthFailed') ? 'Nom d\'utilisateur ou mot de passe incorrect' : ''));
+const verifIfError = ref(window.location.search.includes('error=AuthFailed') ? 'Nom d\'utilisateur ou mot de passe incorrect' : '');
 
 const form = useForm({
   username: '',
@@ -73,12 +77,12 @@ const submit = () => {
     },
   });
 };
-
-
-
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+/* Import Font Awesome */
+
 .inter-text {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
@@ -161,6 +165,10 @@ const submit = () => {
   /* Ajouter de la marge sur les côtés */
 }
 
+.input-error {
+  border-color: red;
+}
+
 .ajouter {
   position: relative;
   text-transform: uppercase;
@@ -181,13 +189,14 @@ const submit = () => {
   color: #fafafa;
   margin: 30px auto 0 auto;
   width: fit-content;
+  cursor: pointer;
 }
 
 .ajouter-wrapper:hover {
-  background-color: #3c6e23;
-  border: 1px solid #bfd2a6;
+  background-color: #fafafa;
+  color: #4a8c2a;
+  border: #4a8c2a solid 1px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .group-container {
@@ -215,5 +224,22 @@ body {
   margin: 0;
   line-height: normal;
   font-family: "Inter", sans-serif;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin: 0 16px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.error-message i {
+  margin-right: 5px;
+}
+
+.label-error {
+  color: red;
 }
 </style>

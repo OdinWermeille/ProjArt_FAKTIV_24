@@ -2,7 +2,7 @@
   <div class="sentier-page">
     <h1>{{ sentier.nom }}</h1>
     <section class="image-section">
-      <img :alt="'image ' + sentier.nom" :src="`/${sentier.image_url}`"/>
+      <img :alt="'image ' + sentier.nom" :src="`/${sentier.image_url}`" />
     </section>
     <section class="info-section">
       <div class="info">
@@ -26,7 +26,7 @@
       <h2>Description</h2>
       <p>{{ sentier.description }}</p>
     </section>
-    
+
     <hr class="separator" />
     <section class="points-section">
       <h2>Le parcours</h2>
@@ -75,7 +75,7 @@ export default {
         router: new L.Routing.OSRMv1({
           serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
         }),
-        createMarker: function(i, waypoint) {
+        createMarker: function (i, waypoint) {
           const endroit = props.sentier.endroits[i];
           const marker = L.marker(waypoint.latLng, {
             draggable: false
@@ -91,7 +91,7 @@ export default {
         }
       }).addTo(map.value);
 
-      control.on('routesfound', function() {
+      control.on('routesfound', function () {
         document.querySelector('.leaflet-routing-container').style.display = 'none';
       });
     };
@@ -173,7 +173,8 @@ h2 {
 
 .map-container {
   width: 100%;
-  height: 400px; /* Adjust the height as needed */
+  height: 400px;
+  /* Adjust the height as needed */
   border-radius: 10px;
 }
 
@@ -186,7 +187,8 @@ h2 {
 .map-wrapper {
   display: flex;
   justify-content: center;
-  margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
+  margin: 20px 0;
+  /* Ajoute de l'espacement avant et après le bouton */
 }
 
 .map-button {
@@ -196,9 +198,16 @@ h2 {
   font-weight: 500;
   padding: 10px 20px;
   border-radius: 20px;
-  border: none;
+  border: #4a8c2a solid 1px;
   cursor: pointer;
-  margin: 20px 0; /* Ajoute de l'espacement avant et après le bouton */
+  margin: 20px 0;
+  /* Ajoute de l'espacement avant et après le bouton */
 }
 
+.map-button:hover {
+  background-color: #fafafa;
+  color: #4a8c2a;
+  border: #4a8c2a solid 1px;
+  cursor: pointer;
+}
 </style>
