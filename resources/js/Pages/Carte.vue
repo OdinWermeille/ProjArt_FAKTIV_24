@@ -204,22 +204,22 @@ const openDescription = (e) => {
         sentier.endroits.forEach((endroit) => {
             if (endroit.id == e.target.options.customProperties.endroit.id) {
                 html += `
-                <div class="sentierCard">
-                    <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
+                <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
+                    <div class="sentierCard">
                         <img class="sentierImage" src="${sentier.image_url}" alt="Sentier Image">
-                    </a>
-                    <div class="sentierContent">
-                        <h2 class="sentierTitle">${sentier.nom}</h2>
-                        <p class="sentierDescription">${sentier.description}</p>
-                        <div class="sentierInfo">
-                            <span class="sentierLength">${sentier.longueur} km</span>
-                            <span class="sentierSeparator">•</span>
-                            <span class="sentierDuration">${sentier.theme.nom}</span>
-                            <span class="sentierSeparator">•</span>
-                            <span class="sentierDuration">${sentier.duree} min</span>
+                        <div class="sentierContent">
+                            <h2 class="sentierTitle">${sentier.nom}</h2>
+                            <p class="sentierDescription">${sentier.description}</p>
+                            <div class="sentierInfo">
+                                <span class="sentierLength">${sentier.longueur} km</span>
+                                <span class="sentierSeparator">•</span>
+                                <span class="sentierDuration">${sentier.theme.nom}</span>
+                                <span class="sentierSeparator">•</span>
+                                <span class="sentierDuration">${sentier.duree} min</span>
+                            </div>
                         </div>
                     </div>
-                </div>`;
+                </a>`;
             }
         });
     });
