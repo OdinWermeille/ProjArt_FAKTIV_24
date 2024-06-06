@@ -375,7 +375,8 @@ body {
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  color: #7D7D7D;
+  color: #4A8C2A;
+
 }
 
 .length {

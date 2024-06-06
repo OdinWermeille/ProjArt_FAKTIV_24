@@ -13,17 +13,20 @@
 
           <form @submit.prevent="submit">
             <div class="input-group">
-              <input id="username" type="text" :class="{'group-item': true, 'input-error': form.errors.username}" v-model="form.username" required autofocus
-                autocomplete="username" placeholder="Nom d'utilisateur" />
-              <span v-if="form.errors.username" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ form.errors.username }}</span>
+              <input id="username" type="text" :class="{ 'group-item': true, 'input-error': form.errors.username }"
+                v-model="form.username" required autofocus autocomplete="username" placeholder="Nom d'utilisateur" />
+              <span v-if="form.errors.username" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+                form.errors.username }}</span>
             </div>
 
             <div class="input-group">
-              <input id="password" type="password" :class="{'group-item': true, 'input-error': form.errors.password}" v-model="form.password" required
-                autocomplete="current-password" placeholder="Mot de passe" />
-              <span v-if="form.errors.password" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ form.errors.password }}</span>
+              <input id="password" type="password" :class="{ 'group-item': true, 'input-error': form.errors.password }"
+                v-model="form.password" required autocomplete="current-password" placeholder="Mot de passe" />
+              <span v-if="form.errors.password" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
+                form.errors.password }}</span>
             </div>
-            <div v-if="verifIfError" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ verifIfError }}</div>
+            <div v-if="verifIfError" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ verifIfError }}
+            </div>
 
             <div class="ajouter-wrapper">
               <button type="submit" class="ajouter" :class="{ 'opacity-25': form.processing }"
@@ -190,9 +193,10 @@ const submit = () => {
 }
 
 .ajouter-wrapper:hover {
-  background-color: #3c6e23;
-  border: 1px solid #bfd2a6;
-  transition: 0.3s;
+  background-color: #fafafa;
+  color: #4a8c2a;
+  border: #4a8c2a solid 1px;
+  cursor: pointer;
 }
 
 .group-container {
