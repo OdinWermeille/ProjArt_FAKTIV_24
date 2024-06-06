@@ -19,6 +19,7 @@ c<template>
             </div>
             <hr class="separator" />
             <div class="input-group map-container" ref="mapContainer">
+                <h2>Emplacement</h2>
                 <div id="map" class="rectangle-parent2"></div>
             </div>
         </div>
