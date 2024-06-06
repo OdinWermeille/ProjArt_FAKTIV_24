@@ -26,12 +26,31 @@ class SentierController extends Controller
             'nom' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'required|string',
-            'longueur' => 'required|numeric', // Changer integer en numeric
-            'duree' => 'required|numeric', // Changer integer en numeric
+            'longueur' => 'required|numeric',
+            'duree' => 'required|numeric',
             'user_id' => 'required|exists:users,id',
             'theme_id' => 'required|exists:themes,id',
-            'endroits' => 'required|array',
+            'endroits' => 'required|array|min:2',
             'endroits.*' => 'exists:endroits,id'
+        ], [
+            'nom.required' => 'Le nom est requis.',
+            'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
+            'image.required' => 'L\'image est requise.',
+            'image.image' => 'Le fichier doit être une image.',
+            'image.mimes' => 'L\'image doit être de type jpeg, png, jpg, gif, ou svg.',
+            'image.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+            'description.required' => 'La description est requise.',
+            'longueur.required' => 'La longueur est requise.',
+            'longueur.numeric' => 'La longueur doit être un nombre.',
+            'duree.required' => 'La durée est requise.',
+            'duree.numeric' => 'La durée doit être un nombre.',
+            'user_id.required' => 'L\'ID utilisateur est requis.',
+            'user_id.exists' => 'L\'ID utilisateur doit exister dans la base de données.',
+            'theme_id.required' => 'La thématique est requise.',
+            'theme_id.exists' => 'La thématique sélectionnée est invalide.',
+            'endroits.required' => 'Veuillez sélectionner au moins deux lieux.',
+            'endroits.min' => 'Veuillez sélectionner au moins deux lieux.',
+            'endroits.*.exists' => 'Le lieu sélectionné est invalide.',
         ]);
 
         if ($request->hasFile('image')) {
