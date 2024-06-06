@@ -644,11 +644,13 @@ onMounted(() => {
 
     .sentierContent {
         padding: 16px;
+        color: #212121;
     }
 
     .sentierTitle {
         font-size: 1.25rem;
         margin-bottom: 8px;
+        color: #212121;
     }
 
     .sentierDescription {
