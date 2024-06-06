@@ -27,6 +27,23 @@ class EndroitController extends Controller
                 'coordonneesY' => 'required|numeric|between:-90,90',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'user_id' => 'required|exists:users,id',
+            ], [
+                'nom.required' => 'Le nom est requis.',
+                'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
+                'description.required' => 'La description est requise.',
+                'localite.required' => 'La localité est requise.',
+                'coordonneesX.required' => 'Les coordonnées X sont requises.',
+                'coordonneesX.numeric' => 'Les coordonnées X doivent être un nombre.',
+                'coordonneesX.between' => 'Les coordonnées X doivent être comprises entre -180 et 180.',
+                'coordonneesY.required' => 'Les coordonnées Y sont requises.',
+                'coordonneesY.numeric' => 'Les coordonnées Y doivent être un nombre.',
+                'coordonneesY.between' => 'Les coordonnées Y doivent être comprises entre -90 et 90.',
+                'image.required' => 'L\'image est requise.',
+                'image.image' => 'Le fichier doit être une image.',
+                'image.mimes' => 'L\'image doit être de type jpeg, png, jpg, gif, ou svg.',
+                'image.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+                'user_id.required' => 'L\'ID utilisateur est requis.',
+                'user_id.exists' => 'L\'ID utilisateur doit exister dans la base de données.',
             ]);
 
             // Handle file upload

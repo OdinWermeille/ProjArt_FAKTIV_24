@@ -6,21 +6,28 @@
         <h2 class="ajouter-un-lieu">Ajouter un lieu</h2>
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="input-group">
-            <input class="group-item" type="text" v-model="form.nom" id="nom" placeholder="Nom" required>
+            <input :class="{'input-error': errors.nom}" class="group-item" type="text" v-model="form.nom" id="nom" placeholder="Nom">
+            <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
           </div>
           <div class="input-group">
-            <textarea class="group-item description-field" v-model="form.description" id="description" placeholder="Description" required></textarea>
+            <textarea :class="{'input-error': errors.description}" class="group-item description-field" v-model="form.description" id="description" placeholder="Description"></textarea>
+            <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
           </div>
           <div class="input-group image-upload">
-            <div class="rectangle-parent">
+            <div :class="{'input-error': errors.image || isFileTooLarge}" class="rectangle-parent">
               <div class="group-child"></div>
-              <label class="supporting-text" :for="image">{{ truncatedFileName || 'Image' }}</label>
-              <input class="image-input" type="file" @change="onFileChange" id="image" required>
+              <label :class="{'label-error': isFileTooLarge}" class="supporting-text" for="image">
+                {{ truncatedFileName }} ({{ imageSize }} / {{ maxFileSize }} KB max)
+              </label>
+              <input class="image-input" type="file" @change="onFileChange" id="image" accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
             </div>
+            <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image }}</span>
+            <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est trop lourd.</span>
           </div>
           <div class="input-group map-container">
-            <h3 class="placer-le-lieu">Placer le lieu sur la carte</h3> <!-- Added title here -->
+            <h3 class="placer-le-lieu">Placer le lieu sur la carte</h3>
             <div id="map" class="rectangle-parent2"></div>
+            <span v-if="errors.coordonneesX || errors.coordonneesY" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.coordonneesX || errors.coordonneesY }}</span>
           </div>
           <div class="ajouter-wrapper">
             <button type="submit" class="ajouter">Créer</button>
@@ -58,8 +65,12 @@ export default {
       coordonneesY: null,
       image: null,
       user_id: null,
+      localite: '',
     });
-
+    const errors = ref({});
+    const maxFileSize = 2048; // Maximum file size in KB
+    const isFileTooLarge = ref(false);
+    const imageSize = ref(0);
     const fileName = ref('');
     const userCoords = ref({ latitude: Number.POSITIVE_INFINITY, longitude: Number.POSITIVE_INFINITY });
     let marker = ref(null);
@@ -125,6 +136,8 @@ export default {
     const onFileChange = (e) => {
       const file = e.target.files[0];
       form.value.image = file;
+      imageSize.value = (file.size / 1024).toFixed(2); // File size in KB
+      isFileTooLarge.value = file.size / 1024 > maxFileSize;
       fileName.value = file ? file.name : '';
       console.log('Fichier sélectionné :', fileName.value); // Debug
     };
@@ -145,15 +158,50 @@ export default {
         coordonneesY: null,
         image: null,
         user_id: form.value.user_id, // Préserver user_id
+        localite: '',
       };
       fileName.value = '';
+      isFileTooLarge.value = false;
+      imageSize.value = 0;
       if (marker.value) {
         marker.value.remove();
         marker.value = null;
       }
     };
 
+    const cleanErrors = (errors) => {
+      const cleanedErrors = {};
+      for (const key in errors) {
+        cleanedErrors[key] = errors[key].join(' ');
+      }
+      return cleanedErrors;
+    };
+
+    const validateForm = () => {
+      const validationErrors = {};
+      if (!form.value.coordonneesX || !form.value.coordonneesY) {
+        validationErrors.coordonneesX = 'Veuillez placer un point sur la carte.';
+      }
+      if (!form.value.nom) {
+        validationErrors.nom = 'Le nom est requis.';
+      }
+      if (!form.value.description) {
+        validationErrors.description = 'La description est requise.';
+      }
+      if (!form.value.image) {
+        validationErrors.image = 'L\'image est requise.';
+      } else if (isFileTooLarge.value) {
+        validationErrors.image = 'Le fichier est trop lourd.';
+      }
+      return validationErrors;
+    };
+
     const submitForm = async () => {
+      errors.value = validateForm();
+      if (Object.keys(errors.value).length > 0) {
+        return;
+      }
+
       const formData = new FormData();
       formData.append('nom', form.value.nom);
       formData.append('description', form.value.description);
@@ -161,7 +209,7 @@ export default {
       formData.append('coordonneesY', form.value.coordonneesY);
       formData.append('image', form.value.image);
       formData.append('user_id', form.value.user_id);
-      formData.append('localite', form.value.localite); // Ajouter localité ici
+      formData.append('localite', form.value.localite);
 
       try {
         const response = await axios.post('/api/endroits', formData, {
@@ -176,9 +224,13 @@ export default {
         resetForm();
       } catch (error) {
         console.error('Erreur lors de la création du lieu:', error);
-        popupTitle.value = 'Erreur!';
-        popupMessage.value = 'Il y a eu une erreur lors de la création de votre lieu.';
-        popupVisible.value = true;
+        if (error.response && error.response.data.errors) {
+          errors.value = cleanErrors(error.response.data.errors);
+        } else {
+          popupTitle.value = 'Erreur!';
+          popupMessage.value = 'Il y a eu une erreur lors de la création de votre lieu.';
+          popupVisible.value = true;
+        }
       }
     };
 
@@ -192,13 +244,20 @@ export default {
       popupMessage,
       popupVisible,
       fileName,
-      truncatedFileName
+      truncatedFileName,
+      errors,
+      isFileTooLarge,
+      imageSize,
+      maxFileSize
     };
   }
 };
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+/* Import Font Awesome */
+
 .inter-text {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
@@ -215,20 +274,23 @@ export default {
   background-color: #f0f0f0;
   width: 100%;
   height: 100%;
-  border: none; /* Enlever le contour */
+  border: none;
+  /* Enlever le contour */
 }
 
 .rectangle-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
-  padding: 30px 15px; /* Ajouter plus de padding en haut et en bas */
+  padding: 30px 15px;
+  /* Ajouter plus de padding en haut et en bas */
   box-sizing: border-box;
 }
 
 .ajouter-un-lieu {
   font-size: 18px;
-  font-weight: bold; /* Mettre le titre en gras */
+  font-weight: bold;
+  /* Mettre le titre en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -241,44 +303,53 @@ export default {
 }
 
 .input-group {
-  margin-bottom: 20px; /* Augmenter la marge entre les champs */
+  margin-bottom: 20px;
+  /* Augmenter la marge entre les champs */
+}
+
+.input-error .group-item {
+  border-color: red;
+}
+
+.input-error .rectangle-parent {
+  border-color: red;
 }
 
 .group-item {
   border-radius: 10px;
   border: 1px solid #7d7d7d;
   box-sizing: border-box;
-  width: calc(100% - 32px); /* Ajouter de la marge sur les côtés */
-  height: 40px;
-  padding: 12px; /* Ajouter un padding pour un espacement uniforme */
+  width: calc(100% - 32px);
+  /* Ajouter de la marge sur les côtés */
+  height: 50px;
+  padding: 12px;
+  /* Ajouter un padding pour un espacement uniforme */
   font-size: 16px;
   font-family: "Inter", sans-serif;
-  background-color: transparent; /* Enlever le fond blanc */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  background-color: transparent;
+  /* Enlever le fond blanc */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
-.file-name-input {
-  margin-top: 5px;
-  margin-left: 16px;
-  font-size: 14px;
-  color: #7d7d7d;
-  font-family: "Inter", sans-serif;
-  width: calc(100% - 32px);
-  border: none;
-  background-color: transparent;
-  cursor: default;
+.group-item[readonly] {
+  background-color: #F0F0F0;
+  /* Light grey background for readonly inputs */
 }
 
 .description-field {
   height: 100px;
-  padding: 12px; /* Ajouter un padding pour un espacement uniforme */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  padding: 12px;
+  /* Ajouter un padding pour un espacement uniforme */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .rectangle-parent {
   position: relative;
   height: 40px;
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .group-child {
@@ -289,26 +360,31 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: none; /* Enlever le contour */
+  border: none;
+  /* Enlever le contour */
 }
 
 .image-upload .group-child {
-  border: 1px solid #7d7d7d; /* Ajouter un contour au champ d'insert d'image */
+  border: 1px solid #7d7d7d;
+  /* Ajouter un contour au champ d'insert d'image */
 }
 
 .supporting-text {
   position: absolute;
   top: 8px;
-  left: 18px; /* Ajouter un peu plus de marge à gauche entre l'image et le bord du champ */
+  left: 18px;
+  /* Ajouter un peu plus de marge à gauche entre l'image et le bord du champ */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
   align-items: center;
-  width: calc(100% - 36px); /* Ajuster pour fournir plus d'espace pour le texte */
+  width: calc(100% - 36px);
+  /* Ajuster pour fournir plus d'espace pour le texte */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left: 30px; /* Ajuster pour fournir plus d'espace pour l'icône */
+  padding-left: 30px;
+  /* Ajuster pour fournir plus d'espace pour l'icône */
   background: url('/images/icon_televerser_img.svg') no-repeat left center;
 }
 
@@ -323,14 +399,18 @@ export default {
 }
 
 .rectangle-parent2 {
-  height: 250px; /* Rendre la carte un peu plus petite */
-  width: calc(100% - 32px); /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
+  height: 250px;
+  /* Rendre la carte un peu plus petite */
+  width: calc(100% - 32px);
+  /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
 }
 
 .placer-le-lieu {
   font-size: 16px;
-  font-weight: bold; /* Mettre le titre en gras */
+  font-weight: bold;
+  /* Mettre le titre en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -338,11 +418,13 @@ export default {
   color: #212121;
   text-align: center;
   align-items: center;
-  justify-content: center; /* Ajouter cette ligne pour centrer horizontalement */
-  margin: 0 16px; /* Ajouter de la marge sur les côtés */
-  margin-bottom: 12px; /* Ajouter une marge en bas */
+  justify-content: center;
+  /* Ajouter cette ligne pour centrer horizontalement */
+  margin: 0 16px;
+  /* Ajouter de la marge sur les côtés */
+  margin-bottom: 12px;
+  /* Ajouter une marge en bas */
 }
-
 
 .ajouter {
   position: relative;
@@ -385,13 +467,32 @@ export default {
   font-family: "Inter", sans-serif;
   padding: 20px;
   box-sizing: border-box;
-  max-width: 700px; /* Limiter la largeur maximale */
-  margin: 0 auto; /* Centrer le formulaire */
+  max-width: 700px;
+  /* Limiter la largeur maximale */
+  margin: 0 auto;
+  /* Centrer le formulaire */
 }
 
 body {
   margin: 0;
   line-height: normal;
   font-family: "Inter", sans-serif;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin: 0 16px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.error-message i {
+  margin-right: 5px;
+}
+
+.label-error {
+  color: red;
 }
 </style>
