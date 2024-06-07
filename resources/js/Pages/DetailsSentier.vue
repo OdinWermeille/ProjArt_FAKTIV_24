@@ -30,6 +30,7 @@
     <hr class="separator" />
     <section class="points-section">
       <h2>Le parcours</h2>
+      <p class= "parcours" >Clique sur un lieu pour plus d'informations</p>
       <section class="map-section" ref="mapContainer">
         <div id="map" class="map-container"></div>
       </section>
@@ -148,6 +149,12 @@ h2 {
   height: 48px;
 }
 
+h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  height: 48px;
+}
+
 .sentier-page {
   font-family: "Inter", sans-serif;
   color: #212121;
@@ -220,5 +227,9 @@ h2 {
   color: #4a8c2a;
   border: #4a8c2a solid 1px;
   cursor: pointer;
+}
+
+.parcours {
+  margin-bottom: 24px;
 }
 </style>
