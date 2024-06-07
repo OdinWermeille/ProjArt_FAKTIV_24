@@ -30,14 +30,17 @@
     <hr class="separator" />
     <section class="points-section">
       <h2>Le parcours</h2>
-      <p class= "parcours" >Clique sur un lieu pour plus d'informations</p>
+      <div class="info">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Infobox_info_icon.svg" alt="Information Icon"
+          class="nav-icon" />
+        <p class="parcours">Cliquez sur un point de la carte pour plus d'informations</p>
+      </div>
       <section class="map-section" ref="mapContainer">
         <div id="map" class="map-container"></div>
       </section>
     </section>
   </div>
 </template>
-
 
 <script>
 import { ref, onMounted, computed } from 'vue';
@@ -58,24 +61,24 @@ export default {
 
     const returnColor = (theme_id) => {
       switch (theme_id) {
-          case 2:
-              return 'darkred';
-          case 3:
-              return 'darkgreen';
-          case 4:
-              return 'cadetblue';
-          case 5:
-              return 'purple';
-          case 6:
-              return 'red';
-          case 7:
-              return 'green';
-          case 8:
-              return 'darkblue';
-          case 9:
-              return 'orange';
-          default:
-              return 'black';
+        case 2:
+          return 'darkred';
+        case 3:
+          return 'darkgreen';
+        case 4:
+          return 'cadetblue';
+        case 5:
+          return 'purple';
+        case 6:
+          return 'red';
+        case 7:
+          return 'green';
+        case 8:
+          return 'darkblue';
+        case 9:
+          return 'orange';
+        default:
+          return 'black';
       }
     }
 
@@ -162,8 +165,6 @@ export default {
 }
 </script>
 
-
-
 <style scoped>
 @import url('https://unpkg.com/leaflet/dist/leaflet.css');
 @import url('https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css');
@@ -215,9 +216,16 @@ h3 {
   margin-bottom: 10px;
 }
 
-.info img {
+.info .nav-icon {
   margin-right: 10px;
+  width: 24px; /* Ajustez la taille de l'icône selon vos besoins */
+  height: 24px; /* Ajustez la taille de l'icône selon vos besoins */
 }
+
+.parcours {
+  margin: 0; /* Pour aligner le texte verticalement avec l'image */
+}
+
 
 .description {
   margin: 20px 0;
@@ -262,8 +270,7 @@ h3 {
   border: #4a8c2a solid 1px;
   cursor: pointer;
 }
-
-.parcours {
+.info {
   margin-bottom: 24px;
 }
 </style>
