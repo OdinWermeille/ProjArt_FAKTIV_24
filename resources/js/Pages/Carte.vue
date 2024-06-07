@@ -104,6 +104,7 @@
 </template>
 
 <script setup>
+"use strict";
 import { Head } from '@inertiajs/vue3';
 import { onMounted, ref, watchEffect } from 'vue'
 import leaflet from 'leaflet'
@@ -155,6 +156,7 @@ const showFilterModal = ref(false);
 const filterActivity = ref('tout');
 const filterDistance = ref('tout');
 const filteredSentiers = ref([]);
+const routingControls = [];
 
 const closeModal = () => {
     showFilterModal.value = false;
@@ -178,6 +180,11 @@ const applyFilters = () => {
         );
         closeModal();
         return matchActivity && matchDistance;
+    });
+    console.log(filteredSentiers.value);
+    hideAllSentiers();
+    filteredSentiers.value.forEach((sentier) => {
+        showSentier(sentier);
     });
     showFilterModal.value = false;
 };
@@ -233,9 +240,35 @@ const openDescription = (e) => {
     isOpen.value = true;
 };
 
+const hideAllSentiers = () => {
+        
+        
+        routingControls.forEach((routingControl) => {
+            console.log(routingControl);
+            // Supprimer les marqueurs de la carte
+            routingControl.getWaypoints().forEach(waypoint => {
+                if (waypoint.marker) {
+                    map.removeLayer(waypoint.marker);
+                }
+            });
+            // Supprimer les contrôles de routage de la carte
+            map.removeControl(routingControl);
+        });
+
+        // Supprimer les tracés de la carte
+        //map.removeLayer(routingControl._line);
+
+
+
+        // Vider les tableaux
+        routingControls.length = 0;
+        console.log(sentiers);
+        console.log(routingControls);
+    
+};
+
 const showSentier = (sentier) => {
     console.log(sentier);
-    sentiers.push(sentier);
     const lineOptions = {
         styles: [{
             color: 'blue',
@@ -280,12 +313,18 @@ const showSentier = (sentier) => {
             serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
         })
     }).addTo(map);
-
+    routingControl.on('routesfound', function () {
+        document.querySelectorAll('.leaflet-routing-container').forEach((el) => {
+            el.style.display = 'none';
+        });
+    });
 
     sentier.endroits.forEach((endroit) => {
         routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
     })
     routingControl.setWaypoints(routingControl.options.waypoints);
+
+    routingControls.push(routingControl);
 }
 
 onMounted(() => {
@@ -335,7 +374,8 @@ onMounted(() => {
             .then((data) => {
                 data.forEach((sentier) => {
                     if (sentier.id == urlArr[urlArr.length - 1]) {
-                        showSentier(sentier);
+                        sentiers.push(sentier);
+                        showSentier(sentier); 
                     }
                 })
             })
@@ -347,6 +387,7 @@ onMounted(() => {
             .then((res) => res.json())
             .then((data) => {
                 data.forEach((sentier) => {
+                    sentiers.push(sentier);
                     showSentier(sentier);
                 })
             });

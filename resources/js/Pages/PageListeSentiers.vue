@@ -143,8 +143,9 @@
 </template>
 
 
+
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: "PageListeSentiers",
@@ -221,7 +222,7 @@ export default defineComponent({
       if (duree >= 60) {
         const hours = Math.floor(duree / 60);
         const remainingMinutes = duree % 60;
-        return `${hours}h ${remainingMinutes}min`;
+        return remainingMinutes === 0 ? `${hours}h` : `${hours}h ${remainingMinutes}min`;
       }
       return `${duree} min`;
     }
@@ -238,6 +239,7 @@ export default defineComponent({
   }
 })
 </script>
+
 
 
 <style module>
