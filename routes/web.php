@@ -38,7 +38,7 @@ Route::post('/api/sentiers', [SentierController::class, 'store']);
 Route::get('/sentiers/create', [SentierController::class, 'create']);
 Route::post('/sentiers', [SentierController::class, 'store']);
 
-Route::get('/sentiers/{nom}', [SentierController::class, 'showByName']);
+Route::get('/sentiers/{nom}', [SentierController::class, 'show']);
 
 Route::post('/api/endroits', [EndroitController::class, 'store']);
 Route::get('/api/themes', function () {
@@ -70,4 +70,4 @@ Route::get('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
 require __DIR__ . '/auth.php';
 
-Route::get('/lieux/{id}', [EndroitController::class, 'show']);
+Route::get('/lieux/{nom}', [EndroitController::class, 'show']);

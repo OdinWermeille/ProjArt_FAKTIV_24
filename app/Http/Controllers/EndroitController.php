@@ -68,11 +68,12 @@ class EndroitController extends Controller
         }
     }
 
-    public function show($id)
-    {
-        $endroit = Endroit::findOrFail($id);
-        return Inertia::render('DetailEndroit', [
-            'endroit' => $endroit,
-        ]);
-    }
+    public function show($nom)
+{
+    $formattedName = str_replace('-', ' ', $nom); // Convertir le slug en nom
+    $endroit = Endroit::where('nom', $formattedName)->firstOrFail();
+    return Inertia::render('DetailEndroit', [
+        'endroit' => $endroit,
+    ]);
+}
 }

@@ -103,7 +103,7 @@ class SentierController extends Controller
         ]);
     }
 
-    public function showByName($nom)
+    public function show($nom)
     {
         $formattedName = str_replace('-', ' ', $nom); // Convertir le slug en nom
         $sentier = Sentier::with(['theme', 'endroits'])->where('nom', $formattedName)->firstOrFail();
