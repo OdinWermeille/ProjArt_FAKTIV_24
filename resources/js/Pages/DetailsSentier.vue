@@ -45,6 +45,8 @@ import L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import 'leaflet.awesome-markers';
+import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 
 export default {
   props: {
@@ -53,6 +55,29 @@ export default {
   setup(props) {
     let map = ref(null);
     const mapContainer = ref(null);
+
+    const returnColor = (theme_id) => {
+      switch (theme_id) {
+          case 2:
+              return 'darkred';
+          case 3:
+              return 'darkgreen';
+          case 4:
+              return 'cadetblue';
+          case 5:
+              return 'purple';
+          case 6:
+              return 'red';
+          case 7:
+              return 'green';
+          case 8:
+              return 'darkblue';
+          case 9:
+              return 'orange';
+          default:
+              return 'black';
+      }
+    }
 
     const initializeMap = () => {
       if (map.value) return;
@@ -71,7 +96,7 @@ export default {
         draggableWaypoints: false,
         show: false,
         lineOptions: {
-          styles: [{ color: 'blue', opacity: 1, weight: 5 }]
+          styles: [{ color: returnColor(props.sentier.theme_id), opacity: 1, weight: 5 }]
         },
         fitSelectedRoutes: true,
         showAlternatives: false,
@@ -80,16 +105,21 @@ export default {
         }),
         createMarker: function (i, waypoint) {
           const endroit = props.sentier.endroits[i];
-          const marker = L.marker(waypoint.latLng, {
-            draggable: false
+          const customIcon = L.AwesomeMarkers.icon({
+            icon: 'info-sign',
+            markerColor: returnColor(props.sentier.theme_id),
+            prefix: 'glyphicon',
           });
 
-          const slug = endroit.nom.toLowerCase().replace(/\s+/g, '-'); // Convertir le nom en un slug URL-friendly
+          const marker = L.marker(waypoint.latLng, {
+            icon: customIcon,
+            draggable: false
+          });
 
           // Ajouter un pop-up avec le nom de l'endroit et un lien vert pointant vers la page de détail
           marker.bindPopup(`
             <b>${endroit.nom}</b><br>
-            <a href="/lieux/${slug}" style="color: #4a8c2a">Plus d'infos</a>
+            <a href="/lieux/${endroit.id}" style="color: #4a8c2a">Plus d'infos</a>
           `);
 
           return marker;
@@ -137,6 +167,7 @@ export default {
 <style scoped>
 @import url('https://unpkg.com/leaflet/dist/leaflet.css');
 @import url('https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css');
+@import url('https://unpkg.com/leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
 
 h1 {
   font-family: "Inter", sans-serif;
