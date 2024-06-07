@@ -195,6 +195,21 @@ const openDescription = (e) => {
         isOpen.value = false;
     });
 
+    const truncateDescription= (description) => {
+      const words = description.split(' ');
+      return words.length > 30 ? words.slice(0, 30).join(' ') + '...' : description;
+    };
+
+    // Fonction pour formatter la durée
+    const formatDuration = (minutes) => {
+        if (minutes >= 60) {
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
+            return remainingMinutes === 0 ? `${hours}h` : `${hours}h ${remainingMinutes}min`;
+        }
+        return `${minutes} min`;
+    };
+
     const modalContent = document.querySelector("#modal .swipe-modal-content .panel");
     let html = `
     <div class="modalHeader">
@@ -202,26 +217,28 @@ const openDescription = (e) => {
         <button class="closeButton" id="closeModalButton">&times;</button>
     </div>
     <div class="modalContent">
-        <h3>Sentiers passant par cet endroit</h3>`;
+        <h3>Sentiers passant par cet endroit :</h3>`;
 
     sentiers.forEach((sentier) => {
         sentier.endroits.forEach((endroit) => {
             if (endroit.id == e.target.options.customProperties.endroit.id) {
                 html += `
                 <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
+                    <div class="groupParent">
                     <div class="sentierCard">
                         <img class="sentierImage" src="${sentier.image_url}" alt="Sentier Image">
                         <div class="sentierContent">
                             <h2 class="sentierTitle">${sentier.nom}</h2>
-                            <p class="sentierDescription">${sentier.description}</p>
+                            <p class="sentierDescription">${truncateDescription(sentier.description)}</p>
                             <div class="sentierInfo">
-                                <span class="sentierLength">${sentier.longueur} km</span>
+                                <span class="sentierLength">${sentier.longueur}km</span>
                                 <span class="sentierSeparator">•</span>
                                 <span class="sentierDuration">${sentier.theme.nom}</span>
                                 <span class="sentierSeparator">•</span>
-                                <span class="sentierDuration">${sentier.duree} min</span>
+                                <span class="sentierDuration">${formatDuration(sentier.duree)}</span>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </a>`;
             }
@@ -310,7 +327,7 @@ const showSentier = (sentier) => {
             return marker;
         },
         router: new leaflet.Routing.OSRMv1({
-            serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
+            serviceUrl: "https://routing.openstreetmap.de/routed-foot/route/v1"
         })
     }).addTo(map);
     routingControl.on('routesfound', function () {
@@ -334,7 +351,7 @@ onMounted(() => {
 
     leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
     nearbyMarkers.value.forEach(({ latitude, longitude }) => {
@@ -546,7 +563,7 @@ onMounted(() => {
 
 .modalHeader {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     border-bottom: 1px solid #7d7d7d;
     padding-bottom: 8px;
@@ -570,15 +587,17 @@ onMounted(() => {
 
 .modalHeader h2 {
     margin: 0;
+    margin-top: 72px;
     margin-bottom: 8px;
     font-size: 2rem;
     color: #212121;
+    text-align: center;
 }
 
 .modalContent h3 {
     margin: 0;
     margin-bottom: 8px;
-    font-size: 1.5rem;
+    font-size: 1rem;
     color: #212121;
 }
 
@@ -660,6 +679,14 @@ onMounted(() => {
     cursor: pointer;
 }
 
+.groupParent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 16px;
+  padding: 16px;
+}
+
 .sentierCard {
     background: #FAFAFA;
     border-radius: 12px;
@@ -667,10 +694,8 @@ onMounted(() => {
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s;
-    width: 90%;
-    margin: 0 auto;
     margin-bottom: 16px;
-    max-width: 600px;
+    max-width: 320px; /* Optional: Set a max width for the cards */
 }
 
 .sentierCard:hover {
@@ -692,6 +717,7 @@ onMounted(() => {
     font-size: 1.25rem;
     margin-bottom: 8px;
     color: #212121;
+    font-weight: bold;
 }
 
 .sentierDescription {
@@ -704,7 +730,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     font-size: 0.875rem;
-    color: #7d7d7d;
+    color: #4A8C2A;
 }
 
 .sentierLength {
@@ -727,6 +753,7 @@ onMounted(() => {
     color: #7d7d7d;
     position: absolute;
     right: 48px;
+    top: 24px;
 }
 
 .swipe-modal-drag-handle-wrapper {
