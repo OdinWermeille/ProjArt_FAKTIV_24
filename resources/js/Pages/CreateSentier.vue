@@ -18,14 +18,12 @@
           <div class="input-group">
             <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" id="nom"
               placeholder="Nom">
-            <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom
-              }}</span>
+            <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
           </div>
           <div class="input-group">
             <textarea :class="{ 'input-error': errors.description }" class="group-item description-field"
               v-model="form.description" id="description" placeholder="Description"></textarea>
-            <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
-              errors.description }}</span>
+            <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
           </div>
           <div class="input-group image-upload">
             <div :class="{ 'input-error': errors.image || isFileTooLarge }" class="rectangle-parent">
@@ -36,10 +34,8 @@
               <input class="image-input" type="file" @change="onFileChange" id="image"
                 accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
             </div>
-            <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image
-              }}</span>
-            <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est
-              trop lourd.</span>
+            <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image }}</span>
+            <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est trop lourd.</span>
           </div>
           <div class="input-group">
             <div :class="{ 'input-error': errors.theme_id }" class="group-item dropdown-multi">
@@ -54,8 +50,7 @@
                 </label>
               </div>
             </div>
-            <span v-if="errors.theme_id" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
-              errors.theme_id }}</span>
+            <span v-if="errors.theme_id" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.theme_id }}</span>
           </div>
           <div class="input-group">
             <div :class="{ 'input-error': errors.endroits }" class="group-item dropdown-multi">
@@ -76,8 +71,7 @@
                 </div>
               </div>
             </div>
-            <span v-if="errors.endroits" class="error-message"><i class="fas fa-exclamation-circle"></i>{{
-              errors.endroits }}</span>
+            <span v-if="errors.endroits" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.endroits }}</span>
           </div>
 
           <!-- Titre conditionnel centré -->
@@ -111,7 +105,7 @@
       </div>
     </div>
   </div>
-  <custom-popup :title="popupTitle" :message="popupMessage" :visible="popupVisible" @close="popupVisible = false" />
+  <custom-popup :title="popupTitle" :message="popupMessage" :visible="popupVisible" @close="popupVisible = false" :actions="popupActions" />
 </template>
 
 <script>
@@ -351,8 +345,16 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         });
+        const sentier = response.data;
+        const slug = sentier.nom.toLowerCase().replace(/\s+/g, '-');
         popupTitle.value = 'Merci!';
         popupMessage.value = 'Votre sentier a été créé avec succès!';
+        popupActions.value = [
+          {
+            text: 'Voir le sentier',
+            handler: () => window.location.href = `/sentiers/${slug}`
+          }
+        ];
         popupVisible.value = true;
         resetForm();
       } catch (error) {
@@ -451,6 +453,7 @@ export default {
     const popupTitle = ref('');
     const popupMessage = ref('');
     const popupVisible = ref(false);
+    const popupActions = ref([]);
 
     return {
       form,
@@ -482,7 +485,8 @@ export default {
       errors,
       isFileTooLarge,
       imageSize,
-      maxFileSize
+      maxFileSize,
+      popupActions
     };
   }
 };
@@ -579,7 +583,7 @@ export default {
 
 .group-item[readonly] {
   background-color: #F0F0F0;
-  /* Light grey background for readonly inputs */
+  /* Light grey background pour readonly inputs */
 }
 
 .dropdown-item {
@@ -770,6 +774,13 @@ export default {
   margin: 30px auto 0 auto;
   width: fit-content;
   cursor: pointer;
+}
+
+.ajouter-wrapper:hover {
+    background-color: #fafafa;
+    color: #4a8c2a;
+    border: #4a8c2a solid 1px;
+    cursor: pointer;
 }
 
 .group-container {
