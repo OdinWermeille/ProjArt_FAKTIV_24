@@ -4,8 +4,8 @@
             <h1 class="titre">{{ endroit.nom }}</h1>
             <img class="image-endroit" :alt="endroit.nom" :src="`/${endroit.image_url}`" />
             <div class="localite-wrapper">
-                <div class="localite">Localité</div>
-                <b class="localite-name">{{ endroit.localite }}</b>
+                <img src="/storage/images/map-ping.svg" alt="List Icon" class="nav-icon" />
+                <p class="localite-name">{{ endroit.localite }}</p>
             </div>
             <div class="button-wrapper">
                 <button class="map-button" @click="scrollToMap">Voir sur la carte</button>
@@ -63,7 +63,7 @@ export default {
 
             const customIcon = leaflet.AwesomeMarkers.icon({
                 icon: 'info-sign',
-                markerColor: 'green', // Vous pouvez changer la couleur ici
+                markerColor: 'green',
                 prefix: 'glyphicon'
             });
 
@@ -125,17 +125,19 @@ h2 {
 }
 
 .localite-wrapper {
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.localite {
-    font-size: 14px;
+.nav-icon {
+    margin-right: 10px;
     color: #7D7D7D;
 }
 
 .localite-name {
     font-size: 16px;
-    font-weight: bold;
+    color: #212121;
 }
 
 .button-wrapper {
