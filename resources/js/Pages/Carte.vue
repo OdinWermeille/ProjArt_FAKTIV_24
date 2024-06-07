@@ -181,12 +181,15 @@ const applyFilters = () => {
         closeModal();
         return matchActivity && matchDistance;
     });
-    console.log(filteredSentiers.value);
     hideAllSentiers();
     filteredSentiers.value.forEach((sentier) => {
         showSentier(sentier);
     });
     showFilterModal.value = false;
+    
+    console.log(filterActivity.value);
+    console.log(filterDistance.value);
+    console.log(sentiers);
 };
 
 const openDescription = (e) => {
@@ -219,7 +222,7 @@ const openDescription = (e) => {
     <div class="modalContent">
         <h3>Sentiers passant par cet endroit :</h3>`;
 
-    sentiers.forEach((sentier) => {
+    filteredSentiers.value.forEach((sentier) => {
         sentier.endroits.forEach((endroit) => {
             if (endroit.id == e.target.options.customProperties.endroit.id) {
                 html += `
@@ -261,7 +264,6 @@ const hideAllSentiers = () => {
         
         
         routingControls.forEach((routingControl) => {
-            console.log(routingControl);
             // Supprimer les marqueurs de la carte
             routingControl.getWaypoints().forEach(waypoint => {
                 if (waypoint.marker) {
@@ -272,20 +274,12 @@ const hideAllSentiers = () => {
             map.removeControl(routingControl);
         });
 
-        // Supprimer les tracés de la carte
-        //map.removeLayer(routingControl._line);
-
-
-
         // Vider les tableaux
         routingControls.length = 0;
-        console.log(sentiers);
-        console.log(routingControls);
     
 };
 
 const showSentier = (sentier) => {
-    console.log(sentier);
     const lineOptions = {
         styles: [{
             color: 'blue',
@@ -395,6 +389,7 @@ onMounted(() => {
                         showSentier(sentier); 
                     }
                 })
+                resetFilters();
             })
             .catch((err) => {
                 console.log(err);
@@ -407,6 +402,7 @@ onMounted(() => {
                     sentiers.push(sentier);
                     showSentier(sentier);
                 })
+                resetFilters();
             });
     }
 });
