@@ -123,6 +123,8 @@ import draggable from 'vuedraggable';
 import { Inertia } from '@inertiajs/inertia';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import 'leaflet.awesome-markers';
+import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 import CustomPopup from '../Components/CustomPopup.vue';
 
 export default {
@@ -184,6 +186,29 @@ export default {
       }
     };
 
+    const returnColor = (theme_id) => {
+      switch (theme_id) {
+          case 2:
+              return 'darkred';
+          case 3:
+              return 'darkgreen';
+          case 4:
+              return 'cadetblue';
+          case 5:
+              return 'purple';
+          case 6:
+              return 'red';
+          case 7:
+              return 'green';
+          case 8:
+              return 'darkblue';
+          case 9:
+              return 'orange';
+          default:
+              return 'black';
+      }
+    };
+
     const initializeMap = async () => {
       if (map.value) return;
 
@@ -194,6 +219,14 @@ export default {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map.value);
 
+      createRoutingControl();
+    };
+
+    const createRoutingControl = () => {
+      if (routingControl.value) {
+        routingControl.value.remove();
+      }
+
       routingControl.value = L.Routing.control({
         waypoints: [],
         routeWhileDragging: true,
@@ -201,13 +234,20 @@ export default {
         addWaypoints: false,
         draggableWaypoints: false,
         createMarker: function (i, waypoint) {
+          const customIcon = L.AwesomeMarkers.icon({
+            icon: 'info-sign',
+            markerColor: returnColor(form.value.theme_id),
+            prefix: 'glyphicon',
+          });
+
           const marker = L.marker(waypoint.latLng, {
+            icon: customIcon,
             draggable: true
           });
           return marker;
         },
         lineOptions: {
-          styles: [{ color: 'blue', opacity: 1, weight: 5 }]
+          styles: [{ color: returnColor(form.value.theme_id), opacity: 1, weight: 5 }]
         },
         fitSelectedRoutes: true,
         routeWhileDragging: true,
@@ -222,6 +262,8 @@ export default {
         form.value.longueur = (route.summary.totalDistance / 1000).toFixed(2); // Convertir en km
         form.value.duree = Math.round(route.summary.totalTime / 60); // Convertir en minutes
       });
+
+      updateMap();
     };
 
     onMounted(async () => {
@@ -238,6 +280,12 @@ export default {
       }
       updateMap();
     }, { deep: true });
+
+    watch(() => form.value.theme_id, async (newTheme) => {
+      if (map.value) {
+        createRoutingControl();
+      }
+    });
 
     const onFileChange = (e) => {
       const file = e.target.files[0];
@@ -320,14 +368,16 @@ export default {
     };
 
     const updateMap = () => {
-      if (!map.value) return;
+      if (!map.value || !routingControl.value) return;
+
       const selectedEndroits = form.value.endroits.map(endroitId => {
         return endroits.value.find(endroit => endroit.id === endroitId);
       });
 
-      routingControl.value.setWaypoints(
-        selectedEndroits.map(endroit => L.latLng(endroit.coordonneesX, endroit.coordonneesY))
-      );
+      const waypoints = selectedEndroits.map(endroit => L.latLng(endroit.coordonneesX, endroit.coordonneesY));
+
+      routingControl.value.setWaypoints(waypoints);
+      routingControl.value.getPlan().setWaypoints(waypoints);
     };
 
     const toggleDropdown = () => {
@@ -440,6 +490,9 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import url('https://unpkg.com/leaflet/dist/leaflet.css');
+@import url('https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css');
+@import url('https://unpkg.com/leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
 /* Import Font Awesome */
 
 .inter-text {

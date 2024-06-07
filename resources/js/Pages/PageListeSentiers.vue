@@ -27,7 +27,7 @@
             <b :class="$style.title">{{ sentier.nom }}</b>
             <div :class="$style.description">{{ truncateDescription(sentier.description) }}</div>
             <div :class="$style.info">
-              <div :class="$style.length">{{ sentier.longueur }} km</div>
+              <div :class="$style.length">{{ sentier.longueur }}km</div>
               <div :class="$style.separator">•</div>
               <div :class="$style.theme">{{ sentier.theme.nom }}</div>
               <div :class="$style.separator">•</div>

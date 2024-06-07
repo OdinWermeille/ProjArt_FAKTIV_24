@@ -52,6 +52,8 @@ import { ref, onMounted, nextTick, computed } from 'vue';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.awesome-markers';
+import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 import CustomPopup from '../Components/CustomPopup.vue';
 
 export default {
@@ -121,7 +123,13 @@ export default {
           map.removeLayer(marker.value);
         }
 
-        marker.value = L.marker([lat, lng]).addTo(map);
+        const customIcon = L.AwesomeMarkers.icon({
+          icon: 'info-sign',
+          markerColor: 'green', // Vous pouvez changer la couleur ici
+          prefix: 'glyphicon'
+        });
+
+        marker.value = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
         form.value.coordonneesX = lat;
         form.value.coordonneesY = lng;
@@ -259,6 +267,9 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import url('https://unpkg.com/leaflet/dist/leaflet.css');
+@import url('https://unpkg.com/leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
+
 /* Import Font Awesome */
 
 .inter-text {

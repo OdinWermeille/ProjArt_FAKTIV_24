@@ -1,4 +1,4 @@
-c<template>
+<template>
     <div class="container">
         <div class="content">
             <h1 class="titre">{{ endroit.nom }}</h1>
@@ -26,11 +26,12 @@ c<template>
     </div>
 </template>
 
-
 <script>
 import { onMounted, ref } from 'vue';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.awesome-markers';
+import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 
 export default {
     name: 'DetailEndroit',
@@ -51,8 +52,6 @@ export default {
             const latitude = props.endroit.coordonneesX;
             const longitude = props.endroit.coordonneesY;
 
-            console.log(props.endroit);
-
             map.value = leaflet
                 .map("map")
                 .setView([latitude, longitude], 13);
@@ -62,9 +61,16 @@ export default {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             }).addTo(map.value);
 
+            const customIcon = leaflet.AwesomeMarkers.icon({
+                icon: 'info-sign',
+                markerColor: 'green', // Vous pouvez changer la couleur ici
+                prefix: 'glyphicon'
+            });
+
             leaflet
-                .marker([latitude, longitude])
-                .addTo(map.value);
+                .marker([latitude, longitude], { icon: customIcon })
+                .addTo(map.value)
+                .bindPopup(`<b>${props.endroit.nom}</b><br>${props.endroit.localite}`);
         });
 
         return {
@@ -76,9 +82,10 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
+@import url('https://unpkg.com/leaflet/dist/leaflet.css');
+@import url('https://unpkg.com/leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
+
 h2 {
     font-family: "Inter", sans-serif;
     font-size: 16px;
