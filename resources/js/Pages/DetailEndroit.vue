@@ -63,7 +63,7 @@ export default {
 
             const customIcon = leaflet.AwesomeMarkers.icon({
                 icon: 'info-sign',
-                markerColor: 'green',
+                markerColor: 'black',
                 prefix: 'glyphicon'
             });
 

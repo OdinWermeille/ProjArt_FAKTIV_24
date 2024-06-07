@@ -58,25 +58,25 @@ export default {
 
     const returnColor = (theme_id) => {
       switch (theme_id) {
-          case 2:
-              return 'darkred';
-          case 3:
-              return 'darkgreen';
-          case 4:
-              return 'cadetblue';
-          case 5:
-              return 'purple';
-          case 6:
-              return 'red';
-          case 7:
-              return 'green';
-          case 8:
-              return 'darkblue';
-          case 9:
-              return 'orange';
-          default:
-              return 'black';
-      }
+        case 2:
+            return 'darkred';
+        case 3:
+            return 'blue';
+        case 4:
+            return 'green';
+        case 5:
+            return 'purple';
+        case 6:
+            return 'darkgreen';
+        case 7:
+            return 'red';
+        case 8:
+            return 'orange';
+        case 9:
+            return 'darkblue';
+        default:
+            return 'black';
+    }
     }
 
     const initializeMap = () => {
@@ -116,10 +116,11 @@ export default {
             draggable: false
           });
 
+          const slug = endroit.nom.toLowerCase().replace(/\s+/g, '-'); // Convertir le nom en un slug URL-friendly
           // Ajouter un pop-up avec le nom de l'endroit et un lien vert pointant vers la page de détail
           marker.bindPopup(`
             <b>${endroit.nom}</b><br>
-            <a href="/lieux/${endroit.id}" style="color: #4a8c2a">Plus d'infos</a>
+            <a href="/lieux/${slug}" style="color: #4a8c2a">Plus d'infos</a>
           `);
 
           return marker;

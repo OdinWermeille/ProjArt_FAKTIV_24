@@ -125,7 +125,7 @@ export default {
 
         const customIcon = L.AwesomeMarkers.icon({
           icon: 'info-sign',
-          markerColor: 'green', // Vous pouvez changer la couleur ici
+          markerColor: 'black', // Vous pouvez changer la couleur ici
           prefix: 'glyphicon'
         });
 
