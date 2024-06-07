@@ -188,25 +188,25 @@ export default {
 
     const returnColor = (theme_id) => {
       switch (theme_id) {
-          case 2:
-              return 'darkred';
-          case 3:
-              return 'darkgreen';
-          case 4:
-              return 'cadetblue';
-          case 5:
-              return 'purple';
-          case 6:
-              return 'red';
-          case 7:
-              return 'green';
-          case 8:
-              return 'darkblue';
-          case 9:
-              return 'orange';
-          default:
-              return 'black';
-      }
+        case 2:
+            return 'darkred';
+        case 3:
+            return 'blue';
+        case 4:
+            return 'green';
+        case 5:
+            return 'purple';
+        case 6:
+            return 'darkgreen';
+        case 7:
+            return 'red';
+        case 8:
+            return 'orange';
+        case 9:
+            return 'darkblue';
+        default:
+            return 'black';
+    }
     };
 
     const initializeMap = async () => {

@@ -133,21 +133,21 @@ const returnColor = (theme_id) => {
         case 2:
             return 'darkred';
         case 3:
-            return 'darkgreen';
+            return 'blue';
         case 4:
-            return 'cadetblue';
+            return 'green';
         case 5:
             return 'purple';
         case 6:
-            return 'red';
+            return 'darkgreen';
         case 7:
-            return 'green';
+            return 'red';
         case 8:
-            return 'darkpurple';
-        case 9:
             return 'orange';
+        case 9:
+            return 'darkblue';
         default:
-            return 'blue';
+            return 'black';
     }
 }
 
