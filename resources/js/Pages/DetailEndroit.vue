@@ -101,8 +101,13 @@ h2 {
     color: #212121;
 }
 
+
 .content {
-    padding: 20px 0;
+    font-family: "Inter", sans-serif;
+    color: #212121;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .titre {
