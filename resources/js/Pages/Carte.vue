@@ -130,8 +130,6 @@ const redirectToList = () => {
 
 const returnColor = (theme_id) => {
     switch (theme_id) {
-        case 1:
-            return 'orange';
         case 2:
             return 'darkred';
         case 3:
@@ -146,6 +144,8 @@ const returnColor = (theme_id) => {
             return 'green';
         case 8:
             return 'darkpurple';
+        case 9:
+            return 'orange';
         default:
             return 'blue';
     }
