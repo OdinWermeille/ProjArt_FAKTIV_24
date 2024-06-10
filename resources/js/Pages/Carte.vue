@@ -307,7 +307,7 @@ const showSentier = (sentier) => {
             });
 
 
-            marker.bindPopup("lieu séléctionné")
+            marker.bindPopup("lieu sélectionné")
 
             marker.on('click', function (e) {
                 openDescription(e);
@@ -462,20 +462,6 @@ onMounted(() => {
 
 .listIcon:hover {
   transform: translateY(-5px);
-}
-
-.card {
-    background: #FAFAFA;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s;
-    width: 300px;
-}
-
-.card:hover {
-    transform: translateY(-5px);
 }
 
 .image {
@@ -677,7 +663,7 @@ onMounted(() => {
     cursor: pointer;
     transition: transform 0.2s;
     margin-bottom: 16px;
-    max-width: 320px; /* Optional: Set a max width for the cards */
+    max-width: 300px; /* Optional: Set a max width for the cards */
 }
 
 .sentierCard:hover {
