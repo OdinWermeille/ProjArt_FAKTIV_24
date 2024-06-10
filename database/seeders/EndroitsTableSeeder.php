@@ -117,7 +117,7 @@ class EndroitsTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nom' => 'Musée Cantonal des Beaux-Arts',
+                'nom' => 'Musée Cantonal des Beaux Arts',
                 'image_url' => 'storage\images\Beaux_Arts.jpg',
                 'description' => 'Le Musée Cantonal des Beaux-Arts de Lausanne est une institution culturelle majeure qui abrite une riche collection d\'œuvres d\'art, allant de la peinture et la sculpture aux arts graphiques. Le musée organise régulièrement des expositions temporaires mettant en valeur des artistes suisses et internationaux. Situé dans le quartier des arts, il offre un cadre moderne et élégant pour la découverte de l\'art. Le musée propose également des programmes éducatifs et des visites guidées pour approfondir la compréhension des œuvres exposées.',
                 'localite' => 'Lausanne',

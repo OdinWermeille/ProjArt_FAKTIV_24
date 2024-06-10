@@ -112,6 +112,7 @@ h2 {
 
 .titre {
     font-size: 24px;
+    margin-bottom: 24px;
     font-weight: bold;
     height: 48px;
 }
