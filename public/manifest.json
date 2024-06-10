@@ -1,0 +1,16 @@
+{
+    "name": "Sentiers Culturels du Canton de Vaud",
+    "short_name": "SCVD",
+    "description": "Une application pour découvrir les sentiers culturels du canton de Vaud",
+    "start_url": "/sentiers",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "icons": [
+        {
+            "src": "/storage/images/mini_logo.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml"
+        }
+    ]
+}
