@@ -369,7 +369,7 @@ onMounted(() => {
                     }),
                 })
                 .addTo(map)
-                .bindPopup("Les informations sur le lieu vont ici");
+                .bindPopup("Vous êtes ici");
 
             const el = userGeoMarker.getElement();
             if (el) {
