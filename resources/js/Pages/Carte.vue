@@ -10,10 +10,6 @@
     <div>
         <!-- Barre de recherche et boutons -->
         <div class="searchContainer">
-            <div class="searchWrapper">
-                <input type="text" class="searchInput" placeholder="Rechercher" />
-                <img class="searchIcon" alt="Search Icon" src="/storage/images/icon.svg" />
-            </div>
             <div class="buttonsWrapper">
                 <button class="button" @click="showFilterModal = true">Filtrer</button>
                 <img class="listIcon" alt="List Icon" src="/storage/images/list.svg" @click="redirectToList" />
@@ -284,7 +280,7 @@ const showSentier = (sentier) => {
         styles: [{
             color: 'blue',
             weight: 5,
-            opacity: 0.4
+            opacity: 0.5
         }]
     };
     lineOptions.styles[0].color = returnColor(sentier.theme_id);
@@ -362,6 +358,8 @@ onMounted(() => {
 
             if (!userGeoMarker) {
                 map.setView([userMarker.value.latitude, userMarker.value.longitude], 13);
+            } else{
+                map.removeLayer(userGeoMarker);
             }
 
             userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude])
@@ -421,56 +419,44 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     padding: 16px;
-    background-color: #F0F0F0;
+    padding-top: 20px;
+    background-color: #F5F5F5;
     border-bottom: 1px solid #7d7d7d;
 }
 
-.searchWrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 16px;
-    position: relative;
-}
-
-.searchInput {
-    flex: 1;
-    padding: 8px 16px;
-    border: 1px solid #ccc;
-    border-radius: 24px;
-    padding-right: 40px;
-}
-
-.searchIcon {
-    position: absolute;
-    right: 12px;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
 .buttonsWrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .button {
-    padding: 8px 16px;
-    border: 1px solid #ccc;
-    border-radius: 24px;
-    background-color: #FAFAFA;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+  font-family: "Inter", sans-serif;
+  padding: 8px 16px;
+  border: 1px solid #F0F0F0;
+  border-radius: 24px;
+  background-color: #FAFAFA;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
-.mapIcon {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
+.button:hover {
+  background-color: #F0F0F0;
+  /* Change la couleur de fond au survol */
+  color: #BFD2A6;
+  /* Change la couleur de texte au survol */
+}
+
+.listIcon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.listIcon:hover {
+  transform: translateY(-5px);
 }
 
 .groupParent {
