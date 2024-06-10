@@ -103,7 +103,7 @@
 "use strict";
 import { Head } from '@inertiajs/vue3';
 import { onMounted, ref, watchEffect } from 'vue'
-import leaflet from 'leaflet'
+import leaflet from 'leaflet';
 import { useGeolocation } from '@vueuse/core'
 import { userMarker, nearbyMarkers } from '@/stores/mapStore'
 import 'leaflet/dist/leaflet.css';
@@ -362,13 +362,19 @@ onMounted(() => {
                 map.removeLayer(userGeoMarker);
             }
 
-            userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude])
+            userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude], {
+                    icon : leaflet.AwesomeMarkers.icon({
+                        icon: 'round', // Nom de l'icône (par exemple, 'info-sign')
+                        markerColor: 'green', // Couleur du marqueur
+                        prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
+                    }),
+                })
                 .addTo(map)
                 .bindPopup("Les informations sur le lieu vont ici");
 
             const el = userGeoMarker.getElement();
             if (el) {
-                el.style.filter = "hue-rotate(140deg)";
+                el.style.filter = "hue-rotate(275deg)";
             }
         }
     });
