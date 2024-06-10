@@ -211,18 +211,17 @@ const openDescription = (e) => {
 
     const modalContent = document.querySelector("#modal .swipe-modal-content .panel");
     let html = `
-    <div class="modalHeader">
-        <h2>${e.target.options.customProperties.endroit.nom}</h2>
-        <button class="closeButton" id="closeModalButton">&times;</button>
+    <div class="modalHeader enhanced-header">
+        <h2 class="header-title">Sentiers passant par ${e.target.options.customProperties.endroit.nom} </h2>
+        <button class="closeButton enhanced-close" id="closeModalButton">&times;</button>
     </div>
-    <div class="modalContent">
-        <h3>Sentiers passant par cet endroit :</h3>`;
+    <div class="modalCards">`;
 
     filteredSentiers.value.forEach((sentier) => {
         sentier.endroits.forEach((endroit) => {
             if (endroit.id == e.target.options.customProperties.endroit.id) {
                 html += `
-                <a href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
+                <a class="groupLienCard" href="/sentiers/${sentier.nom.toLowerCase().replace(/\s+/g, '-')}">
                     <div class="groupParent">
                     <div class="sentierCard">
                         <img class="sentierImage" src="${sentier.image_url}" alt="Sentier Image">
@@ -465,14 +464,6 @@ onMounted(() => {
   transform: translateY(-5px);
 }
 
-.groupParent {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    gap: 16px;
-    padding: 16px;
-}
-
 .card {
     background: #FAFAFA;
     border-radius: 12px;
@@ -582,13 +573,6 @@ onMounted(() => {
     text-align: center;
 }
 
-.modalContent h3 {
-    margin: 0;
-    margin-bottom: 8px;
-    font-size: 1rem;
-    color: #212121;
-}
-
 .modalContent h4 {
     margin: 0;
     margin-bottom: 8px;
@@ -667,12 +651,22 @@ onMounted(() => {
     cursor: pointer;
 }
 
+.modalCards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.groupLienCard {
+    display: inline-block;
+    text-decoration: none; /* Supprimer le soulignement des liens */
+}
+
 .groupParent {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 16px;
-  padding: 16px;
+    display: inline-flex;
+    justify-content: center; /* Centrer horizontalement les enfants */
+    padding: 16px;
 }
 
 .sentierCard {
@@ -746,5 +740,37 @@ onMounted(() => {
 
 .swipe-modal-drag-handle-wrapper {
     display: none !important;
+}
+
+.enhanced-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #212121; /* Couleur du texte sombre pour le contraste */
+    padding: 16px;
+    border-bottom: 1px solid #BFD2A6; /* Bordure subtile en bas */
+    border-radius: 8px 8px 0 0; /* Coins arrondis en haut */
+}
+ 
+.header-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+ 
+.header-subtitle {
+    font-size: 1.25rem;
+    margin: 16px 0;
+    margin-left: 16px;
+    color: #4A8C2A;
+    font-weight: bold;
+}
+ 
+.enhanced-close {
+    background: none;
+    border: none;
+    font-size: 3rem;
+    cursor: pointer;
+    color: #212121;
 }
 </style>
