@@ -22,7 +22,7 @@
       <div v-else :class="$style.groupParent">
         <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card"
           @click="onGroupContainerClick(sentier.nom)">
-          <img :class="$style.image" :alt="sentier.nom" :src="`/${sentier.image_url}`" />
+          <img :class="$style.image" :alt="sentier.nom" :src="`/storage/images/${sentier.image_url}`" />
           <div :class="$style.content">
             <b :class="$style.title">{{ sentier.nom }}</b>
             <div :class="$style.description">{{ truncateDescription(sentier.description) }}</div>
