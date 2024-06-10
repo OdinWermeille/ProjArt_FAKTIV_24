@@ -104,7 +104,7 @@ export default {
         fitSelectedRoutes: true,
         showAlternatives: false,
         router: new L.Routing.OSRMv1({
-          serviceUrl: "http://routing.openstreetmap.de/routed-foot/route/v1"
+          serviceUrl: "https://routing.openstreetmap.de/routed-foot/route/v1"
         }),
         createMarker: function (i, waypoint) {
           const endroit = props.sentier.endroits[i];
