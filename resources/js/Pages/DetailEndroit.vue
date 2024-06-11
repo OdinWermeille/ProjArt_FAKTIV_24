@@ -18,6 +18,14 @@
                 </div>
             </div>
             <hr class="separator" />
+            <div class="nearest-stop-wrapper" v-if="nearestStop">
+                <h2>Arrêt de transport public le plus proche</h2>
+                <div class="nearest-stop">
+                    <img :src="`/storage/images/${nearestStop.icon}.svg`" alt="icon {{ nearestStop.icon }}" class="nav-icon" />
+                    <p>{{ nearestStop.name }} ({{ nearestStop.distance }} mètres)</p>
+                </div>
+            </div>
+            <hr class="separator" />
             <div class="input-group map-container" ref="mapContainer">
                 <h2>Emplacement</h2>
                 <div id="map" class="rectangle-parent2"></div>
@@ -41,11 +49,29 @@ export default {
     setup(props) {
         const map = ref(null);
         const mapContainer = ref(null);
+        const nearestStop = ref(null);
 
         const scrollToMap = () => {
             if (mapContainer.value) {
                 mapContainer.value.scrollIntoView({ behavior: 'smooth' });
             }
+        };
+
+        const fetchNearbyStops = (latitude, longitude) => {
+            const url = `http://transport.opendata.ch/v1/locations?x=${longitude}&y=${latitude}&type=station`;
+            
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => data.stations)
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des arrêts :', error);
+                    return [];
+                });
         };
 
         onMounted(() => {
@@ -71,11 +97,19 @@ export default {
                 .marker([latitude, longitude], { icon: customIcon })
                 .addTo(map.value)
                 .bindPopup(`<b>${props.endroit.nom}</b><br>${props.endroit.localite}`);
+
+            // Fetch nearby public transport stops
+            fetchNearbyStops(latitude, longitude).then(stops => {
+                if (stops.length > 0) {
+                    nearestStop.value = stops[1];
+                }
+            });
         });
 
         return {
             map,
             mapContainer,
+            nearestStop,
             scrollToMap
         };
     }
@@ -100,7 +134,6 @@ h2 {
     font-family: 'Inter', sans-serif;
     color: #212121;
 }
-
 
 .content {
     font-family: "Inter", sans-serif;
@@ -199,5 +232,25 @@ h2 {
 .rectangle-parent2 {
     width: 100%;
     height: 100%;
+}
+
+.nearest-stop-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.nearest-stop {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.nearest-stop img.nav-icon {
+    margin-right: 10px;
+}
+
+.nearest-stop p {
+    margin: 0;
 }
 </style>
