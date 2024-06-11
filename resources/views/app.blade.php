@@ -63,6 +63,15 @@
     @routes
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
+
+    <button id="getLocationBtn">Demander la localisation</button>
+
+    <div id="locationInfo" style="display: none;">
+        <p>Latitude: <span id="latitude"></span></p>
+        <p>Longitude: <span id="longitude"></span></p>
+    </div>
+
+    <script src="{{ asset('js/location.js') }}"></script>
 </head>
 
 <body class="font-sans antialiased">

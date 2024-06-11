@@ -21,7 +21,8 @@
             <div class="nearest-stop-wrapper" v-if="nearestStop">
                 <h2>Arrêt de transport public le plus proche</h2>
                 <div class="nearest-stop">
-                    <img :src="`/storage/images/${nearestStop.icon}.svg`" alt="icon {{ nearestStop.icon }}" class="nav-icon" />
+                    <img :src="`/storage/images/${nearestStop.icon}.svg`" alt="icon {{ nearestStop.icon }}"
+                        class="nav-icon" />
                     <p>{{ nearestStop.name }} ({{ nearestStop.distance }} mètres)</p>
                 </div>
             </div>
@@ -58,8 +59,8 @@ export default {
         };
 
         const fetchNearbyStops = (latitude, longitude) => {
-            const url = `http://transport.opendata.ch/v1/locations?x=${longitude}&y=${latitude}&type=station`;
-            
+            const url = `https://transport.opendata.ch/v1/locations?x=${longitude}&y=${latitude}&type=station`;
+
             return fetch(url)
                 .then(response => {
                     if (!response.ok) {
