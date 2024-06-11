@@ -1,4 +1,4 @@
-/* const CACHE_VERSION = '1';
+const CACHE_VERSION = '1';
 const CACHE_FILES = [
 
 ];
@@ -37,4 +37,3 @@ self.addEventListener('fetch', event => {
         event.respondWith(fetchCacheFirst());
     }
 });
- */
