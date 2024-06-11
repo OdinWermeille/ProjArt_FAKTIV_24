@@ -55,8 +55,8 @@ class SentierController extends Controller
 
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
-            $validated['image_url'] = 'images/' . $imageName;
+            $request->image->move(public_path('storage/images'), $imageName);
+            $validated['image_url'] = 'storage/images/' . $imageName;
         }
 
         $sentier = Sentier::create($validated);
