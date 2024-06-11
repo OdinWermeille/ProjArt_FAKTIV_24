@@ -1,32 +1,32 @@
-/* Importation des polices depuis Google Fonts */
+/* Importation des polices Google */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-/* Tailwind CSS - Base, Components, Utilities */
+/* Configuration Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Réinitialisation des marges et paddings pour tous les éléments */
+/* Réinitialisation des marges et paddings */
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
 }
 
-/* Définition de la hauteur et largeur pour l'élément #page */
+/* Taille plein écran pour #page */
 #page {
     height: 100vh;
     width: 100vw;
 }
 
-/* Correction de la propriété line-height pour le corps du document */
+/* Ajustement de la hauteur de ligne pour le corps */
 body {
     margin: 0;
     line-height: normal;
 }
 
-/* Correction de la répétition des styles pour html et body */
+/* Réinitialisation de html et body */
 html,
 body {
     margin: 0;
@@ -34,23 +34,20 @@ body {
     height: 100%;
 }
 
-/* Configuration de l'élément #app pour utiliser Flexbox */
+/* Flexbox pour #app */
 #app {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* Ajout de la classe main-content pour s'assurer que le footer reste en bas */
+/* Maintien du footer en bas */
 .main-content {
     flex: 1;
 }
 
-/* Ajout de styles pour header et footer */
-header {
-    flex-shrink: 0;
-}
-
+/* Styles pour header et footer */
+header,
 footer {
     flex-shrink: 0;
 }

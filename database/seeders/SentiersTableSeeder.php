@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 
 class SentiersTableSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         DB::table('sentiers')->insert([

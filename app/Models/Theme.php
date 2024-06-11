@@ -10,9 +10,12 @@ class Theme extends Model
 {
     use HasFactory;
 
-    protected $fillable=['nom']; 
-    
-    public function sentiers() { 
-        return $this->hasMany(Sentier::class);   
-    }  
+    // Attribut modifiable
+    protected $fillable = ['nom'];
+
+    // Relation avec le modèle Sentier
+    public function sentiers()
+    {
+        return $this->hasMany(Sentier::class);
+    }
 }

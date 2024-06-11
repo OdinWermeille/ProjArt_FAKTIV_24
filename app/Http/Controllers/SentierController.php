@@ -10,6 +10,7 @@ use App\Models\Endroit;
 
 class SentierController extends Controller
 {
+    // Affiche la vue pour créer un nouveau sentier
     public function create()
     {
         $themes = Theme::all();
@@ -20,8 +21,10 @@ class SentierController extends Controller
         ]);
     }
 
+    // Enregistre un nouveau sentier
     public function store(Request $request)
     {
+        // Valide les données de la requête
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -33,6 +36,7 @@ class SentierController extends Controller
             'endroits' => 'required|array|min:2',
             'endroits.*' => 'exists:endroits,id'
         ], [
+            // Messages de validation personnalisés
             'nom.required' => 'Le nom est requis.',
             'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
             'image.required' => 'L\'image est requise.',
@@ -53,28 +57,33 @@ class SentierController extends Controller
             'endroits.*.exists' => 'Le lieu sélectionné est invalide.',
         ]);
 
+        // Traite le fichier d'image s'il est présent
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('storage/images'), $imageName);
             $validated['image_url'] = 'storage/images/' . $imageName;
         }
 
+        // Crée un nouveau sentier
         $sentier = Sentier::create($validated);
         $sentier->endroits()->sync($validated['endroits']);
 
         return response()->json($sentier, 201);
     }
 
+    // Affiche la liste des sentiers avec des filtres
     public function index(Request $request)
     {
         $query = Sentier::with('theme');
 
+        // Filtre par activité
         if ($request->filterActivity && $request->filterActivity != 'tout') {
             $query->whereHas('theme', function ($q) use ($request) {
                 $q->where('nom', $request->filterActivity);
             });
         }
 
+        // Filtre par distance
         if ($request->filterDistance && $request->filterDistance != 'tout') {
             if ($request->filterDistance == '0-5') {
                 $query->where('longueur', '<=', 5);
@@ -85,6 +94,7 @@ class SentierController extends Controller
             }
         }
 
+        // Tri des résultats
         if ($request->sortOption) {
             if ($request->sortOption === 'newest') {
                 $query->orderBy('created_at', 'desc');
@@ -103,14 +113,13 @@ class SentierController extends Controller
         ]);
     }
 
+    // Affiche les détails d'un sentier spécifique
     public function show($nom)
     {
-        $formattedName = str_replace('-', ' ', $nom); 
+        $formattedName = str_replace('-', ' ', $nom);
         $sentier = Sentier::with(['theme', 'endroits'])->where('nom', $formattedName)->firstOrFail();
         return Inertia::render('DetailsSentier', [
             'sentier' => $sentier
         ]);
     }
-
-
 }

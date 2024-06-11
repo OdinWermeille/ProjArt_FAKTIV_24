@@ -47,11 +47,13 @@ class User extends Authenticatable
     }
 
 
+    // Relation avec le modèle Endroit
     public function endroits()
     {
         return $this->hasMany(Endroit::class);
     }
 
+    // Relation avec le modèle Sentier
     public function sentiers()
     {
         return $this->hasMany(Sentier::class);
