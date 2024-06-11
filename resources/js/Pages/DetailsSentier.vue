@@ -84,7 +84,7 @@ export default {
 
     const initializeMap = () => {
       if (map.value) return;
-      map.value = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
+      map.value = L.map('map').setView([46.8182, 8.2275], 8);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -119,8 +119,7 @@ export default {
             draggable: false
           });
 
-          const slug = endroit.nom.toLowerCase().replace(/\s+/g, '-'); // Convertir le nom en un slug URL-friendly
-          // Ajouter un pop-up avec le nom de l'endroit et un lien vert pointant vers la page de détail
+          const slug = endroit.nom.toLowerCase().replace(/\s+/g, '-');
           marker.bindPopup(`
             <b>${endroit.nom}</b><br>
             <a href="/lieux/${slug}" style="color: #4a8c2a">Plus d'infos</a>
@@ -159,7 +158,7 @@ export default {
   },
   methods: {
     onGroupContainerClick(nom) {
-      const slug = nom.toLowerCase().replace(/\s+/g, '-'); // Convertir le nom en un slug URL-friendly
+      const slug = nom.toLowerCase().replace(/\s+/g, '-');
       window.location.href = `/lieux/${slug}`;;
     }
   }
@@ -182,12 +181,6 @@ h2 {
   font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: bold;
-  height: 48px;
-}
-
-h3 {
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
   height: 48px;
 }
 
@@ -214,17 +207,17 @@ h3 {
 .info {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 24px;
 }
 
 .info .nav-icon {
   margin-right: 10px;
-  width: 24px; /* Ajustez la taille de l'icône selon vos besoins */
-  height: 24px; /* Ajustez la taille de l'icône selon vos besoins */
+  width: 24px;
+  height: 24px;
 }
 
 .parcours {
-  margin: 0; /* Pour aligner le texte verticalement avec l'image */
+  margin: 0;
 }
 
 
@@ -235,7 +228,6 @@ h3 {
 .map-container {
   width: 100%;
   height: 400px;
-  /* Adjust the height as needed */
   border-radius: 10px;
 }
 
@@ -249,7 +241,6 @@ h3 {
   display: flex;
   justify-content: center;
   margin: 20px 0;
-  /* Ajoute de l'espacement avant et après le bouton */
 }
 
 .map-button {
@@ -262,7 +253,6 @@ h3 {
   border: #4a8c2a solid 1px;
   cursor: pointer;
   margin: 20px 0;
-  /* Ajoute de l'espacement avant et après le bouton */
 }
 
 .map-button:hover {
@@ -270,8 +260,5 @@ h3 {
   color: #4a8c2a;
   border: #4a8c2a solid 1px;
   cursor: pointer;
-}
-.info {
-  margin-bottom: 24px;
 }
 </style>

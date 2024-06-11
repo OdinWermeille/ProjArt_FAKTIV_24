@@ -25,7 +25,6 @@
   width: 100%;
   box-sizing: border-box;
   flex-shrink: 0;
-  /* Empêche le footer de rétrécir */
 }
 
 .footer-content {
@@ -59,4 +58,3 @@
   margin: 5px 0;
 }
 </style>
-```

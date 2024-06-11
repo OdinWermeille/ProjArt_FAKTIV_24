@@ -4,11 +4,10 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/inertia-vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
-//import { InertiaProgress } from '@inertiajs/progress';
 import axios from 'axios';
 
-import Header from './Components/Header.vue'; // Importer le Header
-import Footer from './Components/Footer.vue'; // Importer le Footer
+import Header from './Components/Header.vue';
+import Footer from './Components/Footer.vue';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -47,7 +46,7 @@ if ('serviceWorker' in navigator) {
         console.log('Service Worker enregistré avec succès:', registration);
       })
       .catch(error => {
-        console.log('Erreur lors de l\'enregistrement du Service Worker:', error);
+        console.error('Erreur lors de l\'enregistrement du Service Worker:', error);
       });
   });
 }

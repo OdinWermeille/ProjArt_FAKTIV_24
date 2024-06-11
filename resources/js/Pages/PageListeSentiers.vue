@@ -169,7 +169,7 @@ export default defineComponent({
   },
   methods: {
     onGroupContainerClick(nom) {
-      const slug = nom.toLowerCase().replace(/\s+/g, '-'); // Convertir le nom en un slug URL-friendly
+      const slug = nom.toLowerCase().replace(/\s+/g, '-');
       window.location.href = `/sentiers/${slug}`;
     },
     redirectToMap() {
@@ -180,8 +180,13 @@ export default defineComponent({
       this.showFilterModal = false;
     },
     truncateDescription(description) {
-      const words = description.split(' ');
-      return words.length > 30 ? words.slice(0, 30).join(' ') + '...' : description;
+        if (description.length > 200) {
+            let truncated = description.substring(0, 200);
+            const lastSpace = truncated.lastIndexOf(' ');
+            truncated = truncated.substring(0, lastSpace) + '...';
+            return truncated;
+        }
+        return description;
     },
     resetSort() {
       this.sortOption = '';
@@ -243,12 +248,6 @@ export default defineComponent({
 
 
 <style module>
-html,
-body {
-  font-family: "Inter", sans-serif;
-  height: 100%;
-  margin: 0;
-}
 
 .page-container {
   display: flex;
@@ -312,9 +311,7 @@ body {
 
 .button:hover {
   background-color: #F0F0F0;
-  /* Change la couleur de fond au survol */
   color: #BFD2A6;
-  /* Change la couleur de texte au survol */
 }
 
 .mapIcon {

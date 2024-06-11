@@ -1,17 +1,13 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Http\Controllers\SentierController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CarteController;
-use App\Models\Sentier;
 use App\Http\Controllers\EndroitController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
-// Redirect the root URL to /sentiers
 Route::redirect('/', '/sentiers')->name('sentiers');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -30,7 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-Route::get('/carte/{id}', [CarteController::class, 'carte']);
 Route::get('/carte', [CarteController::class, 'carte']);
 Route::get('/carteFetch/sentiers', [CarteController::class, 'index']);
 Route::get('/sentiers', [SentierController::class, 'index'])->name('sentiers');
@@ -51,18 +46,6 @@ Route::get('/api/user', function () {
     return response()->json([
         'authenticated' => Auth::check(),
         'user' => Auth::user()
-    ]);
-});
-
-Route::get('/test', function () {
-    return Inertia::render('Test', [
-        'sentiers' => Sentier::all()
-    ]);
-});
-
-Route::get('/sentiers', function () {
-    return Inertia::render('PageListeSentiers', [
-        'sentiers' => Sentier::with('theme')->get()
     ]);
 });
 

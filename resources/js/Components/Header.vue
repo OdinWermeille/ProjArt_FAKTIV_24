@@ -90,15 +90,12 @@ export default {
   justify-content: space-between;
   padding: 0 1rem;
   background-color: #FAFAFA;
-  /* Couleur de fond claire */
   color: #212121;
   position: relative;
   height: 70px;
   width: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Ajoute une ombre pour un effet de profondeur */
   z-index: 20;
-  /* Assurez-vous que le header a un z-index élevé */
 }
 
 .logo img {
@@ -117,13 +114,11 @@ export default {
   padding: 0;
   align-items: center;
   padding-left: 1rem;
-  /* Ajoute une marge à gauche pour éloigner les liens du bord */
 }
 
 .nav-item {
   margin-left: 1rem;
   position: relative;
-  /* Nécessaire pour le soulignement sur hover */
   cursor: pointer;
 }
 
@@ -134,24 +129,19 @@ export default {
   padding: 10px 15px;
   background-color: transparent;
   color: #212121;
-  /* Couleur noire plus douce */
   text-decoration: none;
   font-weight: 500;
-  /* Ajoute du poids au texte pour une meilleure lisibilité */
   transition: background-color 0.3s, color 0.3s;
 }
 
 .nav-item a:hover {
   background-color: #F0F0F0;
-  /* Change la couleur de fond au survol */
   color: #BFD2A6;
-  /* Change la couleur de texte au survol */
 }
 
 .nav-icon {
   margin-right: 0.5rem;
   height: 24px;
-  /* Taille de l'icône */
   width: 24px;
 }
 
@@ -159,7 +149,6 @@ export default {
   height: 40px;
   width: 1px;
   background-color: #dedede;
-  /* Couleur de la barre entre les éléments */
   margin: 0 1rem;
 }
 
@@ -180,7 +169,6 @@ export default {
   right: 0;
   height: 1px;
   background-color: #F0F0F0;
-  /* Couleur de la ligne plus claire */
 }
 
 @media (max-width: 768px) {
@@ -188,19 +176,14 @@ export default {
     display: none;
     position: absolute;
     top: 70px;
-    /* Ajuste la position pour qu'elle soit sous le header */
     left: 0;
     right: 0;
     background-color: #fafafa;
     flex-direction: column;
     align-items: center;
-    /* Centre les éléments */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Ajoute une ombre pour le menu mobile */
     z-index: 30;
-    /* Assurez-vous que le menu a un z-index élevé */
     transition: all 0.3s ease-in-out;
-    /* Ajoute une transition douce pour le menu mobile */
   }
 
   .nav-list.nav-list-mobile {
@@ -210,20 +193,16 @@ export default {
   .nav-item {
     margin: 1rem 0;
     width: 100%;
-    /* Prend toute la largeur pour un meilleur clic */
     text-align: center;
   }
 
   .nav-item a {
     width: 100%;
-    /* Prend toute la largeur pour un meilleur clic */
     justify-content: center;
-    /* Centre le contenu horizontalement */
   }
 
   .nav-divider {
     display: none;
-    /* Cache les diviseurs en mode mobile */
   }
 
   .burger-menu {

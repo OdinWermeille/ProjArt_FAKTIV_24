@@ -16,8 +16,6 @@ class EndroitController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Données reçues pour créer un lieu', $request->all());
-
         try {
             $validated = $request->validate([
                 'nom' => 'required|string|max:255|unique:endroits,nom',
@@ -47,14 +45,11 @@ class EndroitController extends Controller
                 'user_id.exists' => 'L\'ID utilisateur doit exister dans la base de données.',
             ]);
 
-            // Handle file upload
             if ($request->hasFile('image')) {
                 $imageName = time() . '.' . $request->image->extension();
                 $request->image->move(public_path('storage/images'), $imageName);
                 $validated['image_url'] = 'storage/images/' . $imageName;
             }
-
-            Log::info('Données validées pour créer un lieu', $validated);
 
             $endroit = Endroit::create($validated);
 
@@ -71,7 +66,7 @@ class EndroitController extends Controller
 
     public function show($nom)
     {
-        $formattedName = str_replace('-', ' ', $nom); // Convertir le slug en nom
+        $formattedName = str_replace('-', ' ', $nom);
         $endroit = Endroit::where('nom', $formattedName)->firstOrFail();
         return Inertia::render('DetailEndroit', [
             'endroit' => $endroit,

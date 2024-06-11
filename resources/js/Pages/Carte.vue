@@ -8,7 +8,6 @@
             href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     </Head>
     <div>
-        <!-- Barre de recherche et boutons -->
         <div class="searchContainer">
             <div class="buttonsWrapper">
                 <button class="button" @click="showFilterModal = true">Filtrer</button>
@@ -20,7 +19,6 @@
     <SwipeModal v-model="isOpen" id="modal">
     </SwipeModal>
 
-    <!-- Filter Modal -->
     <div v-if="showFilterModal" class="modalBackdrop" @click="closeModal">
         <div class="modal" @click.stop>
             <div class="modalHeader">
@@ -166,7 +164,6 @@ const resetFilters = () => {
 };
 
 const applyFilters = () => {
-    // Filtrer les sentiers selon les critères sélectionnés
     filteredSentiers.value = sentiers.filter(sentier => {
         const matchActivity = filterActivity.value === 'tout' || sentier.theme.nom.trim().toLowerCase() === filterActivity.value.trim().toLowerCase();
         const matchDistance = filterDistance.value === 'tout' || (
@@ -190,13 +187,18 @@ const applyFilters = () => {
 
 const openDescription = (e) => {
     const modalHandleWrapper = document.querySelector("#modal .swipe-modal-content .swipe-modal-drag-handle-wrapper");
-    modalHandleWrapper.addEventListener("click", function () {
+    modalHandleWrapper.addEventListener("click", () => {
         isOpen.value = false;
     });
 
-    const truncateDescription= (description) => {
-      const words = description.split(' ');
-      return words.length > 30 ? words.slice(0, 30).join(' ') + '...' : description;
+    const truncateDescription = (description) => {
+        if (description.length > 200) {
+            let truncated = description.substring(0, 200);
+            const lastSpace = truncated.lastIndexOf(' ');
+            truncated = truncated.substring(0, lastSpace) + '...';
+            return truncated;
+        }
+        return description;
     };
 
     // Fonction pour formatter la durée
@@ -246,7 +248,6 @@ const openDescription = (e) => {
     html += `</div>`;
     modalContent.innerHTML = html;
 
-    // Add event listener to the close button
     const closeModalButton = document.getElementById("closeModalButton");
     closeModalButton.addEventListener("click", function () {
         isOpen.value = false;
@@ -269,7 +270,7 @@ const hideAllSentiers = () => {
             map.removeControl(routingControl);
         });
 
-        // Vider les tableaux
+        // Vider le tableau de contrôles de routage
         routingControls.length = 0;
     
 };
@@ -284,9 +285,9 @@ const showSentier = (sentier) => {
     };
     lineOptions.styles[0].color = returnColor(sentier.theme_id);
     const customIcon = leaflet.AwesomeMarkers.icon({
-        icon: 'info-sign', // Nom de l'icône (par exemple, 'info-sign')
-        markerColor: 'blue', // Couleur du marqueur
-        prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
+        icon: 'info-sign',
+        markerColor: 'blue',
+        prefix: 'glyphicon',
     });
     customIcon.options.markerColor = returnColor(sentier.theme_id);
 
@@ -311,7 +312,6 @@ const showSentier = (sentier) => {
 
             marker.on('click', function (e) {
                 openDescription(e);
-                //window.location.href = `/sentiers/${sentier.id}`;
             });
             return marker;
         },
@@ -363,9 +363,9 @@ onMounted(() => {
 
             userGeoMarker = leaflet.marker([userMarker.value.latitude, userMarker.value.longitude], {
                     icon : leaflet.AwesomeMarkers.icon({
-                        icon: 'round', // Nom de l'icône (par exemple, 'info-sign')
-                        markerColor: 'green', // Couleur du marqueur
-                        prefix: 'glyphicon', // Préfixe pour l'icône (par exemple, 'fa' pour FontAwesome, 'glyphicon' pour Bootstrap)
+                        icon: 'round', 
+                        markerColor: 'green', 
+                        prefix: 'glyphicon', 
                     }),
                 })
                 .addTo(map)
@@ -378,36 +378,16 @@ onMounted(() => {
         }
     });
 
+    fetch("/carteFetch/sentiers")
+    .then((res) => res.json())
+    .then((data) => {
+        data.forEach((sentier) => {
+            sentiers.push(sentier);
+            showSentier(sentier);
+        })
+        resetFilters();
+    });
 
-    const here = window.location.href;
-    const urlArr = here.split(`/`);
-
-    if (urlArr[urlArr.length - 1] !== "carte") {
-        fetch(`/carteFetch/sentiers`)
-            .then((res) => res.json())
-            .then((data) => {
-                data.forEach((sentier) => {
-                    if (sentier.id == urlArr[urlArr.length - 1]) {
-                        sentiers.push(sentier);
-                        showSentier(sentier); 
-                    }
-                })
-                resetFilters();
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    } else {
-        fetch("/carteFetch/sentiers")
-            .then((res) => res.json())
-            .then((data) => {
-                data.forEach((sentier) => {
-                    sentiers.push(sentier);
-                    showSentier(sentier);
-                })
-                resetFilters();
-            });
-    }
 });
 </script>
 
@@ -449,9 +429,7 @@ onMounted(() => {
 
 .button:hover {
   background-color: #F0F0F0;
-  /* Change la couleur de fond au survol */
   color: #BFD2A6;
-  /* Change la couleur de texte au survol */
 }
 
 .listIcon {
@@ -462,46 +440,6 @@ onMounted(() => {
 
 .listIcon:hover {
   transform: translateY(-5px);
-}
-
-.image {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-
-.content {
-    padding: 16px;
-}
-
-.title {
-    font-size: 1.25rem;
-    margin-bottom: 8px;
-}
-
-.description {
-    font-size: 1rem;
-    color: #7d7d7d;
-    margin-bottom: 16px;
-}
-
-.info {
-    display: flex;
-    align-items: center;
-    font-size: 0.875rem;
-    color: #7d7d7d;
-}
-
-.length {
-    margin-right: 8px;
-}
-
-.separator {
-    margin: 0 8px;
-}
-
-.duration {
-    margin-left: 8px;
 }
 
 .modalBackdrop {
@@ -533,14 +471,6 @@ onMounted(() => {
     border-bottom: 1px solid #7d7d7d;
     padding-bottom: 8px;
     margin-bottom: 16px;
-}
-
-.closeButton {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #7d7d7d;
 }
 
 .modalContent {
@@ -646,12 +576,12 @@ onMounted(() => {
 
 .groupLienCard {
     display: inline-block;
-    text-decoration: none; /* Supprimer le soulignement des liens */
+    text-decoration: none;
 }
 
 .groupParent {
     display: inline-flex;
-    justify-content: center; /* Centrer horizontalement les enfants */
+    justify-content: center;
     padding: 16px;
 }
 
@@ -663,7 +593,7 @@ onMounted(() => {
     cursor: pointer;
     transition: transform 0.2s;
     margin-bottom: 16px;
-    max-width: 300px; /* Optional: Set a max width for the cards */
+    max-width: 300px;
 }
 
 .sentierCard:hover {
@@ -732,24 +662,16 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #212121; /* Couleur du texte sombre pour le contraste */
+    color: #212121;
     padding: 16px;
-    border-bottom: 1px solid #BFD2A6; /* Bordure subtile en bas */
-    border-radius: 8px 8px 0 0; /* Coins arrondis en haut */
+    border-bottom: 1px solid #BFD2A6;
+    border-radius: 8px 8px 0 0;
 }
  
 .header-title {
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0;
-}
- 
-.header-subtitle {
-    font-size: 1.25rem;
-    margin: 16px 0;
-    margin-left: 16px;
-    color: #4A8C2A;
-    font-weight: bold;
 }
  
 .enhanced-close {

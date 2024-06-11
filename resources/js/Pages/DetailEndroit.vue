@@ -98,7 +98,6 @@ export default {
                 .addTo(map.value)
                 .bindPopup(`<b>${props.endroit.nom}</b><br>${props.endroit.localite}`);
 
-            // Fetch nearby public transport stops
             fetchNearbyStops(latitude, longitude).then(stops => {
                 if (stops.length > 0) {
                     nearestStop.value = stops[1];
@@ -178,7 +177,6 @@ h2 {
     display: flex;
     justify-content: center;
     margin: 20px 0;
-    /* Ajoute de l'espacement avant et après le bouton */
 }
 
 .map-button {
@@ -191,7 +189,6 @@ h2 {
     border: none;
     cursor: pointer;
     margin: 20px 0;
-    /* Ajoute de l'espacement avant et après le bouton */
 }
 
 .map-button:hover {
@@ -209,12 +206,6 @@ h2 {
 
 .description-wrapper {
     margin-bottom: 20px;
-}
-
-.description {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 10px;
 }
 
 .description-text {

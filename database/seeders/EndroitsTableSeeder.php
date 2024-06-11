@@ -2,11 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
-use App\Models\Endroit;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class EndroitsTableSeeder extends Seeder

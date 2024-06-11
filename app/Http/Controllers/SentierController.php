@@ -105,7 +105,7 @@ class SentierController extends Controller
 
     public function show($nom)
     {
-        $formattedName = str_replace('-', ' ', $nom); // Convertir le slug en nom
+        $formattedName = str_replace('-', ' ', $nom); 
         $sentier = Sentier::with(['theme', 'endroits'])->where('nom', $formattedName)->firstOrFail();
         return Inertia::render('DetailsSentier', [
             'sentier' => $sentier

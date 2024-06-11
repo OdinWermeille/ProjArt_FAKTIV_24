@@ -74,17 +74,15 @@
             <span v-if="errors.endroits" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.endroits }}</span>
           </div>
 
-          <!-- Titre conditionnel centré -->
           <div v-if="form.endroits.length > 0" class="order-title">
             <h3>Choisir l'ordre des lieux</h3>
           </div>
 
-          <!-- Ajouter les éléments cochés ici -->
           <draggable v-if="form.endroits.length > 0" v-model="form.endroits" class="draggable-list" item-key="id"
             @start="onDragStart" @end="onDragEnd" @update="onDragUpdate" @change="onDragChange">
             <template #item="{ element }">
               <div class="draggable-item">
-                <i class="fas fa-grip-vertical grip-icon"></i> <!-- Icône de grip -->
+                <i class="fas fa-grip-vertical grip-icon"></i>
                 {{ getEndroitName(element) }}
               </div>
             </template>
@@ -142,7 +140,7 @@ export default {
       endroits: []
     });
     const errors = ref({});
-    const maxFileSize = 2048; // Maximum file size in KB
+    const maxFileSize = 2048;
     const isFileTooLarge = ref(false);
     const imageSize = ref(0);
 
@@ -206,7 +204,7 @@ export default {
     const initializeMap = async () => {
       if (map.value) return;
 
-      map.value = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
+      map.value = L.map('map').setView([46.8182, 8.2275], 8);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -253,8 +251,8 @@ export default {
 
       routingControl.value.on('routesfound', function (e) {
         const route = e.routes[0];
-        form.value.longueur = (route.summary.totalDistance / 1000).toFixed(2); // Convertir en km
-        form.value.duree = Math.round(route.summary.totalTime / 60); // Convertir en minutes
+        form.value.longueur = (route.summary.totalDistance / 1000).toFixed(2);
+        form.value.duree = Math.round(route.summary.totalTime / 60);
       });
 
       updateMap();
@@ -284,13 +282,13 @@ export default {
     const onFileChange = (e) => {
       const file = e.target.files[0];
       form.value.image = file;
-      imageSize.value = (file.size / 1024).toFixed(2); // File size in KB
+      imageSize.value = (file.size / 1024).toFixed(2);
       isFileTooLarge.value = file.size / 1024 > maxFileSize;
       imageLabel.value = file ? file.name : 'Image';
     };
 
     const truncatedImageLabel = computed(() => {
-      const maxLength = 30; // Maximum length of the file name to display
+      const maxLength = 30;
       if (imageLabel.value.length > maxLength) {
         return imageLabel.value.substring(0, maxLength) + '...';
       }
@@ -384,14 +382,14 @@ export default {
 
     const toggleDropdown = () => {
       if (!dropdownOpen.value) {
-        themeDropdownOpen.value = false; // Fermer l'autre liste déroulante
+        themeDropdownOpen.value = false;
       }
       dropdownOpen.value = !dropdownOpen.value;
     };
 
     const toggleThemeDropdown = () => {
       if (!themeDropdownOpen.value) {
-        dropdownOpen.value = false; // Fermer l'autre liste déroulante
+        dropdownOpen.value = false;
       }
       themeDropdownOpen.value = !themeDropdownOpen.value;
     };
@@ -421,8 +419,8 @@ export default {
       return themes.value.filter(theme => theme.nom.toLowerCase() !== 'tout');
     });
 
-    const onDragUpdate = (event) => {
-      updateMap(); // Mettre à jour la carte lorsque l'ordre des endroits est modifié
+    const onDragUpdate = () => {
+      updateMap();
     };
 
     const onDragChange = (event) => {
@@ -430,7 +428,7 @@ export default {
       if (oldIndex !== undefined && newIndex !== undefined) {
         const movedItem = form.value.endroits.splice(oldIndex, 1)[0];
         form.value.endroits.splice(newIndex, 0, movedItem);
-        updateMap(); // Mettre à jour la carte lorsque l'ordre des endroits est modifié
+        updateMap();
       }
     };
 
@@ -497,7 +495,6 @@ export default {
 @import url('https://unpkg.com/leaflet/dist/leaflet.css');
 @import url('https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css');
 @import url('https://unpkg.com/leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
-/* Import Font Awesome */
 
 .inter-text {
   font-family: "Inter", sans-serif;
@@ -516,7 +513,6 @@ export default {
   width: 100%;
   height: 100%;
   border: none;
-  /* Enlever le contour */
 }
 
 .rectangle-wrapper {
@@ -524,14 +520,12 @@ export default {
   width: 100%;
   height: 100%;
   padding: 30px 15px;
-  /* Ajouter plus de padding en haut et en bas */
   box-sizing: border-box;
 }
 
 .ajouter-un-lieu {
   font-size: 18px;
   font-weight: bold;
-  /* Mettre le titre en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -545,7 +539,6 @@ export default {
 
 .input-group {
   margin-bottom: 20px;
-  /* Augmenter la marge entre les champs */
 }
 
 .input-error .group-item {
@@ -569,26 +562,12 @@ export default {
   border: 1px solid #7d7d7d;
   box-sizing: border-box;
   width: calc(100% - 32px);
-  /* Ajouter de la marge sur les côtés */
   height: 50px;
   padding: 12px;
-  /* Ajouter un padding pour un espacement uniforme */
   font-size: 16px;
   font-family: "Inter", sans-serif;
   background-color: transparent;
-  /* Enlever le fond blanc */
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
-}
-
-.group-item[readonly] {
-  background-color: #F0F0F0;
-  /* Light grey background pour readonly inputs */
-}
-
-.dropdown-item {
-  height: 50px;
-  /* Agrandir la hauteur de la liste déroulante */
 }
 
 .dropdown-multi {
@@ -601,17 +580,14 @@ export default {
   width: calc(100% - 32px);
   margin: 0 16px;
   height: 50px;
-  /* Ajuster la hauteur */
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  /* Ajouter le curseur pointeur pour indiquer qu'il est cliquable */
 }
 
 .dropdown-header {
   width: calc(100% - 24px);
-  /* Laisser de la place pour la flèche */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -626,21 +602,16 @@ export default {
   border: 1px solid #7d7d7d;
   border-radius: 0 0 10px 10px;
   z-index: 1600;
-  /* Modifier la valeur du z-index pour qu'elle soit plus élevée */
   max-height: 200px;
-  /* Limiter la hauteur de la liste déroulante */
   overflow-y: auto;
-  /* Ajouter un défilement si nécessaire */
 }
 
 .theme-dropdown-list {
   z-index: 1700;
-  /* Ajouter un z-index plus élevé pour que la liste déroulante des thématiques soit au-dessus des autres éléments */
 }
 
 .dropdown-search {
   width: calc(100% - 24px);
-  /* Laisser de la place pour la marge */
   margin: 8px 12px;
   padding: 8px 12px;
   border: 1px solid #7d7d7d;
@@ -659,19 +630,10 @@ export default {
   margin-right: 8px;
 }
 
-.create-new-endroit {
-  display: inline-block;
-  margin: 10px 12px;
-  /* Ajouter de la marge autour du lien */
-  color: #212121;
-  /* Change link color to black */
-}
-
 .create-new-endroit-intro {
   color: #212121;
   margin-top: 10px;
   font-size: 14px;
-  /* Change link color to black */
 }
 
 .arrow-down {
@@ -680,57 +642,37 @@ export default {
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   border-top: 6px solid #7d7d7d;
-  /* Couleur de la flèche */
 }
 
 .description-field {
   height: 100px;
   padding: 12px;
-  /* Ajouter un padding pour un espacement uniforme */
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
 }
 
 .rectangle-parent {
   position: relative;
   height: 40px;
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
-}
-
-.group-child {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 10px;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  border: none;
-  /* Enlever le contour */
 }
 
 .image-upload .group-child {
   border: 1px solid #7d7d7d;
-  /* Ajouter un contour au champ d'insert d'image */
 }
 
 .supporting-text {
   position: absolute;
   top: 8px;
   left: 18px;
-  /* Ajouter un peu plus de marge à gauche entre l'image et le bord du champ */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
   align-items: center;
   width: calc(100% - 36px);
-  /* Ajuster pour fournir plus d'espace pour le texte */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-left: 30px;
-  /* Ajuster pour fournir plus d'espace pour l'icône */
   background: url('/storage/images/icon_televerser_img.svg') no-repeat left center;
 }
 
@@ -746,34 +688,8 @@ export default {
 
 .rectangle-parent2 {
   height: 250px;
-  /* Rendre la carte un peu plus petite */
   width: calc(100% - 32px);
-  /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
-}
-
-.ajouter {
-  position: relative;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-.ajouter-wrapper {
-  border-radius: 20px;
-  background-color: #4a8c2a;
-  border: 1px solid #bfd2a6;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  text-align: center;
-  font-size: 14px;
-  color: #fafafa;
-  margin: 30px auto 0 auto;
-  width: fit-content;
-  cursor: pointer;
 }
 
 .ajouter-wrapper:hover {
@@ -802,23 +718,7 @@ export default {
   padding: 20px;
   box-sizing: border-box;
   max-width: 700px;
-  /* Limiter la largeur maximale */
   margin: 0 auto;
-  /* Centrer le formulaire */
-}
-
-body {
-  margin: 0;
-  line-height: normal;
-  font-family: "Inter", sans-serif;
-}
-
-.radio-group {
-  margin: 0 16px;
-}
-
-.checkbox-group {
-  margin: 0 16px;
 }
 
 .order-title {
@@ -845,23 +745,17 @@ body {
   border-radius: 4px;
   background-color: #F0F0F0;
   cursor: grab;
-  /* Change the cursor to a hand when hovering over the item */
 }
 
 .draggable-item:active {
   cursor: grabbing;
-  /* Change the cursor to a closed hand when dragging the item */
 }
 
 .grip-icon {
   margin-right: 10px;
-  /* Add some space between the icon and the text */
   font-size: 14px;
-  /* Adjust the size of the icon to make it smaller */
   color: #7d7d7d;
-  /* Use a color that fits your design */
   line-height: 1;
-  /* Ensure the dots are vertically centered */
 }
 
 .alert-box {
@@ -880,12 +774,10 @@ body {
   font-family: "Inter", sans-serif;
   font-size: 14px;
   color: black;
-  /* Change text color to black */
 }
 
 .create-new-endroit-container {
   margin: 10px 0;
-  /* Ajustez la marge selon vos besoins */
 }
 
 .create-new-endroit {
@@ -893,31 +785,24 @@ body {
   align-items: center;
   color: #7d7d7d;
   text-decoration: none;
-  /* Enlevez la décoration par défaut du lien */
   font-family: "Inter", sans-serif;
-  /* Assurez-vous que la police est cohérente */
   font-size: 16px;
-  /* Assurez-vous que la taille de la police est cohérente */
   letter-spacing: 0.5px;
-  /* Assurez-vous que l'espacement des lettres est cohérente */
   line-height: 24px;
-  /* Assurez-vous que la hauteur de ligne est cohérente */
+  margin: 10px 12px;
 }
 
 .plus-icon {
   margin-right: 5px;
-  /* Espace entre le symbole et le texte */
 }
 
 .underline-intro {
   text-decoration: underline;
-  /* Souligner uniquement ce texte */
 }
 
 .underline {
   text-decoration: underline;
   padding-left: 10px;
-  /* Souligner uniquement ce texte */
 }
 
 .create-new-endroit:hover .underline {
@@ -926,15 +811,6 @@ body {
 
 a {
   color: #212121;
-}
-
-.rectangle-parent2 {
-  height: 250px;
-  /* Rendre la carte un peu plus petite */
-  width: calc(100% - 32px);
-  /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
-  margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
 }
 
 .ajouter {

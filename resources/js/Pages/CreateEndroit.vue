@@ -68,7 +68,7 @@ export default {
       localite: '',
     });
     const errors = ref({});
-    const maxFileSize = 2048; // Maximum file size in KB
+    const maxFileSize = 2048;
     const isFileTooLarge = ref(false);
     const imageSize = ref(0);
     const fileName = ref('');
@@ -82,7 +82,7 @@ export default {
 
     const checkAuthentication = async () => {
       try {
-        const response = await axios.get('/api/user'); // Assurez-vous que cette route existe
+        const response = await axios.get('/api/user');
         isAuthenticated.value = response.data.authenticated;
         form.value.user_id = response.data.user.id;
       } catch (error) {
@@ -95,14 +95,13 @@ export default {
       await checkAuthentication();
       await nextTick();
 
-      const map = L.map('map').setView([46.8182, 8.2275], 8); // Centrer la carte sur la Suisse
+      const map = L.map('map').setView([46.8182, 8.2275], 8);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
-      // Obtenir la géolocalisation de l'utilisateur
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           userCoords.value.latitude = position.coords.latitude;
@@ -121,7 +120,7 @@ export default {
 
         const customIcon = L.AwesomeMarkers.icon({
           icon: 'info-sign',
-          markerColor: 'black', // Vous pouvez changer la couleur ici
+          markerColor: 'black',
           prefix: 'glyphicon'
         });
 
@@ -143,14 +142,13 @@ export default {
     const onFileChange = (e) => {
       const file = e.target.files[0];
       form.value.image = file;
-      imageSize.value = (file.size / 1024).toFixed(2); // File size in KB
+      imageSize.value = (file.size / 1024).toFixed(2);
       isFileTooLarge.value = file.size / 1024 > maxFileSize;
       fileName.value = file ? file.name : '';
-      console.log('Fichier sélectionné :', fileName.value); // Debug
     };
 
     const truncatedFileName = computed(() => {
-      const maxLength = 30; // Maximum length of the file name to display
+      const maxLength = 30;
       if (fileName.value.length > maxLength) {
         return fileName.value.substring(0, maxLength) + '...';
       }
@@ -164,7 +162,7 @@ export default {
         coordonneesX: null,
         coordonneesY: null,
         image: null,
-        user_id: form.value.user_id, // Préserver user_id
+        user_id: form.value.user_id,
         localite: '',
       };
       fileName.value = '';
@@ -224,7 +222,6 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log('Lieu créé avec succès:', response.data);
         popupTitle.value = 'Merci!';
         popupMessage.value = 'Votre lieu a été créé avec succès!';
         popupActions.value = [
@@ -274,8 +271,6 @@ export default {
 @import url('https://unpkg.com/leaflet/dist/leaflet.css');
 @import url('https://unpkg.com/leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
 
-/* Import Font Awesome */
-
 .inter-text {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
@@ -293,7 +288,6 @@ export default {
   width: 100%;
   height: 100%;
   border: none;
-  /* Enlever le contour */
 }
 
 .rectangle-wrapper {
@@ -301,14 +295,12 @@ export default {
   width: 100%;
   height: 100%;
   padding: 30px 15px;
-  /* Ajouter plus de padding en haut et en bas */
   box-sizing: border-box;
 }
 
 .ajouter-un-lieu {
   font-size: 18px;
   font-weight: bold;
-  /* Mettre le titre en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -322,7 +314,6 @@ export default {
 
 .input-group {
   margin-bottom: 20px;
-  /* Augmenter la marge entre les champs */
 }
 
 .input-error .group-item {
@@ -338,71 +329,43 @@ export default {
   border: 1px solid #7d7d7d;
   box-sizing: border-box;
   width: calc(100% - 32px);
-  /* Ajouter de la marge sur les côtés */
   height: 50px;
   padding: 12px;
-  /* Ajouter un padding pour un espacement uniforme */
   font-size: 16px;
   font-family: "Inter", sans-serif;
   background-color: transparent;
-  /* Enlever le fond blanc */
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
-}
-
-.group-item[readonly] {
-  background-color: #F0F0F0;
-  /* Light grey background for readonly inputs */
 }
 
 .description-field {
   height: 100px;
   padding: 12px;
-  /* Ajouter un padding pour un espacement uniforme */
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
 }
 
 .rectangle-parent {
   position: relative;
   height: 40px;
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
-}
-
-.group-child {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 10px;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  border: none;
-  /* Enlever le contour */
 }
 
 .image-upload .group-child {
   border: 1px solid #7d7d7d;
-  /* Ajouter un contour au champ d'insert d'image */
 }
 
 .supporting-text {
   position: absolute;
   top: 8px;
   left: 18px;
-  /* Ajouter un peu plus de marge à gauche entre l'image et le bord du champ */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
   align-items: center;
   width: calc(100% - 36px);
-  /* Ajuster pour fournir plus d'espace pour le texte */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-left: 30px;
-  /* Ajuster pour fournir plus d'espace pour l'icône */
   background: url('/storage/images/icon_televerser_img.svg') no-repeat left center;
 }
 
@@ -418,17 +381,13 @@ export default {
 
 .rectangle-parent2 {
   height: 250px;
-  /* Rendre la carte un peu plus petite */
   width: calc(100% - 32px);
-  /* Garder la largeur adaptée à l'écran et ajouter de la marge sur les côtés */
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
 }
 
 .placer-le-lieu {
   font-size: 16px;
   font-weight: bold;
-  /* Mettre le titre en gras */
   letter-spacing: 0.5px;
   line-height: 24px;
   display: flex;
@@ -437,11 +396,8 @@ export default {
   text-align: center;
   align-items: center;
   justify-content: center;
-  /* Ajouter cette ligne pour centrer horizontalement */
   margin: 0 16px;
-  /* Ajouter de la marge sur les côtés */
   margin-bottom: 12px;
-  /* Ajouter une marge en bas */
 }
 
 .ajouter {
@@ -493,9 +449,7 @@ export default {
   padding: 20px;
   box-sizing: border-box;
   max-width: 700px;
-  /* Limiter la largeur maximale */
   margin: 0 auto;
-  /* Centrer le formulaire */
 }
 
 body {

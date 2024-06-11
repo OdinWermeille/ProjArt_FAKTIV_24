@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sentier;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CarteController extends Controller
