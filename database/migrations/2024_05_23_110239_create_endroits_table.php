@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('endroits', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nom');
+            $table->string('nom')->unique();
             $table->string('image_url');
             $table->text('description');
             $table->string('localite');

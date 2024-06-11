@@ -20,16 +20,17 @@ class EndroitController extends Controller
 
         try {
             $validated = $request->validate([
-                'nom' => 'required|string|max:255',
+                'nom' => 'required|string|max:255|unique:endroits,nom',
                 'description' => 'required|string',
                 'localite' => 'required|string',
                 'coordonneesX' => 'required|numeric|between:-180,180',
                 'coordonneesY' => 'required|numeric|between:-90,90',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'user_id' => 'required|exists:users,id',
             ], [
                 'nom.required' => 'Le nom est requis.',
                 'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
+                'nom.unique' => 'Le nom doit être unique.',
                 'description.required' => 'La description est requise.',
                 'localite.required' => 'La localité est requise.',
                 'coordonneesX.required' => 'Les coordonnées X sont requises.',
@@ -38,10 +39,10 @@ class EndroitController extends Controller
                 'coordonneesY.required' => 'Les coordonnées Y sont requises.',
                 'coordonneesY.numeric' => 'Les coordonnées Y doivent être un nombre.',
                 'coordonneesY.between' => 'Les coordonnées Y doivent être comprises entre -90 et 90.',
-                'image.required' => 'L\'image est requise.',
-                'image.image' => 'Le fichier doit être une image.',
-                'image.mimes' => 'L\'image doit être de type jpeg, png, jpg, gif, ou svg.',
-                'image.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+                'image_url.required' => 'L\'image est requise.',
+                'image_url.image' => 'Le fichier doit être une image.',
+                'image_url.mimes' => 'L\'image doit être de type jpeg, png, jpg, gif, ou svg.',
+                'image_url.max' => 'L\'image ne doit pas dépasser 2 Mo.',
                 'user_id.required' => 'L\'ID utilisateur est requis.',
                 'user_id.exists' => 'L\'ID utilisateur doit exister dans la base de données.',
             ]);
@@ -69,11 +70,11 @@ class EndroitController extends Controller
     }
 
     public function show($nom)
-{
-    $formattedName = str_replace('-', ' ', $nom); // Convertir le slug en nom
-    $endroit = Endroit::where('nom', $formattedName)->firstOrFail();
-    return Inertia::render('DetailEndroit', [
-        'endroit' => $endroit,
-    ]);
-}
+    {
+        $formattedName = str_replace('-', ' ', $nom); // Convertir le slug en nom
+        $endroit = Endroit::where('nom', $formattedName)->firstOrFail();
+        return Inertia::render('DetailEndroit', [
+            'endroit' => $endroit,
+        ]);
+    }
 }
