@@ -39,6 +39,10 @@
         <div id="map" class="map-container"></div>
       </section>
     </section>
+    <div v-if="isAuthenticated" class="button-wrapper">
+      <button class="edit-button" @click="editSentier">Modifier</button>
+      <button class="delete-button" @click="deleteSentier">Supprimer</button>
+    </div>
   </div>
 </template>
 
@@ -50,6 +54,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet.awesome-markers';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
+import axios from 'axios';
 
 export default {
   props: {
@@ -58,6 +63,7 @@ export default {
   setup(props) {
     let map = ref(null);
     const mapContainer = ref(null);
+    const isAuthenticated = ref(false);
 
     const returnColor = (theme_id) => {
       switch (theme_id) {
@@ -146,14 +152,45 @@ export default {
       return `${minutes} min`;
     });
 
-    onMounted(() => {
+    const deleteSentier = async () => {
+      try {
+        if (isAuthenticated.value === false) return window.location.href = '/login';
+        else if (!confirm('Êtes-vous sûr de vouloir supprimer ce sentier ?')) return;
+        const response = await axios.delete(`/api/sentiers/${props.sentier.id}`);
+        if (response.status === 200) {
+          window.location.href = '/sentiers';
+        }
+      } catch (error) {
+        console.error('Erreur lors de la suppression du sentier:', error);
+      }
+    };
+
+    onMounted(async () => {
+      await checkAuthentication();
       initializeMap();
     });
+
+    const checkAuthentication = async () => {
+      try {
+        const response = await axios.get('/api/user');
+        isAuthenticated.value = response.data.authenticated;
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        isAuthenticated.value = false;
+      }
+    };
+
+    const editSentier = () => {
+      window.location.href = `/sentiers/${props.sentier.nom}/edit`;
+    };
 
     return {
       mapContainer,
       scrollToMap,
-      formattedDuration
+      formattedDuration,
+      isAuthenticated,
+      editSentier,
+      deleteSentier
     };
   },
   methods: {
@@ -259,6 +296,56 @@ h2 {
   background-color: #fafafa;
   color: #4a8c2a;
   border: #4a8c2a solid 1px;
+  cursor: pointer;
+}
+
+.edit-button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.edit-button {
+  background-color: #4a8c2a;
+  color: #fafafa;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: #4a8c2a solid 1px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #fafafa;
+  color: #4a8c2a;
+  border: #4a8c2a solid 1px;
+  cursor: pointer;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Ajouter un espace entre les boutons */
+  margin: 20px 0;
+}
+
+.delete-button {
+  background-color: #ff4d4d;
+  color: #fafafa;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: #ff4d4d solid 1px;
+  cursor: pointer;
+  /* Supprimer la marge gauche ici */
+}
+
+.delete-button:hover {
+  background-color: #fafafa;
+  color: #ff4d4d;
+  border: #ff4d4d solid 1px;
   cursor: pointer;
 }
 </style>

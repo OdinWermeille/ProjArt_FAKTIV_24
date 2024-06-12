@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Theme;
 use App\Models\Endroit;
+use Illuminate\Support\Facades\Log;
 
 class SentierController extends Controller
 {
@@ -124,4 +125,71 @@ class SentierController extends Controller
             'sentier' => $sentier
         ]);
     }
+
+    public function edit($nom)
+    {
+        $formattedName = str_replace('-', ' ', $nom);
+        $sentier = Sentier::with(['theme', 'endroits'])->where('nom', $formattedName)->firstOrFail();
+        $themes = Theme::all();
+        $endroits = Endroit::all();
+        return Inertia::render('EditSentier', [
+            'sentier' => $sentier,
+            'themes' => $themes,
+            'endroits' => $endroits,
+        ]);
+    }
+
+
+    // Met à jour un sentier existant
+    public function update(Request $request, $id)
+    {
+        $sentier = Sentier::findOrFail($id);
+
+        $validated = $request->validate([
+            'nom' => ['required', 'string', 'max:255', 'regex:/^[^\-]+$/', 'unique:sentiers,nom,' . $sentier->id],
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'description' => 'required|string',
+            'longueur' => 'required|numeric',
+            'duree' => 'required|numeric',
+            'user_id' => 'required|exists:users,id',
+            'theme_id' => 'required|exists:themes,id',
+            'endroits' => 'required|array|min:2',
+            'endroits.*' => 'exists:endroits,id'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('storage/images'), $imageName);
+            $validated['image_url'] = 'storage/images/' . $imageName;
+        }
+
+        $sentier->update($validated);
+
+        // Mettre à jour la relation pivot avec l'ordre correct
+        $endroits = $request->input('endroits');
+        $sentier->endroits()->sync($endroits);
+
+        return response()->json($sentier, 200);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            // Trouver le sentier
+            $sentier = Sentier::findOrFail($id);
+
+            // Supprimer les enregistrements associés dans la table pivot
+            $sentier->endroits()->detach();
+
+            // Supprimer le sentier
+            $sentier->delete();
+
+            return response()->json(['message' => 'Sentier supprimé avec succès'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la suppression du sentier', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
+
 }

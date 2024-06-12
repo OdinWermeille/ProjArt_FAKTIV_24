@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CarteController;
 use App\Http\Controllers\EndroitController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use Illuminate\Support\Facades\Log;
 
 Route::redirect('/', '/sentiers')->name('sentiers');
 
@@ -34,6 +35,14 @@ Route::get('/sentiers/create', [SentierController::class, 'create']);
 Route::post('/sentiers', [SentierController::class, 'store']);
 
 Route::get('/sentiers/{nom}', [SentierController::class, 'show']);
+
+// Route pour afficher le formulaire de modification
+Route::get('/sentiers/{nom}/edit', [SentierController::class, 'edit'])->name('sentiers.edit');
+
+// Route pour soumettre les modifications
+Route::put('/api/sentiers/{id}', [SentierController::class, 'update'])->name('sentiers.update');
+
+Route::delete('/api/sentiers/{id}', [SentierController::class, 'destroy']);
 
 Route::post('/api/endroits', [EndroitController::class, 'store']);
 Route::get('/api/themes', function () {
