@@ -26,7 +26,7 @@ class SentierController extends Controller
     {
         // Valide les données de la requête
         $validated = $request->validate([
-            'nom' => ['required', 'string', 'max:255', 'regex:/^[^-\s]+$/'],
+            'nom' => ['required', 'string', 'max:255', 'regex:/^[^\-]+$/', 'unique:sentiers,nom'],
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'required|string',
             'longueur' => 'required|numeric',
@@ -39,7 +39,8 @@ class SentierController extends Controller
             // Messages de validation personnalisés
             'nom.required' => 'Le nom est requis.',
             'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
-            'nom.regex' => 'Le nom ne doit pas contenir de tirets (-) ou d\'espaces.',
+            'nom.regex' => 'Le nom ne doit pas contenir de tirets (-).',
+            'nom.unique' => 'Ce nom est déjà utilisé. Veuillez en choisir un autre.',
             'image.required' => 'L\'image est requise.',
             'image.image' => 'Le fichier doit être une image.',
             'image.mimes' => 'L\'image doit être de type jpeg, png, jpg, gif, ou svg.',

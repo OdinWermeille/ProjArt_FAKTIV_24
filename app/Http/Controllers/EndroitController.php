@@ -21,7 +21,7 @@ class EndroitController extends Controller
         try {
             // Valide les données de la requête
             $validated = $request->validate([
-                'nom' => ['required', 'string', 'max:255', 'unique:endroits,nom', 'regex:/^[^-\s]+$/'],
+                'nom' => ['required', 'string', 'max:255', 'unique:endroits,nom', 'regex:/^[^\-]+$/'],
                 'description' => 'required|string',
                 'localite' => 'required|string',
                 'coordonneesX' => 'required|numeric|between:-180,180',
@@ -32,8 +32,8 @@ class EndroitController extends Controller
                 // Messages de validation personnalisés
                 'nom.required' => 'Le nom est requis.',
                 'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
-                'nom.unique' => 'Le nom doit être unique.',
-                'nom.regex' => 'Le nom ne doit pas contenir de tirets (-) ou d\'espaces.',
+                'nom.unique' => 'Ce lieu existe déjà. Veuillez en choisir un autre.',
+                'nom.regex' => 'Le nom ne doit pas contenir de tirets (-).',
                 'description.required' => 'La description est requise.',
                 'localite.required' => 'La localité est requise.',
                 'coordonneesX.required' => 'Les coordonnées X sont requises.',
