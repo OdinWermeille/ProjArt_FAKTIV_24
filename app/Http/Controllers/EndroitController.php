@@ -21,18 +21,19 @@ class EndroitController extends Controller
         try {
             // Valide les données de la requête
             $validated = $request->validate([
-                'nom' => 'required|string|max:255|unique:endroits,nom',
+                'nom' => ['required', 'string', 'max:255', 'unique:endroits,nom', 'regex:/^[^-\s]+$/'],
                 'description' => 'required|string',
                 'localite' => 'required|string',
                 'coordonneesX' => 'required|numeric|between:-180,180',
                 'coordonneesY' => 'required|numeric|between:-90,90',
-                'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'user_id' => 'required|exists:users,id',
             ], [
                 // Messages de validation personnalisés
                 'nom.required' => 'Le nom est requis.',
                 'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
                 'nom.unique' => 'Le nom doit être unique.',
+                'nom.regex' => 'Le nom ne doit pas contenir de tirets (-) ou d\'espaces.',
                 'description.required' => 'La description est requise.',
                 'localite.required' => 'La localité est requise.',
                 'coordonneesX.required' => 'Les coordonnées X sont requises.',
@@ -41,10 +42,10 @@ class EndroitController extends Controller
                 'coordonneesY.required' => 'Les coordonnées Y sont requises.',
                 'coordonneesY.numeric' => 'Les coordonnées Y doivent être un nombre.',
                 'coordonneesY.between' => 'Les coordonnées Y doivent être comprises entre -90 et 90.',
-                'image_url.required' => 'L\'image est requise.',
-                'image_url.image' => 'Le fichier doit être une image.',
-                'image_url.mimes' => 'L\'image doit être de type jpeg, png, jpg, gif, ou svg.',
-                'image_url.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+                'image.required' => 'L\'image est requise.',
+                'image.image' => 'Le fichier doit être une image.',
+                'image.mimes' => 'L\'image doit être de type jpeg, png, jpg, gif, ou svg.',
+                'image.max' => 'L\'image ne doit pas dépasser 2 Mo.',
                 'user_id.required' => 'L\'ID utilisateur est requis.',
                 'user_id.exists' => 'L\'ID utilisateur doit exister dans la base de données.',
             ]);

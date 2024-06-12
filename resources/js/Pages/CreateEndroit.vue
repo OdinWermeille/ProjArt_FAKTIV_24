@@ -6,13 +6,11 @@
         <h2 class="ajouter-un-lieu">Ajouter un lieu</h2>
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="input-group">
-            <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" id="nom"
-              placeholder="Nom">
+            <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" @input="validateNom" id="nom" placeholder="Nom">
             <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
           </div>
           <div class="input-group">
-            <textarea :class="{ 'input-error': errors.description }" class="group-item description-field"
-              v-model="form.description" id="description" placeholder="Description"></textarea>
+            <textarea :class="{ 'input-error': errors.description }" class="group-item description-field" v-model="form.description" id="description" placeholder="Description"></textarea>
             <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
           </div>
           <div class="input-group image-upload">
@@ -21,8 +19,7 @@
               <label :class="{ 'label-error': isFileTooLarge }" class="supporting-text" for="image">
                 {{ truncatedFileName }} ({{ imageSize }} / {{ maxFileSize }} KB max)
               </label>
-              <input class="image-input" type="file" @change="onFileChange" id="image"
-                accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
+              <input class="image-input" type="file" @change="onFileChange" id="image" accept="image/jpeg, image/png, image/jpg, image/gif, image/svg+xml">
             </div>
             <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image }}</span>
             <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est trop lourd.</span>
@@ -189,6 +186,8 @@ export default {
       }
       if (!form.value.nom) {
         validationErrors.nom = 'Le nom est requis.';
+      } else if (form.value.nom.includes('-')) {
+        validationErrors.nom = 'Le nom ne doit pas contenir de tirets (-).';
       }
       if (!form.value.description) {
         validationErrors.description = 'La description est requise.';
@@ -199,6 +198,14 @@ export default {
         validationErrors.image = 'Le fichier est trop lourd.';
       }
       return validationErrors;
+    };
+
+    const validateNom = () => {
+      if (form.value.nom.includes('-')) {
+        errors.value.nom = 'Le nom ne doit pas contenir de tirets (-).';
+      } else {
+        errors.value.nom = '';
+      }
     };
 
     const submitForm = async () => {
@@ -250,6 +257,7 @@ export default {
       isAuthenticated,
       onFileChange,
       submitForm,
+      validateNom,
       userCoords,
       popupTitle,
       popupMessage,
