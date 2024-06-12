@@ -9,14 +9,17 @@ use App\Models\Endroit;
 
 class EndroitController extends Controller
 {
+    // Affiche la vue pour créer un nouveau lieu
     public function create()
     {
         return Inertia::render('CreateEndroit');
     }
 
+    // Enregistre un nouveau lieu
     public function store(Request $request)
     {
         try {
+            // Valide les données de la requête
             $validated = $request->validate([
                 'nom' => 'required|string|max:255|unique:endroits,nom',
                 'description' => 'required|string',
@@ -26,6 +29,7 @@ class EndroitController extends Controller
                 'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'user_id' => 'required|exists:users,id',
             ], [
+                // Messages de validation personnalisés
                 'nom.required' => 'Le nom est requis.',
                 'nom.max' => 'Le nom ne doit pas dépasser 255 caractères.',
                 'nom.unique' => 'Le nom doit être unique.',
@@ -45,12 +49,14 @@ class EndroitController extends Controller
                 'user_id.exists' => 'L\'ID utilisateur doit exister dans la base de données.',
             ]);
 
+            // Traite le fichier d'image s'il est présent
             if ($request->hasFile('image')) {
                 $imageName = time() . '.' . $request->image->extension();
                 $request->image->move(public_path('storage/images'), $imageName);
                 $validated['image_url'] = 'storage/images/' . $imageName;
             }
 
+            // Crée un nouveau lieu
             $endroit = Endroit::create($validated);
 
             return response()->json($endroit, 201);
@@ -64,6 +70,7 @@ class EndroitController extends Controller
         }
     }
 
+    // Affiche les détails d'un lieu spécifique
     public function show($nom)
     {
         $formattedName = str_replace('-', ' ', $nom);

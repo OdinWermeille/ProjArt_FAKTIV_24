@@ -1,12 +1,15 @@
 <template>
+  <!-- Affiche la popup si visible est vrai -->
   <div v-if="visible" class="popup-overlay" @click.self="close">
     <div class="popup-content">
       <h2>{{ title }}</h2>
-      <p>{{ message }}</p>
+      <p>{{ message }}</p> 
       <div class="button-container">
+        <!-- Boutons d'action dynamiques -->
         <button v-for="action in actions" :key="action.text" @click="action.handler" class="redirect-button">
           {{ action.text }}
         </button>
+        <!-- Bouton pour fermer la popup -->
         <button @click="close" class="popup-button">FERMER</button>
       </div>
     </div>
@@ -35,7 +38,7 @@ export default {
   },
   methods: {
     close() {
-      this.$emit('close');
+      this.$emit('close'); // Émet l'événement de fermeture
     }
   }
 };
@@ -54,6 +57,7 @@ export default {
   justify-content: center;
   z-index: 1000;
 }
+
 .popup-content {
   background: #f0f0f0;
   padding: 20px;
@@ -62,6 +66,7 @@ export default {
   width: 350px;
   max-width: 90%;
 }
+
 .popup-content h2 {
   font-family: "Inter", sans-serif;
   font-size: 18px;
@@ -69,16 +74,19 @@ export default {
   color: #212121;
   margin-bottom: 10px;
 }
+
 .popup-content p {
   font-family: "Inter", sans-serif;
   font-size: 16px;
   color: #7d7d7d;
   margin-bottom: 20px;
 }
+
 .button-container {
   display: flex;
   justify-content: space-around;
 }
+
 .popup-button {
   background-color: #4a8c2a;
   color: #fafafa;
@@ -92,16 +100,15 @@ export default {
 }
 
 .popup-button:hover {
-    background-color: #fafafa;
-    color: #4a8c2a;
-    border: #4a8c2a solid 1px;
-    cursor: pointer;
+  background-color: #fafafa;
+  color: #4a8c2a;
+  border: 1px solid #4a8c2a;
 }
 
 .redirect-button {
   background-color: #fafafa;
   color: #4a8c2a;
-  border: #4a8c2a solid 1px;
+  border: 1px solid #4a8c2a;
   cursor: pointer;
   border-radius: 20px;
   padding: 10px 20px;
@@ -114,6 +121,5 @@ export default {
   background-color: #4a8c2a;
   color: #fafafa;
   border: 1px solid #bfd2a6;
-    cursor: pointer;
 }
 </style>

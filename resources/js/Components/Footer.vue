@@ -2,10 +2,12 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="logo-container">
+        <!-- Logos dans le pied de page -->
         <img class="logo" src="/storage/images/Group.svg" alt="SCVD Logo" />
         <img class="logo" src="/storage/images/Rectangle 11.png" alt="Canton de Vaud Logo" />
       </div>
       <div class="text-container">
+        <!-- Texte d'information dans le pied de page -->
         <p><strong>2024 SCVD, Sentiers culturels vaudois</strong></p>
         <p><strong>Etat de Vaud</strong></p>
         <p>Les designs sont des marques par l’état de Vaud en Suisse ainsi que dans certaines autres juridictions.</p>
@@ -18,8 +20,8 @@
 <style scoped>
 .footer {
   font-family: "Inter", sans-serif;
-  background: #bfd2a6;
-  color: #212121;
+  background: #bfd2a6; 
+  color: #212121; 
   padding: 20px;
   text-align: center;
   width: 100%;
@@ -49,7 +51,6 @@
 .text-container {
   text-align: left;
   max-width: 500px;
-  font-family: 'Inter', sans-serif;
   font-size: 14px;
   line-height: 1.5;
 }

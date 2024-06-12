@@ -7,13 +7,16 @@ use Inertia\Inertia;
 
 class CarteController extends Controller
 {
-    function carte() {
+    // Fonction pour afficher la vue "Carte"
+    function carte()
+    {
         return Inertia::render("Carte");
     }
 
-    function index() {
+    // Fonction pour récupérer et renvoyer tous les sentiers avec leurs relations "endroits" et "theme"
+    function index()
+    {
         $sentiers = Sentier::with(['endroits', 'theme'])->get();
         return response()->json($sentiers);
     }
 }
-

@@ -1,23 +1,27 @@
 <template>
   <header class="header">
     <div class="logo">
+      <!-- Logo avec lien vers la page des sentiers -->
       <a href="/sentiers">
         <img src="/storage/images/Group.svg" alt="Logo" />
       </a>
     </div>
     <nav class="nav">
       <ul class="nav-list" :class="{ 'nav-list-mobile': isMobileMenuOpen }">
+        <!-- Lien vers la page des sentiers -->
         <li class="nav-item">
           <a href="/sentiers">
             <img src="/storage/images/chemin_noir.svg" alt="Chemin Icon" class="nav-icon" /> Sentiers
           </a>
         </li>
+        <!-- Lien pour ajouter un sentier (visible si authentifié) -->
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
           <a href="/sentiers/create">
             <img src="/storage/images/add.svg" alt="Icon +" class="nav-icon" /> Ajouter un sentier
           </a>
         </li>
+        <!-- Lien pour ajouter un lieu (visible si authentifié) -->
         <div v-if="isAuthenticated" class="nav-divider"></div>
         <li v-if="isAuthenticated" class="nav-item">
           <a href="/lieux/create">
@@ -25,17 +29,20 @@
           </a>
         </li>
         <div class="nav-divider"></div>
+        <!-- Lien pour se déconnecter (visible si authentifié) -->
         <li v-if="isAuthenticated" class="nav-item">
           <a href="/logout">
             <img src="/storage/images/logout.svg" alt="Logout Icon" class="nav-icon" /> Logout
           </a>
         </li>
+        <!-- Lien pour se connecter (visible si non authentifié) -->
         <li v-else class="nav-item">
           <a href="/login">
             <img src="/storage/images/login.svg" alt="Login Icon" class="nav-icon" /> Login
           </a>
         </li>
       </ul>
+      <!-- Bouton pour le menu mobile -->
       <button class="burger-menu" @click="toggleMobileMenu">
         ☰
       </button>
@@ -54,6 +61,7 @@ export default {
     const isAuthenticated = ref(false);
     const form = ref({ user_id: null });
 
+    // Vérifie l'authentification de l'utilisateur
     const checkAuthentication = async () => {
       try {
         const response = await axios.get('/api/user');
@@ -69,6 +77,7 @@ export default {
       checkAuthentication();
     });
 
+    // Bascule l'état du menu mobile
     const toggleMobileMenu = () => {
       isMobileMenuOpen.value = !isMobileMenuOpen.value;
     };
