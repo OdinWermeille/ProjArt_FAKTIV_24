@@ -16,13 +16,11 @@
         <h2 class="ajouter-un-lieu">Ajouter un sentier</h2>
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="input-group">
-            <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" id="nom"
-              placeholder="Nom">
+            <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" @input="validateNom" id="nom" placeholder="Nom">
             <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
           </div>
           <div class="input-group">
-            <textarea :class="{ 'input-error': errors.description }" class="group-item description-field"
-              v-model="form.description" id="description" placeholder="Description"></textarea>
+            <textarea :class="{ 'input-error': errors.description }" class="group-item description-field" v-model="form.description" id="description" placeholder="Description"></textarea>
             <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
           </div>
           <div class="input-group image-upload">
@@ -323,7 +321,44 @@ export default {
       return cleanedErrors;
     };
 
+    const validateForm = () => {
+      const validationErrors = {};
+      if (!form.value.nom) {
+        validationErrors.nom = 'Le nom est requis.';
+      } else if (form.value.nom.includes('-')) {
+        validationErrors.nom = 'Le nom ne doit pas contenir de tirets (-).';
+      }
+      if (!form.value.description) {
+        validationErrors.description = 'La description est requise.';
+      }
+      if (!form.value.image) {
+        validationErrors.image = 'L\'image est requise.';
+      } else if (isFileTooLarge.value) {
+        validationErrors.image = 'Le fichier est trop lourd.';
+      }
+      if (!form.value.theme_id) {
+        validationErrors.theme_id = 'La thématique est requise.';
+      }
+      if (form.value.endroits.length < 2) {
+        validationErrors.endroits = 'Veuillez sélectionner au moins deux lieux.';
+      }
+      return validationErrors;
+    };
+
+    const validateNom = () => {
+      if (form.value.nom.includes('-')) {
+        errors.value.nom = 'Le nom ne doit pas contenir de tirets (-).';
+      } else {
+        errors.value.nom = '';
+      }
+    };
+
     const submitForm = async () => {
+      errors.value = validateForm();
+      if (Object.keys(errors.value).length > 0) {
+        return;
+      }
+
       const formData = new FormData();
       formData.append('nom', form.value.nom);
       formData.append('image', form.value.image);
@@ -463,6 +498,7 @@ export default {
       imageLabel,
       onFileChange,
       submitForm,
+      validateNom,
       toggleDropdown,
       toggleThemeDropdown,
       selectedThemeText,
