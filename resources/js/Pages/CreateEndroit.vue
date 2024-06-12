@@ -111,17 +111,18 @@ export default {
       map.on('click', async function (e) {
         const { lat, lng } = e.latlng;
 
-        if (marker.value) {
-          map.removeLayer(marker.value);
-        }
-
         const customIcon = L.AwesomeMarkers.icon({
           icon: 'info-sign',
           markerColor: 'black',
           prefix: 'glyphicon'
         });
 
-        marker.value = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+        if (marker.value) {
+          map.removeLayer(marker.value);
+        }
+
+        marker.value = L.marker([lat, lng], { icon: customIcon });
+        marker.value.addTo(map);
 
         form.value.coordonneesX = lat;
         form.value.coordonneesY = lng;
