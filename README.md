@@ -1,4 +1,7 @@
 # ProjArt_FAKTIV_24
+Accès aux admins :
+user :  Nom1
+password : password1
 
 # Procédure d'installation
 
