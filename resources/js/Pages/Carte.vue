@@ -1,5 +1,6 @@
 <template>
 
+    <!-- Inclusion de styles pour la carte et la machine de routage Leaflet -->
     <Head title="Carte">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -7,6 +8,8 @@
         <link rel="stylesheet"
             href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     </Head>
+    
+    <!-- Conteneur pour les boutons de filtrage et de redirection vers la liste -->
     <div>
         <div class="searchContainer">
             <div class="buttonsWrapper">
@@ -15,17 +18,22 @@
             </div>
         </div>
     </div>
+    
+    <!-- Conteneur pour la carte Leaflet -->
     <div id="map"></div>
+
+    <!-- Modal de filtrage utilisant SwipeModal -->
     <SwipeModal v-model="isOpen" id="modal">
     </SwipeModal>
 
+    <!-- Modal de filtrage -->
     <div v-if="showFilterModal" class="modalBackdrop" @click="closeModal">
         <div class="modal" @click.stop>
             <div class="modalHeader">
-                <button @click="closeModal" class="closeButton">&times;</button>
                 <h3>Filtrer par</h3>
             </div>
             <div class="modalContent">
+                <!-- Filtres par activité -->
                 <div>
                     <h4><strong>Activité</strong></h4>
                     <div class="radioGroup">
@@ -67,6 +75,7 @@
                         </label>
                     </div>
                 </div>
+                <!-- Filtres par distance -->
                 <div>
                     <h4><strong>Distance</strong></h4>
                     <div class="radioGroupHorizontal">
@@ -100,16 +109,16 @@
 <script setup>
 "use strict";
 import { Head } from '@inertiajs/vue3';
-import { onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue';
 import leaflet from 'leaflet';
-import { useGeolocation } from '@vueuse/core'
-import { userMarker, nearbyMarkers } from '@/stores/mapStore'
+import { useGeolocation } from '@vueuse/core';
+import { userMarker, nearbyMarkers } from '@/stores/mapStore';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet.awesome-markers';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
-import { SwipeModal } from "@takuma-ru/vue-swipe-modal"
+import { SwipeModal } from "@takuma-ru/vue-swipe-modal";
 
 const { coords } = useGeolocation();
 let map;
@@ -122,6 +131,7 @@ const redirectToList = () => {
     window.location.href = '/sentiers';
 };
 
+// Fonction pour déterminer la couleur en fonction de l'identifiant du thème
 const returnColor = (theme_id) => {
     switch (theme_id) {
         case 2:
@@ -156,6 +166,7 @@ const closeModal = () => {
     showFilterModal.value = false;
 };
 
+// Réinitialise les filtres et applique les modifications
 const resetFilters = () => {
     filterActivity.value = 'tout';
     filterDistance.value = 'tout';
@@ -163,6 +174,7 @@ const resetFilters = () => {
     closeModal();
 };
 
+// Applique les filtres et met à jour la liste des sentiers filtrés
 const applyFilters = () => {
     filteredSentiers.value = sentiers.filter(sentier => {
         const matchActivity = filterActivity.value === 'tout' || sentier.theme.nom.trim().toLowerCase() === filterActivity.value.trim().toLowerCase();
@@ -171,7 +183,6 @@ const applyFilters = () => {
             filterDistance.value === '6-10' && sentier.longueur > 5 && sentier.longueur <= 10 ||
             filterDistance.value === '11+' && sentier.longueur > 10
         );
-        closeModal();
         return matchActivity && matchDistance;
     });
     hideAllSentiers();
@@ -179,12 +190,9 @@ const applyFilters = () => {
         showSentier(sentier);
     });
     showFilterModal.value = false;
-    
-    console.log(filterActivity.value);
-    console.log(filterDistance.value);
-    console.log(sentiers);
 };
 
+// Ouvre la description du sentier dans un modal
 const openDescription = (e) => {
     const modalHandleWrapper = document.querySelector("#modal .swipe-modal-content .swipe-modal-drag-handle-wrapper");
     modalHandleWrapper.addEventListener("click", () => {
@@ -201,7 +209,7 @@ const openDescription = (e) => {
         return description;
     };
 
-    // Fonction pour formatter la durée
+    // Fonction pour formater la durée en heures et minutes
     const formatDuration = (minutes) => {
         if (minutes >= 60) {
             const hours = Math.floor(minutes / 60);
@@ -256,25 +264,24 @@ const openDescription = (e) => {
     isOpen.value = true;
 };
 
+// Cache tous les sentiers de la carte
 const hideAllSentiers = () => {
-        
-        
-        routingControls.forEach((routingControl) => {
-            // Supprimer les marqueurs de la carte
-            routingControl.getWaypoints().forEach(waypoint => {
-                if (waypoint.marker) {
-                    map.removeLayer(waypoint.marker);
-                }
-            });
-            // Supprimer les contrôles de routage de la carte
-            map.removeControl(routingControl);
+    routingControls.forEach((routingControl) => {
+        // Supprimer les marqueurs de la carte
+        routingControl.getWaypoints().forEach(waypoint => {
+            if (waypoint.marker) {
+                map.removeLayer(waypoint.marker);
+            }
         });
+        // Supprimer les contrôles de routage de la carte
+        map.removeControl(routingControl);
+    });
 
-        // Vider le tableau de contrôles de routage
-        routingControls.length = 0;
-    
+    // Vider le tableau de contrôles de routage
+    routingControls.length = 0;
 };
 
+// Affiche un sentier sur la carte
 const showSentier = (sentier) => {
     const lineOptions = {
         styles: [{
@@ -307,7 +314,6 @@ const showSentier = (sentier) => {
                 }
             });
 
-
             marker.bindPopup("lieu sélectionné")
 
             marker.on('click', function (e) {
@@ -327,13 +333,14 @@ const showSentier = (sentier) => {
 
     sentier.endroits.forEach((endroit) => {
         routingControl.options.waypoints.push(leaflet.latLng([endroit.coordonneesX, endroit.coordonneesY]));
-    })
+    });
     routingControl.setWaypoints(routingControl.options.waypoints);
 
     routingControls.push(routingControl);
 }
 
 onMounted(() => {
+    // Initialisation de la carte
     map = leaflet
         .map("map")
         .setView([`${userMarker.value.latitude ? userMarker.value.latitude : 46.519962}`, `${userMarker.value.longitude ? userMarker.value.longitude : 6.633597}`], 13);
@@ -343,6 +350,7 @@ onMounted(() => {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
+    // Ajout des marqueurs à proximité de l'utilisateur
     nearbyMarkers.value.forEach(({ latitude, longitude }) => {
         leaflet
             .marker([latitude, longitude])
@@ -350,6 +358,7 @@ onMounted(() => {
             .bindPopup(`Nouveau lieu de l'utilisateur à ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
     });
 
+    // Suivi des coordonnées de l'utilisateur
     watchEffect(() => {
         if (coords.value.latitude !== Number.POSITIVE_INFINITY && coords.value.longitude !== Number.POSITIVE_INFINITY) {
             userMarker.value.latitude = coords.value.latitude;
@@ -378,6 +387,7 @@ onMounted(() => {
         }
     });
 
+    // Récupération des sentiers depuis l'API et initialisation des filtres
     fetch("/carteFetch/sentiers")
     .then((res) => res.json())
     .then((data) => {
@@ -455,90 +465,63 @@ onMounted(() => {
     z-index: 1000;
 }
 
-#modal {
+.modal {
     background: #FAFAFA;
     width: 100%;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+    max-width: 400px;
+    border-radius: 16px;
     padding: 16px;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .modalHeader {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    justify-content: flex-end;
     border-bottom: 1px solid #7d7d7d;
     padding-bottom: 8px;
     margin-bottom: 16px;
 }
 
+.modalHeader h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #212121;
+}
+
 .modalContent {
     display: flex;
     flex-direction: column;
-    align-items: left;
     gap: 16px;
 }
 
-.modalHeader h2 {
-    margin: 0;
-    margin-top: 72px;
-    margin-bottom: 8px;
-    font-size: 2rem;
-    color: #212121;
-    text-align: center;
-}
-
-.modalContent h4 {
-    margin: 0;
-    margin-bottom: 8px;
-    font-size: 1rem;
-    color: #212121;
-}
-
-.modalFooter {
+.modalContent h4{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 16px;
-    border-top: 1px solid #F0F0F0;
-    margin-top: 16px;
+    font-size: 1.1rem;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 12px;
 }
 
-.modal {
-    font-family: "Inter", sans-serif;
-    background: #FAFAFA;
-    width: 100%;
-    max-width: 400px;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.radioGroup {
-    font-family: "Inter", sans-serif;
+.radioGroup,
+.radioGroupHorizontal {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
 .radioGroupHorizontal {
-    font-family: "Inter", sans-serif;
-    display: flex;
     flex-direction: row;
-    gap: 16px;
 }
 
-.radioGroup label {
-    font-family: "Inter", sans-serif;
+.radioGroup label,
+.radioGroupHorizontal label {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .modalFooter {
-    font-family: "Inter", sans-serif;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -548,7 +531,6 @@ onMounted(() => {
 }
 
 .resetButton {
-    font-family: "Inter", sans-serif;
     background: none;
     border: 1px solid #4A8C2A;
     border-radius: 24px;
@@ -558,7 +540,6 @@ onMounted(() => {
 }
 
 .validateButton {
-    font-family: "Inter", sans-serif;
     background: #4A8C2A;
     border: none;
     border-radius: 24px;

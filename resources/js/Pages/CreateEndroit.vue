@@ -4,15 +4,19 @@
       <div class="group-child"></div>
       <div class="rectangle-wrapper">
         <h2 class="ajouter-un-lieu">Ajouter un lieu</h2>
+        <!-- Formulaire pour ajouter un lieu, affiché uniquement si l'utilisateur est authentifié -->
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
+          <!-- Champ pour le nom du lieu avec validation -->
           <div class="input-group">
             <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" @input="validateNom" id="nom" placeholder="Nom">
             <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
           </div>
+          <!-- Champ pour la description du lieu -->
           <div class="input-group">
             <textarea :class="{ 'input-error': errors.description }" class="group-item description-field" v-model="form.description" id="description" placeholder="Description"></textarea>
             <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
           </div>
+          <!-- Champ pour télécharger une image avec validation de la taille du fichier -->
           <div class="input-group image-upload">
             <div :class="{ 'input-error': errors.image || isFileTooLarge }" class="rectangle-parent">
               <div class="group-child"></div>
@@ -24,17 +28,20 @@
             <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image }}</span>
             <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est trop lourd.</span>
           </div>
+          <!-- Section pour placer le lieu sur la carte -->
           <div class="input-group map-container">
             <h3 class="placer-le-lieu">Placer le lieu sur la carte</h3>
             <div id="map" class="rectangle-parent2"></div>
             <span v-if="errors.coordonneesX || errors.coordonneesY" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.coordonneesX || errors.coordonneesY }}</span>
           </div>
+          <!-- Bouton pour soumettre le formulaire -->
           <div class="ajouter-wrapper">
             <button type="submit" class="ajouter">Créer</button>
           </div>
         </form>
       </div>
     </div>
+    <!-- Composant personnalisé pour afficher des popups -->
     <custom-popup :title="popupTitle" :message="popupMessage" :visible="popupVisible" @close="popupVisible = false" :actions="popupActions" />
   </div>
 </template>
@@ -54,6 +61,7 @@ export default {
     CustomPopup
   },
   setup() {
+    // Références réactives et variables
     const isAuthenticated = ref(false);
     const form = ref({
       nom: '',
@@ -77,6 +85,7 @@ export default {
     const popupVisible = ref(false);
     const popupActions = ref([]);
 
+    // Vérifie si l'utilisateur est authentifié
     const checkAuthentication = async () => {
       try {
         const response = await axios.get('/api/user');
@@ -88,6 +97,7 @@ export default {
       }
     };
 
+    // Initialisation de la carte et récupération des coordonnées utilisateur
     onMounted(async () => {
       await checkAuthentication();
       await nextTick();
@@ -108,6 +118,7 @@ export default {
         });
       }
 
+      // Gestion des clics sur la carte pour placer le marqueur
       map.on('click', async function (e) {
         const { lat, lng } = e.latlng;
 
@@ -127,6 +138,7 @@ export default {
         form.value.coordonneesX = lat;
         form.value.coordonneesY = lng;
 
+        // Obtenir la localité en utilisant les coordonnées
         try {
           const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
           form.value.localite = response.data.address.city || response.data.address.town || response.data.address.village || response.data.address.hamlet || 'Localité inconnue';
@@ -137,6 +149,7 @@ export default {
       });
     });
 
+    // Gestion du changement de fichier
     const onFileChange = (e) => {
       const file = e.target.files[0];
       form.value.image = file;
@@ -145,6 +158,7 @@ export default {
       fileName.value = file ? file.name : '';
     };
 
+    // Troncature du nom du fichier si trop long
     const truncatedFileName = computed(() => {
       const maxLength = 30;
       if (fileName.value.length > maxLength) {
@@ -153,6 +167,7 @@ export default {
       return fileName.value;
     });
 
+    // Réinitialisation du formulaire
     const resetForm = () => {
       form.value = {
         nom: '',
@@ -172,6 +187,7 @@ export default {
       }
     };
 
+    // Nettoyage des messages d'erreur
     const cleanErrors = (errors) => {
       const cleanedErrors = {};
       for (const key in errors) {
@@ -180,6 +196,7 @@ export default {
       return cleanedErrors;
     };
 
+    // Validation du formulaire
     const validateForm = () => {
       const validationErrors = {};
       if (!form.value.coordonneesX || !form.value.coordonneesY) {
@@ -201,6 +218,7 @@ export default {
       return validationErrors;
     };
 
+    // Validation du nom en temps réel
     const validateNom = () => {
       if (form.value.nom.includes('-')) {
         errors.value.nom = 'Le nom ne doit pas contenir de tirets (-).';
@@ -209,6 +227,7 @@ export default {
       }
     };
 
+    // Soumission du formulaire
     const submitForm = async () => {
       errors.value = validateForm();
       if (Object.keys(errors.value).length > 0) {
@@ -224,6 +243,7 @@ export default {
       formData.append('user_id', form.value.user_id);
       formData.append('localite', form.value.localite);
 
+      // Envoi des données au serveur
       try {
         const response = await axios.post('/api/endroits', formData, {
           headers: {

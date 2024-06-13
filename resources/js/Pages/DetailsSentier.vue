@@ -1,33 +1,41 @@
 <template>
   <div class="sentier-page">
+    <!-- Affiche le nom du sentier -->
     <h1>{{ sentier.nom }}</h1>
     <section class="image-section">
+      <!-- Affiche l'image du sentier -->
       <img :alt="'image ' + sentier.nom" :src="`/${sentier.image_url}`" />
     </section>
     <section class="info-section">
+      <!-- Affiche la longueur du sentier -->
       <div class="info">
         <img src="/storage/images/chemin.svg" alt="List Icon" class="nav-icon" />
         <p>{{ sentier.longueur }}km</p>
       </div>
+      <!-- Affiche la thématique du sentier -->
       <div class="info">
         <img src="/storage/images/theme.svg" alt="List Icon" class="nav-icon" />
         <p>{{ sentier.theme.nom }}</p>
       </div>
+      <!-- Affiche la durée formatée du sentier -->
       <div class="info">
         <img src="/storage/images/horloge.svg" alt="List Icon" class="nav-icon" />
         <p>{{ formattedDuration }}</p>
       </div>
     </section>
+    <!-- Bouton pour faire défiler jusqu'à la carte -->
     <div class="map-wrapper">
       <button class="map-button" @click="scrollToMap">Voir sur la carte</button>
     </div>
     <hr class="separator" />
+    <!-- Section de description du sentier -->
     <section class="description">
       <h2>Description</h2>
       <p>{{ sentier.description }}</p>
     </section>
 
     <hr class="separator" />
+    <!-- Section des points du parcours du sentier -->
     <section class="points-section">
       <h2>Le parcours</h2>
       <div class="info">
@@ -39,6 +47,7 @@
         <div id="map" class="map-container"></div>
       </section>
     </section>
+    <!-- Boutons pour modifier ou supprimer le sentier, affichés uniquement si l'utilisateur est authentifié -->
     <div v-if="isAuthenticated" class="button-wrapper">
       <button class="edit-button" @click="editSentier">Modifier</button>
       <button class="delete-button" @click="deleteSentier">Supprimer</button>
@@ -65,6 +74,7 @@ export default {
     const mapContainer = ref(null);
     const isAuthenticated = ref(false);
 
+    // Fonction pour retourner la couleur en fonction de l'ID du thème
     const returnColor = (theme_id) => {
       switch (theme_id) {
         case 2:
@@ -85,9 +95,10 @@ export default {
             return 'darkblue';
         default:
             return 'black';
-    }
+      }
     }
 
+    // Initialise la carte
     const initializeMap = () => {
       if (map.value) return;
       map.value = L.map('map').setView([46.8182, 8.2275], 8);
@@ -136,12 +147,14 @@ export default {
       }).addTo(map.value);
     };
 
+    // Fonction pour faire défiler jusqu'à la carte
     const scrollToMap = () => {
       if (mapContainer.value) {
         mapContainer.value.scrollIntoView({ behavior: 'smooth' });
       }
     };
 
+    // Calcule la durée formatée
     const formattedDuration = computed(() => {
       const minutes = props.sentier.duree;
       if (minutes >= 60) {
@@ -152,6 +165,7 @@ export default {
       return `${minutes} min`;
     });
 
+    // Supprime le sentier après confirmation de l'utilisateur
     const deleteSentier = async () => {
       try {
         if (isAuthenticated.value === false) return window.location.href = '/login';
@@ -165,11 +179,7 @@ export default {
       }
     };
 
-    onMounted(async () => {
-      await checkAuthentication();
-      initializeMap();
-    });
-
+    // Vérifie l'authentification de l'utilisateur
     const checkAuthentication = async () => {
       try {
         const response = await axios.get('/api/user');
@@ -180,9 +190,16 @@ export default {
       }
     };
 
+    // Redirige vers la page de modification du sentier
     const editSentier = () => {
       window.location.href = `/sentiers/${props.sentier.nom}/edit`;
     };
+
+    // Initialise la carte et vérifie l'authentification lorsque le composant est monté
+    onMounted(async () => {
+      await checkAuthentication();
+      initializeMap();
+    });
 
     return {
       mapContainer,
@@ -192,12 +209,6 @@ export default {
       editSentier,
       deleteSentier
     };
-  },
-  methods: {
-    onGroupContainerClick(nom) {
-      const slug = nom.toLowerCase().replace(/\s+/g, '-');
-      window.location.href = `/lieux/${slug}`;;
-    }
   }
 }
 </script>

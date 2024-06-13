@@ -1,16 +1,21 @@
 <template>
     <div class="container">
         <div class="content">
+            <!-- Affiche le titre de l'endroit -->
             <h1 class="titre">{{ endroit.nom }}</h1>
+            <!-- Affiche l'image de l'endroit -->
             <img class="image-endroit" :alt="endroit.nom" :src="`/${endroit.image_url}`" />
+            <!-- Affiche la localité de l'endroit avec une icône de localisation -->
             <div class="localite-wrapper">
                 <img src="/storage/images/map-ping.svg" alt="List Icon" class="nav-icon" />
                 <p class="localite-name">{{ endroit.localite }}</p>
             </div>
+            <!-- Bouton pour faire défiler vers la carte -->
             <div class="button-wrapper">
                 <button class="map-button" @click="scrollToMap">Voir sur la carte</button>
             </div>
             <hr class="separator" />
+            <!-- Section de description de l'endroit -->
             <div class="description-wrapper">
                 <h2>Description</h2>
                 <div class="description-text">
@@ -18,6 +23,7 @@
                 </div>
             </div>
             <hr class="separator" />
+            <!-- Affiche l'arrêt de transport public le plus proche, si disponible -->
             <div class="nearest-stop-wrapper" v-if="nearestStop">
                 <h2>Arrêt de transport public le plus proche</h2>
                 <div class="nearest-stop">
@@ -27,6 +33,7 @@
                 </div>
             </div>
             <hr class="separator" />
+            <!-- Section de la carte avec l'emplacement de l'endroit -->
             <div class="input-group map-container" ref="mapContainer">
                 <h2>Emplacement</h2>
                 <div id="map" class="rectangle-parent2"></div>
@@ -52,12 +59,14 @@ export default {
         const mapContainer = ref(null);
         const nearestStop = ref(null);
 
+        // Fonction pour faire défiler jusqu'à la carte
         const scrollToMap = () => {
             if (mapContainer.value) {
                 mapContainer.value.scrollIntoView({ behavior: 'smooth' });
             }
         };
 
+        // Fonction pour récupérer les arrêts de transport public proches
         const fetchNearbyStops = (latitude, longitude) => {
             const url = `https://transport.opendata.ch/v1/locations?x=${longitude}&y=${latitude}&type=station`;
 
@@ -75,10 +84,12 @@ export default {
                 });
         };
 
+        // Initialisation de la carte et récupération des arrêts proches lorsque le composant est monté
         onMounted(() => {
             const latitude = props.endroit.coordonneesX;
             const longitude = props.endroit.coordonneesY;
 
+            // Initialisation de la carte Leaflet
             map.value = leaflet
                 .map("map")
                 .setView([latitude, longitude], 13);
@@ -88,17 +99,20 @@ export default {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             }).addTo(map.value);
 
+            // Configuration de l'icône personnalisée pour le marqueur
             const customIcon = leaflet.AwesomeMarkers.icon({
                 icon: 'info-sign',
                 markerColor: 'black',
                 prefix: 'glyphicon'
             });
 
+            // Ajout du marqueur sur la carte avec une popup
             leaflet
                 .marker([latitude, longitude], { icon: customIcon })
                 .addTo(map.value)
                 .bindPopup(`<b>${props.endroit.nom}</b><br>${props.endroit.localite}`);
 
+            // Récupération des arrêts de transport public proches
             fetchNearbyStops(latitude, longitude).then(stops => {
                 if (stops.length > 0) {
                     nearestStop.value = stops[1];

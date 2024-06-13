@@ -1,8 +1,8 @@
 <template>
   <div class="group-parent inter-text">
+    <!-- Boîte d'alerte pour informer l'utilisateur de créer des lieux avant de créer un sentier -->
     <div class="alert-box">
-      <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui
-        composeront le sentier.</p>
+      <p><strong>Attention</strong>, pour créer un sentier, vous devez d'abord créer les différents lieux qui composeront le sentier.</p>
       <div class="create-new-endroit-container-intro">
         <a href="/lieux/create" class="create-new-endroit-intro">
           Créer un lieu <span class="underline-intro">ici</span>
@@ -14,15 +14,19 @@
       <div class="group-child"></div>
       <div class="rectangle-wrapper">
         <h2 class="ajouter-un-lieu">Ajouter un sentier</h2>
+        <!-- Formulaire pour ajouter un sentier, affiché uniquement si l'utilisateur est authentifié -->
         <form v-if="isAuthenticated" @submit.prevent="submitForm" enctype="multipart/form-data">
+          <!-- Champ pour le nom du sentier avec validation -->
           <div class="input-group">
             <input :class="{ 'input-error': errors.nom }" class="group-item" type="text" v-model="form.nom" @input="validateNom" id="nom" placeholder="Nom">
             <span v-if="errors.nom" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.nom }}</span>
           </div>
+          <!-- Champ pour la description du sentier -->
           <div class="input-group">
             <textarea :class="{ 'input-error': errors.description }" class="group-item description-field" v-model="form.description" id="description" placeholder="Description"></textarea>
             <span v-if="errors.description" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.description }}</span>
           </div>
+          <!-- Champ pour télécharger une image avec validation de la taille du fichier -->
           <div class="input-group image-upload">
             <div :class="{ 'input-error': errors.image || isFileTooLarge }" class="rectangle-parent">
               <div class="group-child"></div>
@@ -35,6 +39,7 @@
             <span v-if="errors.image" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.image }}</span>
             <span v-if="isFileTooLarge" class="error-message"><i class="fas fa-exclamation-circle"></i>Le fichier est trop lourd.</span>
           </div>
+          <!-- Champ pour sélectionner la thématique du sentier -->
           <div class="input-group">
             <div :class="{ 'input-error': errors.theme_id }" class="group-item dropdown-multi">
               <div class="dropdown-header" @click="toggleThemeDropdown">
@@ -50,6 +55,7 @@
             </div>
             <span v-if="errors.theme_id" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.theme_id }}</span>
           </div>
+          <!-- Champ pour sélectionner les lieux qui composent le sentier -->
           <div class="input-group">
             <div :class="{ 'input-error': errors.endroits }" class="group-item dropdown-multi">
               <div class="dropdown-header" @click="toggleDropdown">
@@ -72,10 +78,12 @@
             <span v-if="errors.endroits" class="error-message"><i class="fas fa-exclamation-circle"></i>{{ errors.endroits }}</span>
           </div>
 
+          <!-- Section pour choisir l'ordre des lieux -->
           <div v-if="form.endroits.length > 0" class="order-title">
             <h3>Choisir l'ordre des lieux</h3>
           </div>
 
+          <!-- Liste des lieux avec possibilité de les réordonner par glisser-déposer -->
           <draggable v-if="form.endroits.length > 0" v-model="form.endroits" class="draggable-list" item-key="id"
             @start="onDragStart" @end="onDragEnd" @update="onDragUpdate" @change="onDragChange">
             <template #item="{ element }">
@@ -86,6 +94,7 @@
             </template>
           </draggable>
 
+          <!-- Aperçu de la carte du sentier -->
           <div v-if="form.endroits.length > 0" class="order-title">
             <h3>Aperçu du sentier</h3>
           </div>
@@ -94,6 +103,7 @@
             <div id="map" class="rectangle-parent2"></div>
           </div>
 
+          <!-- Bouton pour soumettre le formulaire -->
           <div class="ajouter-wrapper">
             <button type="submit" class="ajouter">Créer</button>
           </div>
@@ -101,6 +111,7 @@
       </div>
     </div>
   </div>
+  <!-- Composant personnalisé pour afficher des popups -->
   <custom-popup :title="popupTitle" :message="popupMessage" :visible="popupVisible" @close="popupVisible = false" :actions="popupActions" />
 </template>
 
@@ -149,6 +160,7 @@ export default {
     let routingControl = ref(null);
     let map = ref(null);
 
+    // Fonction pour récupérer les thématiques et les endroits disponibles
     const fetchThemesAndEndroits = async () => {
       try {
         const themeResponse = await axios.get('/api/themes');
@@ -161,6 +173,7 @@ export default {
       }
     };
 
+    // Vérifie si l'utilisateur est authentifié
     const checkAuthentication = async () => {
       try {
         const response = await axios.get('/api/user');
@@ -176,6 +189,7 @@ export default {
       }
     };
 
+    // Retourne la couleur en fonction du thème
     const returnColor = (theme_id) => {
       switch (theme_id) {
         case 2:
@@ -196,9 +210,10 @@ export default {
             return 'darkblue';
         default:
             return 'black';
-    }
+      }
     };
 
+    // Initialise la carte
     const initializeMap = async () => {
       if (map.value) return;
 
@@ -212,6 +227,7 @@ export default {
       createRoutingControl();
     };
 
+    // Crée le contrôle de routage pour afficher le sentier sur la carte
     const createRoutingControl = () => {
       if (routingControl.value) {
         routingControl.value.remove();
@@ -256,6 +272,7 @@ export default {
       updateMap();
     };
 
+    // Fonction exécutée lors du montage du composant
     onMounted(async () => {
       await checkAuthentication();
       if (isAuthenticated.value) {
@@ -263,6 +280,7 @@ export default {
       }
     });
 
+    // Mise à jour de la carte lorsque les lieux sont modifiés
     watch(() => form.value.endroits, async (newEndroits) => {
       if (newEndroits.length > 0 && !map.value) {
         await nextTick();
@@ -271,12 +289,14 @@ export default {
       updateMap();
     }, { deep: true });
 
+    // Recrée le contrôle de routage lorsque la thématique change
     watch(() => form.value.theme_id, async (newTheme) => {
       if (map.value) {
         createRoutingControl();
       }
     });
 
+    // Gestion du changement de fichier
     const onFileChange = (e) => {
       const file = e.target.files[0];
       form.value.image = file;
@@ -285,6 +305,7 @@ export default {
       imageLabel.value = file ? file.name : 'Image';
     };
 
+    // Troncature du nom du fichier si trop long
     const truncatedImageLabel = computed(() => {
       const maxLength = 30;
       if (imageLabel.value.length > maxLength) {
@@ -293,6 +314,7 @@ export default {
       return imageLabel.value;
     });
 
+    // Réinitialisation du formulaire
     const resetForm = () => {
       form.value = {
         nom: '',
@@ -313,6 +335,7 @@ export default {
       imageSize.value = 0;
     };
 
+    // Nettoyage des messages d'erreur
     const cleanErrors = (errors) => {
       const cleanedErrors = {};
       for (const key in errors) {
@@ -321,6 +344,7 @@ export default {
       return cleanedErrors;
     };
 
+    // Validation du formulaire
     const validateForm = () => {
       const validationErrors = {};
       if (!form.value.nom) {
@@ -345,6 +369,7 @@ export default {
       return validationErrors;
     };
 
+    // Validation du nom en temps réel
     const validateNom = () => {
       if (form.value.nom.includes('-')) {
         errors.value.nom = 'Le nom ne doit pas contenir de tirets (-).';
@@ -353,6 +378,7 @@ export default {
       }
     };
 
+    // Soumission du formulaire
     const submitForm = async () => {
       errors.value = validateForm();
       if (Object.keys(errors.value).length > 0) {
@@ -372,6 +398,7 @@ export default {
         formData.append(`endroits[${index}]`, endroit);
       });
 
+      // Envoi des données au serveur
       try {
         const response = await axios.post('/api/sentiers', formData, {
           headers: {
@@ -402,6 +429,7 @@ export default {
       }
     };
 
+    // Met à jour la carte avec les nouveaux points de passage
     const updateMap = () => {
       if (!map.value || !routingControl.value) return;
 
@@ -415,6 +443,7 @@ export default {
       routingControl.value.getPlan().setWaypoints(waypoints);
     };
 
+    // Ouvre ou ferme le dropdown pour sélectionner les lieux
     const toggleDropdown = () => {
       if (!dropdownOpen.value) {
         themeDropdownOpen.value = false;
@@ -422,6 +451,7 @@ export default {
       dropdownOpen.value = !dropdownOpen.value;
     };
 
+    // Ouvre ou ferme le dropdown pour sélectionner la thématique
     const toggleThemeDropdown = () => {
       if (!themeDropdownOpen.value) {
         dropdownOpen.value = false;
@@ -429,11 +459,13 @@ export default {
       themeDropdownOpen.value = !themeDropdownOpen.value;
     };
 
+    // Texte affiché pour la thématique sélectionnée
     const selectedThemeText = computed(() => {
       const selectedTheme = themes.value.find(theme => theme.id === form.value.theme_id);
       return selectedTheme ? selectedTheme.nom : "Thématique";
     });
 
+    // Texte affiché pour les lieux sélectionnés
     const selectedEndroitsText = computed(() => {
       if (form.value.endroits.length === 0) return "Lieux";
       const selectedNames = endroits.value
@@ -443,6 +475,7 @@ export default {
       return selectedNames;
     });
 
+    // Filtrer les lieux en fonction de la recherche
     const filteredEndroits = computed(() => {
       if (!search.value) {
         return endroits.value;
@@ -450,14 +483,17 @@ export default {
       return endroits.value.filter(endroit => endroit.nom.toLowerCase().includes(search.value.toLowerCase()));
     });
 
+    // Filtrer les thématiques disponibles
     const filteredThemes = computed(() => {
       return themes.value.filter(theme => theme.nom.toLowerCase() !== 'tout');
     });
 
+    // Mise à jour de la carte lors du glissement des lieux
     const onDragUpdate = () => {
       updateMap();
     };
 
+    // Mise à jour de l'ordre des lieux lors du changement
     const onDragChange = (event) => {
       const { oldIndex, newIndex } = event;
       if (oldIndex !== undefined && newIndex !== undefined) {
@@ -467,6 +503,7 @@ export default {
       }
     };
 
+    // Gère les clics en dehors des dropdowns pour les fermer
     const handleClickOutside = (event) => {
       if (!event.target.closest('.dropdown-multi')) {
         dropdownOpen.value = false;
@@ -474,10 +511,12 @@ export default {
       }
     };
 
+    // Ajoute un écouteur d'événements pour détecter les clics en dehors
     onMounted(() => {
       document.addEventListener('click', handleClickOutside);
     });
 
+    // Récupère le nom d'un lieu par son ID
     const getEndroitName = (id) => {
       const endroit = endroits.value.find(e => e.id === id);
       return endroit ? endroit.nom : '';

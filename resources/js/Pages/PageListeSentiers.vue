@@ -3,11 +3,12 @@
     <!-- Barre de recherche et boutons -->
     <div :class="$style.searchContainer">
       <div :class="$style.searchWrapper">
-        <input v-model="searchQuery" type="text" :class="$style.searchInput" placeholder="Rechercher"
-          @input="applyFiltersAndSearch" />
+        <!-- Champ de recherche pour filtrer les sentiers -->
+        <input v-model="searchQuery" type="text" :class="$style.searchInput" placeholder="Rechercher" @input="applyFiltersAndSearch" />
         <img :class="$style.searchIcon" alt="Search Icon" src="/storage/images/icon.svg" />
       </div>
       <div :class="$style.buttonsWrapper">
+        <!-- Boutons pour ouvrir les modals de tri et de filtre -->
         <button :class="$style.button" @click="showSortModal = true">Trier par</button>
         <button :class="$style.button" @click="showFilterModal = true">Filtrer</button>
         <img :class="$style.mapIcon" alt="Map Icon" src="/storage/images/map.svg" @click="redirectToMap" />
@@ -16,12 +17,13 @@
 
     <!-- Liste des sentiers ou message d'absence de sentiers -->
     <div class="content">
+      <!-- Affiche un message si aucun sentier ne correspond aux filtres appliqués -->
       <div v-if="filteredSentiers.length === 0" :class="$style.noResults">
         <p>Aucun sentier ne correspond aux filtres appliqués.</p>
       </div>
+      <!-- Affiche la liste des sentiers filtrés -->
       <div v-else :class="$style.groupParent">
-        <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card"
-          @click="onGroupContainerClick(sentier.nom)">
+        <div v-for="sentier in filteredSentiers" :key="sentier.id" :class="$style.card" @click="onGroupContainerClick(sentier.nom)">
           <img :class="$style.image" :alt="sentier.nom" :src="`/${sentier.image_url}`" />
           <div :class="$style.content">
             <b :class="$style.title">{{ sentier.nom }}</b>
@@ -38,7 +40,7 @@
       </div>
     </div>
 
-    <!-- Sort Modal -->
+    <!-- Modal de tri -->
     <div v-if="showSortModal" :class="$style.modalBackdrop" @click="closeModal">
       <div :class="$style.modal" @click.stop>
         <div :class="$style.modalHeader">
@@ -62,7 +64,7 @@
       </div>
     </div>
 
-    <!-- Filter Modal -->
+    <!-- Modal de filtre -->
     <div v-if="showFilterModal" :class="$style.modalBackdrop" @click="closeModal">
       <div :class="$style.modal" @click.stop>
         <div :class="$style.modalHeader">
@@ -70,6 +72,7 @@
           <h3>Filtrer par</h3>
         </div>
         <div :class="$style.modalContent">
+          <!-- Filtres par activité -->
           <div>
             <h4><strong>Activité</strong></h4>
             <div :class="$style.radioGroup">
@@ -111,6 +114,7 @@
               </label>
             </div>
           </div>
+          <!-- Filtres par distance -->
           <div>
             <h4><strong>Distance</strong></h4>
             <div :class="$style.radioGroupHorizontal">
@@ -142,8 +146,6 @@
   </div>
 </template>
 
-
-
 <script lang="ts">
 import { defineComponent } from 'vue';
 
@@ -168,30 +170,36 @@ export default defineComponent({
     }
   },
   methods: {
+    // Redirige vers la page du sentier sélectionné
     onGroupContainerClick(nom) {
       const slug = nom.toLowerCase().replace(/\s+/g, '-');
       window.location.href = `/sentiers/${slug}`;
     },
+    // Redirige vers la carte
     redirectToMap() {
       window.location.href = '/carte';
     },
+    // Ferme les modals de tri et de filtre
     closeModal() {
       this.showSortModal = false;
       this.showFilterModal = false;
     },
+    // Tronque la description si elle est trop longue
     truncateDescription(description) {
-        if (description.length > 200) {
-            let truncated = description.substring(0, 200);
-            const lastSpace = truncated.lastIndexOf(' ');
-            truncated = truncated.substring(0, lastSpace) + '...';
-            return truncated;
-        }
-        return description;
+      if (description.length > 200) {
+        let truncated = description.substring(0, 200);
+        const lastSpace = truncated.lastIndexOf(' ');
+        truncated = truncated.substring(0, lastSpace) + '...';
+        return truncated;
+      }
+      return description;
     },
+    // Réinitialise l'option de tri
     resetSort() {
       this.sortOption = '';
       this.applyFiltersAndSearch();
     },
+    // Applique le tri en fonction de l'option sélectionnée
     applySort() {
       if (this.sortOption === 'newest') {
         this.filteredSentiers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -200,15 +208,18 @@ export default defineComponent({
       }
       this.closeModal();
     },
+    // Réinitialise les filtres
     resetFilters() {
       this.filterActivity = 'tout';
       this.filterDistance = 'tout';
       this.applyFiltersAndSearch();
     },
+    // Applique les filtres et ferme le modal
     applyFilters() {
       this.applyFiltersAndSearch();
       this.closeModal();
     },
+    // Applique les filtres, la recherche et le tri
     applyFiltersAndSearch() {
       this.filteredSentiers = this.allSentiers.filter(sentier => {
         const matchActivity = this.filterActivity === 'tout' || sentier.theme.nom.trim().toLowerCase() === this.filterActivity.trim().toLowerCase();
@@ -223,6 +234,7 @@ export default defineComponent({
 
       this.applySort();
     },
+    // Formate la durée du sentier
     formatDuration(duree) {
       if (duree >= 60) {
         const hours = Math.floor(duree / 60);
@@ -233,19 +245,19 @@ export default defineComponent({
     }
   },
   watch: {
+    // Met à jour les sentiers lorsque la prop change
     sentiers(newSentiers) {
       this.allSentiers = newSentiers;
       this.applyFiltersAndSearch();
     }
   },
   created() {
+    // Initialise les sentiers lors de la création du composant
     this.allSentiers = this.sentiers;
     this.applyFiltersAndSearch();
   }
 })
 </script>
-
-
 
 <style module>
 

@@ -71,7 +71,6 @@ const submit = () => {
       form.reset('password');
       if (Object.keys(form.errors).length === 0) {
         Inertia.visit('/sentiers');
-        /* window.location.href = '/sentiers'; */
       }
       window.location.href = '/login?error=AuthFailed';
     },
